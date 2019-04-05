@@ -13,29 +13,6 @@ run2 = niftiread (img);
 vxs = zeros(size(run1, 1), size(run1, 2), size(run1, 3));
 vxs(30:60, 30:60, 26) = run1(30:60, 30:60, 26) >= 0;
 
-% Load in apertures
-apertures = load('/home/giovanni/tools/toolboxes/BAIRstimuli/stimuli/bar_apertures.mat');
-images = uint8(apertures.bar_apertures); clear apertures;
-
-temp = zeros(100,100,size(images,3));
-for p=1:size(images,3)
-    temp(:,:,p) = imresize(images(:,:,p),[100 100],'cubic');
-end
-images = temp;
-
-% ensure that all values are between 0 and 1
-images(images < 0) = 0;
-images(images > 1) = 1;
-
-% add baseline (first 11.9 sec)
-TR = .850;
-BASELINE = 11.9; % seconds
-BASELINE_TR = 11.9 / TR;
-stimulus_baseline = zeros(100, 100, BASELINE_TR);
-
-images = cat(3, stimulus_baseline, images);
-images = images(:, :, 1:224);
-
 %%
 
 % Compute pRF parameters with GLMDenoise
