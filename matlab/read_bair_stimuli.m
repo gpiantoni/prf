@@ -1,4 +1,9 @@
 function images = read_bair_stimuli(n_volumes, TR)
+%READ_BAIR_STIMULI read in the apertures with the correct TR and number of
+%scans
+%
+% <n_volumes>
+
 
 PATH_TO_APERTURES = '/home/giovanni/tools/toolboxes/BAIRstimuli/stimuli/bar_apertures.mat';
 BASELINE = 11.9; % seconds

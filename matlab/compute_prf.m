@@ -1,5 +1,5 @@
 function compute_prf(nifti, output_dir, threshold)
-
+%COMPUTE_PRF
 
 
 hdr = niftiinfo(nifti{1});
