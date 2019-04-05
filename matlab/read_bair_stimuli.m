@@ -1,9 +1,7 @@
-function images = read_bair_stimuli()
+function images = read_bair_stimuli(n_volumes, TR)
 
 PATH_TO_APERTURES = '/home/giovanni/tools/toolboxes/BAIRstimuli/stimuli/bar_apertures.mat';
-TR = .850;
 BASELINE = 11.9; % seconds
-N_VOLUMES = 224;
 RESOLUTION = 100;
 
 apertures = load(PATH_TO_APERTURES);
@@ -24,4 +22,4 @@ BASELINE_TR = (BASELINE / TR);
 stimulus_baseline = zeros(RESOLUTION, RESOLUTION, BASELINE_TR);
 
 images = cat(3, stimulus_baseline, images);
-images = images(:, :, 1:N_VOLUMES);
+images = images(:, :, 1:n_volumes);
