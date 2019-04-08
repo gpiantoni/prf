@@ -1,12 +1,17 @@
 function images = read_bair_stimuli(n_volumes, TR)
-%READ_BAIR_STIMULI read in the apertures with the correct TR and number of
-%scans
+% 
+% function images = READ_BAIR_STIMULI (n_volumes, TR)
 %
-% <n_volumes>
+% This function reads in the apertures of the stimuli presented, along with
+% the the number of dynamics (<n_volumes>) and the repetition time (<TR>).
+%
+% Output: 
+% <images> containing pRF stimulus information with added baseline.
 
+PATH_TO_APERTURES = '/home/giovanni/tools/toolboxes/BAIRstimuli/stimuli/bar_apertures.mat';     % TO REMOVE
 
-PATH_TO_APERTURES = '/home/giovanni/tools/toolboxes/BAIRstimuli/stimuli/bar_apertures.mat';
-BASELINE = 11.9; % seconds
+PATH_TO_APERTURES = '/Fridge/users/margriet/stimuli/BAIR_pRF/bar_apertures.mat';
+BASELINE = 11.9;     % seconds
 RESOLUTION = 100;
 
 apertures = load(PATH_TO_APERTURES);
@@ -18,12 +23,12 @@ for p=1:size(images,3)
 end
 images = temp;
 
-% ensure that all values are between 0 and 1
+% Ensure that all values are between 0 and 1
 images(images < 0) = 0;
 images(images > 1) = 1;
 
-% add baseline
-BASELINE_TR = (BASELINE / TR);
+% Add baseline
+BASELINE_TR = round(BASELINE / TR);
 stimulus_baseline = zeros(RESOLUTION, RESOLUTION, BASELINE_TR);
 
 images = cat(3, stimulus_baseline, images);
