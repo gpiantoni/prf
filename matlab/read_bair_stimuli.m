@@ -21,9 +21,10 @@ for p=1:size(images,3)
 end
 images = temp;
 
-% Ensure that all values are between 0 and 1
-images(images < 0) = 0;
-images(images > 1) = 1;
+% Ensure that all images are binary
+images_bin = zeros(size(images));
+images_bin(images > .5) = 1;
+images = images_bin;
 
 % Add baseline
 BASELINE_TR = round(BASELINE / TR);
