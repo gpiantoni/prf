@@ -8,8 +8,6 @@ function images = read_bair_stimuli(n_volumes, TR)
 % Output: 
 % <images> containing pRF stimulus information with added baseline.
 
-PATH_TO_APERTURES = '/home/giovanni/tools/toolboxes/BAIRstimuli/stimuli/bar_apertures.mat';     % TO REMOVE
-
 PATH_TO_APERTURES = '/Fridge/users/margriet/stimuli/BAIR_pRF/bar_apertures.mat';
 BASELINE = 11.9;     % seconds
 RESOLUTION = 100;
