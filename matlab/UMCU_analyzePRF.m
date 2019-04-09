@@ -96,19 +96,30 @@ compute_prf(nifti, output_dir_nyu3TMB, threshold)
 
 %% Manually compute mean
 %
-% % nifti = '/Fridge/users/giovanni/projects/margriet/bids_nyu/derivatives/preprocessed/sub-visual01/ses-UMCU3TMB/sub-visual01_ses-UMCU3TMB_task-bairprf_run-01_preproc.nii.gz';
-% % 
-% % hdr = niftiinfo(nifti);
-% % 
-% % nii = niftiread(nifti);
-% % mean_nii = double(mean(nii, 4));
-% % 
-% % hdr.ImageSize = hdr.ImageSize(1:3);
-% % hdr.PixelDimensions = hdr.PixelDimensions(1:3);
-% % hdr.Datatype = 'double';
-% % niftiwrite(mean_nii, '/Fridge/users/margriet/projects/analysis_code/code_Kay_analyzePRF/results_analyzePRF/01/mean.nii', hdr);
-% % 
-% %  
+
+% Enter preprocessed nifti
+nifti = '/Fridge/users/margriet/subjects/bids_umcupreproc/sub-visual01/ses-UMCU7TGE/sub-visual01_ses-UMCU7TGE_task-bairprf_run-01_bold/sub-visual01_ses-UMCU7TGE_task-bairprf_run-01_bold-rwm.nii';
+
+hdr = niftiinfo(nifti);
+
+nii = niftiread(nifti);
+mean_nii = double(mean(nii, 4));
+
+hdr.ImageSize = hdr.ImageSize(1:3);
+hdr.PixelDimensions = hdr.PixelDimensions(1:3);
+hdr.Datatype = 'double';
+
+% Specify output_dir/mean.nii
+niftiwrite(mean_nii, '/Fridge/users/margriet/projects/analysis/analyzeprf/results/umcu/sub-visual01/ses-UMCU7TGE/mean.nii', hdr);
+
+
+
+
+
+
+
+
+
 
 
 
