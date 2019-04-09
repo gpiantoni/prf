@@ -10,7 +10,7 @@
 
 %% Specify subject code
 
-subjectcode = 'sub-visual02';               % Enter subject code
+subjectcode = 'sub-visual01';               % Enter subject code
 number = str2num(subjectcode (11:12));
 
 %% Log thresholds
@@ -41,6 +41,11 @@ nifti =  {['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/s
     ['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/ses-UMCU3TMB/', subjectcode, '_ses-UMCU3TMB_task-bairprf_run-02_bold/', subjectcode '_ses-UMCU3TMB_task-bairprf_run-02_bold-rwm.nii']};
 
 output_dir_umcu3TMB = ['/Fridge/users/margriet/projects/analysis/analyzeprf/results/umcu/', subjectcode, '/ses-UMCU3TMB'];
+output_dir_umcu3TMB_denoise = ['/Fridge/users/margriet/projects/analysis/analyzeprf/results_glmdenoise/umcu/', subjectcode, '/ses-UMCU3TMB'];
+
+% Run with GLM denoise
+output_dir_umcu3TMB = output_dir_umcu3TMB_denoise;
+
 threshold = thresholdUMCU_3TMB(number);         
 
 compute_prf(nifti, output_dir_umcu3TMB, threshold)
@@ -54,9 +59,15 @@ nifti =  {['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/s
     ['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/ses-UMCU7TGE/', subjectcode, '_ses-UMCU7TGE_task-bairprf_run-02_bold/', subjectcode '_ses-UMCU7TGE_task-bairprf_run-02_bold-rwm.nii']};
 
 output_dir_umcu7TGE = ['/Fridge/users/margriet/projects/analysis/analyzeprf/results/umcu/', subjectcode, '/ses-UMCU7TGE'];
+output_dir_umcu7TGE_denoise = ['/Fridge/users/margriet/projects/analysis/analyzeprf/results_glmdenoise/umcu/', subjectcode, '/ses-UMCU7TGE'];
+
+% Run with GLM denoise
+output_dir_umcu7TGE = output_dir_umcu7TGE_denoise;
+
 threshold = thresholdUMCU_7TGE(number);       
 
 compute_prf(nifti, output_dir_umcu7TGE, threshold)
+
     
 %%%%%%%%%%%% 7T (SE) %%%%%%%%%%%%        % Not preprocessed yet
 %
@@ -72,6 +83,11 @@ nifti =  {['/Fridge/users/margriet/subjects/bids_nyupreproc/data/derivatives/pre
     ['/Fridge/users/margriet/subjects/bids_nyupreproc/data/derivatives/preprocessed/', subjectcode, '/ses-UMCU3TMB/volume/', subjectcode, '_ses-UMCU3TMB_task-bairprf_run-02_preproc.nii.gz']};
 
 output_dir_nyu3TMB = ['/Fridge/users/margriet/projects/analysis/analyzeprf/results/nyu/', subjectcode, '/ses-UMCU3TMB'];
+output_dir_nyu3TMB_denoise = ['/Fridge/users/margriet/projects/analysis/analyzeprf/results_glmdenoise/nyu/', subjectcode, '/ses-UMCU3TMB'];
+
+output_dir_nyu3TMB = output_dir_nyu3TMB_denoise;
+
+% Run with GLM denoise
 threshold = thresholdNYU_3TMB(number);        
 
 compute_prf(nifti, output_dir_nyu3TMB, threshold)
@@ -95,22 +111,21 @@ compute_prf(nifti, output_dir_nyu3TMB, threshold)
 
 
 %% Manually compute mean
-%
 
-% Enter preprocessed nifti
-nifti = '/Fridge/users/margriet/subjects/bids_umcupreproc/sub-visual01/ses-UMCU7TGE/sub-visual01_ses-UMCU7TGE_task-bairprf_run-01_bold/sub-visual01_ses-UMCU7TGE_task-bairprf_run-01_bold-rwm.nii';
-
-hdr = niftiinfo(nifti);
-
-nii = niftiread(nifti);
-mean_nii = double(mean(nii, 4));
-
-hdr.ImageSize = hdr.ImageSize(1:3);
-hdr.PixelDimensions = hdr.PixelDimensions(1:3);
-hdr.Datatype = 'double';
-
-% Specify output_dir/mean.nii
-niftiwrite(mean_nii, '/Fridge/users/margriet/projects/analysis/analyzeprf/results/umcu/sub-visual01/ses-UMCU7TGE/mean.nii', hdr);
+% % Enter preprocessed nifti
+% nifti = '/Fridge/users/margriet/subjects/bids_umcupreproc/sub-visual01/ses-UMCU7TGE/sub-visual01_ses-UMCU7TGE_task-bairprf_run-01_bold/sub-visual01_ses-UMCU7TGE_task-bairprf_run-01_bold-rwm.nii';
+% 
+% hdr = niftiinfo(nifti);
+% 
+% nii = niftiread(nifti);
+% mean_nii = double(mean(nii, 4));
+% 
+% hdr.ImageSize = hdr.ImageSize(1:3);
+% hdr.PixelDimensions = hdr.PixelDimensions(1:3);
+% hdr.Datatype = 'double';
+% 
+% % Specify output_dir/mean.nii
+% niftiwrite(mean_nii, '/Fridge/users/margriet/projects/analysis/analyzeprf/results/umcu/sub-visual01/ses-UMCU7TGE/mean.nii', hdr);
 
 
 
