@@ -30,5 +30,5 @@ images = images_bin;
 BASELINE_TR = round(BASELINE / TR);
 stimulus_baseline = zeros(RESOLUTION, RESOLUTION, BASELINE_TR);
 
-images = cat(3, stimulus_baseline, images);
+images = cat(3, stimulus_baseline, images, stimulus_baseline);
 images = images(:, :, 1:n_volumes);
