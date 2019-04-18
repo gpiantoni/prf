@@ -26,16 +26,30 @@ function compute_prf(nifti, output_dir, threshold)
 %   are computed after projecting out polynomials from both the data and the model fit.
 %   (Because of this projection, R^2 values can sometimes drop below 0%.)
 
-hdr = niftiinfo(nifti{1});          % read nifti header
-n_volumes = hdr.ImageSize(4);       % no. of dynamics
-TR = hdr.PixelDimensions(4);        % 850 ms
-
 disp('Loading stimuli')
-images = read_bair_stimuli(n_volumes, TR);
+images = {};
+MAX_N_VOLUMES = 248;
 
-disp('Loading images')
+% first run
+hdr = niftiinfo(nifti{1});          % read nifti header
+TR = hdr.PixelDimensions(4);        % 850 ms
+n_volumes = hdr.ImageSize(4);       % no. of dynamics
+n_volumes = min(n_volumes, MAX_N_VOLUMES);
+images{1} = read_bair_stimuli(n_volumes, TR);
+
+% second run
+hdr = niftiinfo(nifti{2});          % read nifti header
+n_volumes = hdr.ImageSize(4);       % no. of dynamics
+n_volumes = min(n_volumes, MAX_N_VOLUMES);
+images{2} = read_bair_stimuli(n_volumes, TR);
+
+disp('Loading fMRI')
+nii = {};
 for i = 1:length(nifti)
-    nii{i} = niftiread(nifti{i});
+    temp = niftiread(nifti{i});
+    n_volumes = size(temp, 4);
+    n_volumes = min(n_volumes, MAX_N_VOLUMES);
+    nii{i} = temp(:, :, :, 1:n_volumes);
 end
 
 first_nii = nii{1}(:, :,:, 1);      % reference scan: first volume
@@ -46,10 +60,10 @@ n_vox = prod(n_dim(1:3));
 fprintf('Selecting %d out of %d voxels (%.2f%%)\n', length(vxs), n_vox, length(vxs)/ n_vox *100)
 
         % Compute pRF parameters WITHOUT GLMdenoise
-% results = analyzePRF({images, images}, nii, TR, struct('seedmode',[0 1 2],'display','off', 'wantglmdenoise', 0, 'vxs', vxs));
+results = analyzePRF(images, nii, TR, struct('seedmode',[0 1 2],'display','off', 'wantglmdenoise', 0, 'vxs', vxs));
 
         % Compute pRF parameters WITH GLMdenoise
-results = analyzePRF({images, images}, nii, TR, struct('seedmode',[0 1 2],'display','off', 'wantglmdenoise', 1, 'vxs', vxs));
+    % results = analyzePRF({images, images}, nii, TR, struct('seedmode',[0 1 2],'display','off', 'wantglmdenoise', 1, 'vxs', vxs));
 
 
 hdr.ImageSize = hdr.ImageSize(1:3);
