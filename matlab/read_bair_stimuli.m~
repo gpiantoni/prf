@@ -21,14 +21,14 @@ for p=1:size(images,3)
 end
 images = temp;
 
-% Ensure that all values are between 0 and 1
-images_bin = zeros(size(ma
-images(images < 0) = 0;
-images(images > 1) = 1;
+% Ensure that all images are binary
+images_bin = zeros(size(images));
+images_bin(images > .5) = 1;
+images = images_bin;
 
 % Add baseline
 BASELINE_TR = round(BASELINE / TR);
 stimulus_baseline = zeros(RESOLUTION, RESOLUTION, BASELINE_TR);
 
-images = cat(3, stimulus_baseline, images);
+images = cat(3, stimulus_baseline, images, stimulus_baseline);
 images = images(:, :, 1:n_volumes);

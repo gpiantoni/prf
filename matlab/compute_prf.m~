@@ -1,60 +1,15 @@
 function compute_prf(nifti, output_dir, threshold)
-%COMPUTE_PRF
-
-
-<stimulus> provides the apertures as a cell vector of R x C x time.
-%   values should be in [0,1].  the number of time points can differ across runs.
-%% <data> provides the data as a cell vector of voxels x time.  can also be
-%   X x Y x Z x time.  the number of time points should match the number of 
-%   time points in <stimulus>.
-% <tr> is the TR in seconds (e.g. 1.5)
-% <options> (optional) is a struct with the following fields:
-%   <vxs> (optional) is a vector of voxel indices to analyze.  (we automatically
-%     sort the voxel indices and ensure uniqueness.)  default is 1:V where 
-%     V is total number of voxels.  to reduce computational time, you may want 
-%     to create a binary brain mask, perform find() on it, and use the result as <vxs>.
-%   <wantglmdenoise> (optional) is whether to use GLMdenoise to determine
-%     nuisance regressors to add into the PRF model.  note that in order to use
-%     this feature, there must be at least two runs (and conditions must repeat
-%     across runs).  we automatically determine the GLM design matrix based on
-%     the contents of <stimulus>.  special case is to pass in the noise regressors 
-%     directly (e.g. from a previous call).  default: 0.
-%   <hrf> (optional) is a column vector with the hemodynamic response function (HRF)
-%     to use in the model.  the first value of <hrf> should be coincident with the onset
-%     of the stimulus, and the HRF should indicate the timecourse of the response to
-%     a stimulus that lasts for one TR.  default is to use a canonical HRF (calculated
-%     using getcanonicalhrf(tr,tr)').
-%   <maxpolydeg> (optional) is a non-negative integer indicating the maximum polynomial
-%     degree to use for drift terms.  can be a vector whose length matches the number
-%     of runs in <data>.  default is to use round(L/2) where L is the number of minutes
-%     in the duration of a given run.
-%   <seedmode> (optional) is a vector consisting of one or more of the
-%     following values (we automatically sort and ensure uniqueness):
-%       0 means use generic large PRF seed
-%       1 means use generic small PRF seed
-%       2 means use best seed based on super-grid
-%     default: [0 1 2].  a special case is to pass <seedmode> as -2.  this causes the
-%     best seed based on the super-grid to be returned as the final estimate, thereby
-%     bypassing the computationally expensive optimization procedure.  further notes
-%     on this case are given below.
-%   <xvalmode> (optional) is
-%     0 means just fit all the data
-%     1 means two-fold cross-validation (first half of runs; second half of runs)
-%     2 means two-fold cross-validation (first half of each run; second half of each run)
-%     default: 0.  (note that we round when halving.)
-%   <numperjob> (optional) is
-%     [] means to run locally (not on the cluster)
-%     N where N is a positive integer indicating the number of voxels to analyze in each 
-%       cluster job.  this option requires a customized computational setup!
-%     default: [].
-%   <maxiter> (optional) is the maximum number of iterations.  default: 500.
-%   <display> (optional) is 'iter' | 'final' | 'off'.  default: 'iter'.
-%   <typicalgain> (optional) is a typical value for the gain in each time-series.
-%     default: 10.
 %
-% Analyze pRF data and return the results.
+% function COMPUTE_PRF (nifti, output_dir, threshold)
 %
-% The results structure contains the following fields:
+% Inputs:
+% <nifti> provides the data as a cell vector of voxels x time.  can also be
+% X x Y x Z x time.
+% <output_dir> 
+% <threshold> voxels with values greater than the given threshold will be
+% included in the computation. 
+%
+% Outputs:
 % <ang> contains pRF angle estimates.  Values range between 0 and 360 degrees.
 %   0 corresponds to the right horizontal meridian, 90 corresponds to the upper vertical
 %   meridian, and so on.
@@ -69,47 +24,50 @@ function compute_prf(nifti, output_dir, threshold)
 % <R2> contains R^2 values that indicate the goodness-of-fit of the model to the data.
 %   Values are in percentages and generally range between 0% and 100%.  The R^2 values
 %   are computed after projecting out polynomials from both the data and the model fit.
-%   (Because of this projection, R^2 values can sometimes drop below 0%.)  Note that
-%   if cross-validation is used (see <xvalmode>), the interpretation of <R2> changes
-%   accordingly.
-% <resnorms> and <numiters> contain optimization details (residual norms and 
-%   number of iterations, respectively).
-% <meanvol> contains the mean volume, that is, the mean of each voxel's time-series.
-% <noisereg> contains a record of the noise regressors used in the model.
-% <params> contains a record of the raw parameter estimates that are obtained internally
-%   in the code.  These raw parameters are transformed to a more palatable format for
-%   the user (as described above).
-% <options> contains a record of the options used in the call to analyzePRF.m.
-
-
-
-
-hdr = niftiinfo(nifti{1});
-n_volumes = hdr.ImageSize(4);
-TR = hdr.PixelDimensions(4);
+%   (Because of this projection, R^2 values can sometimes drop below 0%.)
 
 disp('Loading stimuli')
-images = read_bair_stimuli(n_volumes, TR);
+images = {};
+MAX_N_VOLUMES = 248;
 
-disp('Loading images')
+% first run
+hdr = niftiinfo(nifti{1});          % read nifti header
+TR = hdr.PixelDimensions(4);        % 850 ms
+n_volumes = hdr.ImageSize(4);       % no. of dynamics
+n_volumes = max(n_volumes, MAX_N_VOLUMES);
+images{1} = read_bair_stimuli(n_volumes, TR);
+
+% second run
+hdr = niftiinfo(nifti{2});          % read nifti header
+n_volumes = hdr.ImageSize(4);       % no. of dynamics
+images{2} = read_bair_stimuli(n_volumes, TR);
+
+disp('Loading fMRI')
 for i = 1:length(nifti)
-    nii{i} = niftiread(nifti{i});
+    temp = niftiread(nifti{i});
+    n_volumes = 
+     nii{i}
 end
 
-first_nii = nii{1}(:, :,:, 1);
-vxs = find(first_nii > threshold);
+first_nii = nii{1}(:, :,:, 1);      % reference scan: first volume
+vxs = find(first_nii > threshold);  % find voxels above threshold
 
 n_dim = size(nii{1});
 n_vox = prod(n_dim(1:3));
 fprintf('Selecting %d out of %d voxels (%.2f%%)\n', length(vxs), n_vox, length(vxs)/ n_vox *100)
 
-results = analyzePRF({images, images}, nii, TR, struct('seedmode',[0 1],'display','off', 'wantglmdenoise', 0, 'vxs', vxs));
+        % Compute pRF parameters WITHOUT GLMdenoise
+results = analyzePRF({images, images}, nii, TR, struct('seedmode',[0 1 2],'display','off', 'wantglmdenoise', 0, 'vxs', vxs));
+
+        % Compute pRF parameters WITH GLMdenoise
+    % results = analyzePRF({images, images}, nii, TR, struct('seedmode',[0 1 2],'display','off', 'wantglmdenoise', 1, 'vxs', vxs));
 
 
 hdr.ImageSize = hdr.ImageSize(1:3);
 hdr.PixelDimensions = hdr.PixelDimensions(1:3);
 hdr.Datatype = 'double';
 
+% Output parameters saved in <output_dir>
 fields = {'ang', 'ecc', 'expt', 'rfsize', 'R2', 'gain'};
 for i = 1:length(fields)
     niftiwrite(results.(fields{i}), fullfile(output_dir, [fields{i}  '.nii']), hdr);
