@@ -7,11 +7,15 @@
 % Output: pRF parameters <ang>, <ecc>, <expt>, <rfsize>, <R2>, <gain> found
 % in <output_dir>.
 %
+%%
+clear;
+addpath(genpath('/Fridge/users/margriet/projects/analysis/analyzeprf'))
+
 
 %% Specify subject code
 
-subjectcode = 'sub-visual03';               % Enter subject code
-number = str2num(subjectcode (11:12));
+subjectcode = 'sub-visual01';               % Enter subject code
+subjectnumber = str2num(subjectcode (11:12));
 
 %% Log thresholds
 
@@ -22,16 +26,14 @@ thresholdUMCU_7TSE = [];
 
 % Threshold NYU preprocessed data
 thresholdNYU_3TMB = [800, 700];
-thresholdNYU_7TGE = [];
-thresholdNYU_7TSE = [];
+
 
 %% Start parallel pool
 
-addpath(genpath('/Fridge/users/margriet/projects/analysis/analyzeprf'))
 % parpool(40)       % Parallel pool
 
+%% UMCU preprocessing pipeline (3T, 7TGE, 7TSE)
 
-%% UMCU preprocessing pipeline
 
 %%%%%%%%%%%% 3T (MB) %%%%%%%%%%%%
 
@@ -41,39 +43,54 @@ nifti =  {['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/s
     ['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/ses-UMCU3TMB/', subjectcode, '_ses-UMCU3TMB_task-bairprf_run-02_bold/', subjectcode '_ses-UMCU3TMB_task-bairprf_run-02_bold-rwm.nii']};
 
 output_dir_umcu3TMB = ['/Fridge/users/margriet/projects/analysis/analyzeprf/results/umcu/', subjectcode, '/ses-UMCU3TMB'];
-% output_dir_umcu3TMB_denoise = ['/Fridge/users/margriet/projects/analysis/analyzeprf/results_glmdenoise/umcu/', subjectcode, '/ses-UMCU3TMB'];
 
 % % % % % Run with GLM denoise
-% % % % output_dir_umcu3TMB = output_dir_umcu3TMB_denoise;
+% % output_dir_umcu3TMB_denoise = ['/Fridge/users/margriet/projects/analysis/analyzeprf/results_glmdenoise/umcu/', subjectcode, '/ses-UMCU3TMB'];
+% % output_dir_umcu3TMB = output_dir_umcu3TMB_denoise;
 
-threshold = thresholdUMCU_3TMB(number);         
+threshold = thresholdUMCU_3TMB(subjectnumber);         
 
 compute_prf(nifti, output_dir_umcu3TMB, threshold)
 
 
 %%%%%%%%%%%% 7T (GE) %%%%%%%%%%%%
-% % % 
-% % % disp('%%%%%%%%%%%% Starting analyzePRF for UMCU 7T (GE) %%%%%%%%%%%%')
-% % % 
-% % % nifti =  {['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/ses-UMCU7TGE/', subjectcode, '_ses-UMCU7TGE_task-bairprf_run-01_bold/', subjectcode '_ses-UMCU7TGE_task-bairprf_run-01_bold-rwm.nii'],
-% % %     ['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/ses-UMCU7TGE/', subjectcode, '_ses-UMCU7TGE_task-bairprf_run-02_bold/', subjectcode '_ses-UMCU7TGE_task-bairprf_run-02_bold-rwm.nii']};
-% % % 
-% % % output_dir_umcu7TGE = ['/Fridge/users/margriet/projects/analysis/analyzeprf/results/umcu/', subjectcode, '/ses-UMCU7TGE'];
-% % % % output_dir_umcu7TGE_denoise = ['/Fridge/users/margriet/projects/analysis/analyzeprf/results_glmdenoise/umcu/', subjectcode, '/ses-UMCU7TGE'];
-% % % 
-% % % % % % % % % Run with GLM denoise
-% % % % % % % % output_dir_umcu7TGE = output_dir_umcu7TGE_denoise;
-% % % 
-% % % threshold = thresholdUMCU_7TGE(number);       
-% % % 
-% % % compute_prf(nifti, output_dir_umcu7TGE, threshold)
+
+disp('%%%%%%%%%%%% Starting analyzePRF for UMCU 7T (GE) %%%%%%%%%%%%')
+
+nifti =  {['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/ses-UMCU7TGE/', subjectcode, '_ses-UMCU7TGE_task-bairprf_run-01_bold/', subjectcode '_ses-UMCU7TGE_task-bairprf_run-01_bold-rwm.nii'],
+    ['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/ses-UMCU7TGE/', subjectcode, '_ses-UMCU7TGE_task-bairprf_run-02_bold/', subjectcode '_ses-UMCU7TGE_task-bairprf_run-02_bold-rwm.nii']};
+
+output_dir_umcu7TGE = ['/Fridge/users/margriet/projects/analysis/analyzeprf/results/umcu/', subjectcode, '/ses-UMCU7TGE'];
+
+
+% % % % % % Run with GLM denoise
+% % output_dir_umcu7TGE_denoise = ['/Fridge/users/margriet/projects/analysis/analyzeprf/results_glmdenoise/umcu/', subjectcode, '/ses-UMCU7TGE'];
+% % output_dir_umcu7TGE = output_dir_umcu7TGE_denoise;
+
+threshold = thresholdUMCU_7TGE(subjectnumber);         
+
+compute_prf(nifti, output_dir_umcu7TGE, threshold)
 
     
-%%%%%%%%%%%% 7T (SE) %%%%%%%%%%%%        % Not preprocessed yet
-%
-% disp('%%%%%%%%%%%% Starting analyzePRF for UMCU 7T (SE) %%%%%%%%%%%%')
+%%%%%%%%%%%% 7T (SE) %%%%%%%%%%%%    
 
-%% NYU preprocessing pipeline
+disp('%%%%%%%%%%%% Starting analyzePRF for UMCU 7T (SE) %%%%%%%%%%%%')
+
+nifti =  {['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/ses-UMCU7TSE/', subjectcode, '_ses-UMCU7TSE_task-bairprf_run-01_bold/', subjectcode '_ses-UMCU7TSE_task-bairprf_run-01_bold-rwm.nii'],
+    ['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/ses-UMCU7TSE/', subjectcode, '_ses-UMCU7TSE_task-bairprf_run-02_bold/', subjectcode '_ses-UMCU7TSE_task-bairprf_run-02_bold-rwm.nii']};
+
+output_dir_umcu7TSE = ['/Fridge/users/margriet/projects/analysis/analyzeprf/results/umcu/', subjectcode, '/ses-UMCU7TSE'];
+
+% % % % % % Run with GLM denoise
+% % output_dir_umcu7TSE_denoise = ['/Fridge/users/margriet/projects/analysis/analyzeprf/results_glmdenoise/umcu/', subjectcode, '/ses-UMCU7TSE'];
+% % output_dir_umcu7TSE = output_dir_umcu7TSE_denoise;
+
+threshold = thresholdUMCU_7TSE(subjectnumber);       
+
+compute_prf(nifti, output_dir_umcu7TSE, threshold)
+
+
+%% NYU preprocessing pipeline (3T)
 
 %%%%%%%%%%%% 3T (MB) %%%%%%%%%%%%
 % % % % 
@@ -88,31 +105,14 @@ compute_prf(nifti, output_dir_umcu3TMB, threshold)
 % % % % % % % Run with GLM denoise
 % % % % % % output_dir_nyu3TMB = output_dir_nyu3TMB_denoise;
 % % % % 
-% % % % threshold = thresholdNYU_3TMB(number);       
+% % % % threshold = thresholdNYU_3TMB(subjectnumber);       
 % % % % 
 % % % % compute_prf(nifti, output_dir_nyu3TMB, threshold)
-
-% %%%%%%%%%%%% 7T (GE) %%%%%%%%%%%%      % Not preprocessed yet
-%
-% disp('%%%%%%%%%%%% Starting analyzePRF for NYU 7T (GE) %%%%%%%%%%%%')
-%
-% nifti =  {'',
-%     ''};
-% output_dir_nyu7TGE = '';
-% Enter threshold 
-% threshold = thresholdNYU_7TGE(number);
-% 
-% compute_prf(nifti, output_dir_nyu7TGE, threshold)
-
-
-%%%%%%%%%%%% 7T (SE) %%%%%%%%%%%%        % Not preprocessed yet
-%
-% disp('%%%%%%%%%%%% Starting analyzePRF for NYU 7T (SE) %%%%%%%%%%%%')
 
 
 %% Manually compute mean
 
-% % % Enter preprocessed nifti
+% % % Enter preprocessed nifti      (-rwm.nii)
 % % nifti = '/Fridge/users/margriet/subjects/bids_umcupreproc/sub-visual03/ses-UMCU7TGE/sub-visual03_ses-UMCU7TGE_task-bairprf_run-01_bold/sub-visual03_ses-UMCU7TGE_task-bairprf_run-01_bold-rwm.nii';
 % % 
 % % hdr = niftiinfo(nifti);
@@ -126,10 +126,7 @@ compute_prf(nifti, output_dir_umcu3TMB, threshold)
 % % 
 % % % Specify output_dir/mean.nii
 % % niftiwrite(mean_nii, '/Fridge/users/margriet/projects/analysis/analyzeprf/results/umcu/sub-visual03/ses-UMCU7TGE/mean.nii', hdr);
-% % 
-% % 
-% % 
-% % 
+
 
 
 
