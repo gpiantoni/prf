@@ -31,15 +31,15 @@ images = {};
 MAX_N_VOLUMES = 248;
 
 % first run
-hdr = niftiinfo(nifti{1});          % read nifti header
-TR = hdr.PixelDimensions(4);        % 850 ms
-n_volumes = hdr.ImageSize(4);       % no. of dynamics
+hdr = niftiinfo(nifti{1});                        % read nifti header
+TR = hdr.PixelDimensions(4);                      % 850 ms
+n_volumes = hdr.ImageSize(4);                     % no. of dynamics
 n_volumes = min(n_volumes, MAX_N_VOLUMES);
 images{1} = read_bair_stimuli(n_volumes, TR);
 
 % second run
-hdr = niftiinfo(nifti{2});          % read nifti header
-n_volumes = hdr.ImageSize(4);       % no. of dynamics
+hdr = niftiinfo(nifti{2});                         % read nifti header
+n_volumes = hdr.ImageSize(4);                      % no. of dynamics
 n_volumes = min(n_volumes, MAX_N_VOLUMES);
 images{2} = read_bair_stimuli(n_volumes, TR);
 
