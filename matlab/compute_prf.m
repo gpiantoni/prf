@@ -1,10 +1,10 @@
-function compute_prf(nifti, output_dir, threshold)
+function compute_prf(nifti, n_volumes, output_dir, threshold)
 %
 % function COMPUTE_PRF (nifti, output_dir, threshold)
 %
 % Inputs:
-% <nifti> provides the data as a cell vector of voxels x time.  can also be
-% X x Y x Z x time.
+% <nifti> is the path to the nifti file, as string
+% <n_volumes> is a list of the number of volumes for each run
 % <output_dir> 
 % <threshold> voxels with values greater than the given threshold will be
 % included in the computation. 
@@ -27,30 +27,17 @@ function compute_prf(nifti, output_dir, threshold)
 %   (Because of this projection, R^2 values can sometimes drop below 0%.)
 
 disp('Loading stimuli')
-images = {};
-MAX_N_VOLUMES = 248;
+
 
 % first run
-hdr = niftiinfo(nifti{1});                        % read nifti header
+hdr = niftiinfo(nifti);                        % read nifti header
 TR = hdr.PixelDimensions(4);                      % 850 ms
-n_volumes = hdr.ImageSize(4);                     % no. of dynamics
-n_volumes = min(n_volumes, MAX_N_VOLUMES);
+images = {};
 images{1} = read_bair_stimuli(n_volumes, TR);
-
-% second run
-hdr = niftiinfo(nifti{2});                         % read nifti header
-n_volumes = hdr.ImageSize(4);                      % no. of dynamics
-n_volumes = min(n_volumes, MAX_N_VOLUMES);
-images{2} = read_bair_stimuli(n_volumes, TR);
 
 disp('Loading fMRI')
 nii = {};
-for i = 1:length(nifti)
-    temp = niftiread(nifti{i});
-    n_volumes = size(temp, 4);
-    n_volumes = min(n_volumes, MAX_N_VOLUMES);
-    nii{i} = temp(:, :, :, 1:n_volumes);
-end
+nii{1} = niftiread(nifti);
 
 first_nii = nii{1}(:, :,:, 1);      % reference scan: first volume
 vxs = find(first_nii > threshold);  % find voxels above threshold

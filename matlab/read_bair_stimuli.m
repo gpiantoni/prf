@@ -1,9 +1,11 @@
-function images = read_bair_stimuli(n_volumes, TR)
+function output = read_bair_stimuli(n_volumes, TR)
 % 
 % function images = READ_BAIR_STIMULI (n_volumes, TR)
 %
 % This function reads in the apertures of the stimuli presented, along with
 % the the number of dynamics (<n_volumes>) and the repetition time (<TR>).
+% <n_volumes> is a list of integers, with the number of volumes for each
+% session
 %
 % Output: 
 % <images> containing pRF stimulus information with added baseline.
@@ -31,4 +33,9 @@ BASELINE_TR = round(BASELINE / TR);
 stimulus_baseline = zeros(RESOLUTION, RESOLUTION, BASELINE_TR);
 
 images = cat(3, stimulus_baseline, images, stimulus_baseline);
-images = images(:, :, 1:n_volumes);
+
+output = {};
+for i = 1:length(n_volumes)
+    output{i} = images(:, :, 1:n_volumes(i));
+end
+output = cat(3, output{:});
