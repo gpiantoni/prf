@@ -28,10 +28,13 @@ function compute_prf(nifti, n_volumes, output_dir, threshold)
 
 disp('Loading stimuli')
 
-
 % first run
 hdr = niftiinfo(nifti);                        % read nifti header
 TR = hdr.PixelDimensions(4);                      % 850 ms
+if TR ~= 0.85
+    fprintf('TR from the nifti is %.fs but it should be 0.850s. Fixing it\n', TR)
+    TR = 0.850;
+end    
 images = {};
 images{1} = read_bair_stimuli(n_volumes, TR);
 
