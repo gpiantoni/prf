@@ -1,4 +1,4 @@
-function compute_prf(nifti, n_volumes, output_dir, threshold)
+function compute_prf(nifti, n_volumes, output_dir, threshold, UseDenoise)
 %
 % function COMPUTE_PRF (nifti, output_dir, threshold)
 %
@@ -29,9 +29,8 @@ function compute_prf(nifti, n_volumes, output_dir, threshold)
 
 disp('Loading stimuli')
 
-UseDenoise = false;
+% ========= Read in parameters ========= % 
 
-% ========= Read in specs ========= % 
 hdr = niftiinfo(nifti);                           % read nifti header
 TR = hdr.PixelDimensions(4);                      % 850 ms
 if TR ~= 0.85
@@ -59,7 +58,7 @@ if UseDenoise == false
     results = analyzePRF(images, nii, TR, struct('seedmode',[0 1 2],'display','off', 'wantglmdenoise', 0, 'vxs', vxs));
 else
     disp('%%%%%%%%%%%% Running analyzePRF with GLMdenoise %%%%%%%%%%%%')
-    results = analyzePRF({images, images}, nii, TR, struct('seedmode',[0 1 2],'display','off', 'wantglmdenoise', 1, 'vxs', vxs));
+    results = analyzePRF(images, nii, TR, struct('seedmode',[0 1 2],'display','off', 'wantglmdenoise', 1, 'vxs', vxs));
 end
 
 % ========= OUTPUT ========= %

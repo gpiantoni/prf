@@ -9,13 +9,7 @@ function compute_mean_volume (subject, session, output_dir)
 %
 %%
 
-addpath(genpath('/Fridge/users/margriet/projects/analysis/analyzeprf'))
-addpath(genpath('/home/margriet/tools/prf/matlab'))
-
-%% Specify subject code & session
-
-% % subject = 'sub-visual03';               % Enter subject code
-% % session = 'ses-UMCU3TMB';               % Enter session
+disp('Computing mean volume')
 
 %% Compute mean
 
@@ -34,7 +28,7 @@ hdr.ImageSize = hdr.ImageSize(1:3);
 hdr.PixelDimensions = hdr.PixelDimensions(1:3);
 hdr.Datatype = 'double';
 
-% ========= Write new nifti file ========= % 
+% ========= Write output nifti file ========= % 
 niftiwrite (mean_nii, fullfile(output_dir, 'mean.nii'), hdr);
 
 %% End

@@ -9,9 +9,7 @@ function convert_pixels2degrees (subject, session, output_dir)
 %
 %%
 
-addpath(genpath('/Fridge/users/margriet/projects/analysis/analyzeprf'))
-addpath(genpath('/home/margriet/tools/prf/matlab'))
-
+disp('Converting pixels to degrees visual angle')
 
 %% Calculate visual angle
 
@@ -55,9 +53,8 @@ end
 hdr_ecc = niftiinfo (['/Fridge/users/margriet/projects/analysis/analyzeprf/results/umcu/', subject, '/', session, '/merged_bairprf/ecc.nii']);
 hdr_rfsize = niftiinfo (['/Fridge/users/margriet/projects/analysis/analyzeprf/results/umcu/', subject, '/', session, '/merged_bairprf/rfsize.nii']);
 
-% ========= Write new nifti file ========= % 
+% ========= Write output nifti file ========= % 
 niftiwrite (ecc_deg, fullfile(output_dir, 'ecc_deg.nii'), hdr_ecc);
 niftiwrite (rfsize_deg, fullfile(output_dir, 'rfsize_deg.nii'), hdr_rfsize);
-
 
 %% End

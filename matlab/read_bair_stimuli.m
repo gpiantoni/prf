@@ -25,16 +25,20 @@ end
 images = temp;
 
 % ========= Ensure that all images are binary ========= % 
+
 images_bin = zeros(size(images));
 images_bin(images > .5) = 1;
 images = images_bin;
 
 % ========= Add baseline ========= % 
+
 BASELINE_TR = round(BASELINE / TR);
 stimulus_baseline = zeros(RESOLUTION, RESOLUTION, BASELINE_TR);
 
 images = cat(3, stimulus_baseline, images, stimulus_baseline);
 
+
+% ========= OUTPUT ========= % 
 output = {};
 for i = 1:length(n_volumes)
     output{i} = images(:, :, 1:n_volumes(i));
