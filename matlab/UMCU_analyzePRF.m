@@ -4,21 +4,21 @@
 % preprocessed with either UMCU or NYU pipeline.
 %
 % Input: <subjectcode>
-% Output: pRF parameters <ang>, <ecc>, <expt>, <rfsize>, <R2>, <gain>, <meanvol> found
-% in <output_dir>.
-%
+% Output: pRF parameters <ang>, <ecc>, <ecc_deg>, <expt>, <rfsize>, <rfsize_deg>
+% <R2>, <gain>, <mean> found in <output_dir>.
+
 %%
 clear;
 addpath(genpath('/Fridge/users/margriet/projects/analysis/analyzeprf'))
 addpath(genpath('/home/margriet/tools/prf/matlab'))
 
-%% Specify subject code
+%% Specify parameters
 
-subjectcode = 'sub-visual04';               % Enter subject code
+subjectcode = 'sub-visual01';               
 subjectnumber = str2num(subjectcode (11:12));
 
-Analyze3TMB = 0;
-Analyze7TGE = 1;
+Analyze3TMB = 1;
+Analyze7TGE = 0;
 Analyze7TSE = 0;
 
 %% Log thresholds
@@ -27,6 +27,7 @@ Analyze7TSE = 0;
 thresholdUMCU_3TMB = [700, 750, 200, 550, 800, 950  NaN, 600, NaN, NaN, 450, 250];
 thresholdUMCU_7TGE = [150, 100, 100, 100, 100, 300, NaN, 250, 250, 250, 200, 150];
 thresholdUMCU_7TSE = [50, 50, 50, NaN, 175, NaN, NaN, 50, NaN, 100, 300];
+
 
 % =========  Threshold NYU preprocessed data ========= % 
 thresholdNYU_3TMB = [800, 700];
@@ -40,8 +41,9 @@ thresholdNYU_3TMB = [800, 700];
 % =========  3T (MB) ========= % 
 
 if Analyze3TMB == true
+    session = 'ses-UMCU3TMB';
     disp('%%%%%%%%%%%% MERGED NIFTIS - Starting analyzePRF for UMCU 3T (MB) %%%%%%%%%%%%')
-
+    
     nifti_run1 = niftiread (['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/ses-UMCU3TMB/', subjectcode, '_ses-UMCU3TMB_task-bairprf_run-01_bold/', subjectcode, '_ses-UMCU3TMB_task-bairprf_run-01_bold.nii']);
     nifti_run2 = niftiread (['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/ses-UMCU3TMB/', subjectcode, '_ses-UMCU3TMB_task-bairprf_run-02_bold/', subjectcode, '_ses-UMCU3TMB_task-bairprf_run-02_bold.nii']);
     n_volumes_run1 = size(nifti_run1, 4);
@@ -54,14 +56,21 @@ if Analyze3TMB == true
 
     threshold = thresholdUMCU_3TMB(subjectnumber);         
 
+    % ========= ANALYZEPRF ========= % 
     compute_prf(nifti_merged, n_volumes, output_dir_umcu3TMB_merged, threshold)
+    % ======= PIXELS2DEGREES ======= % 
+    convert_pixels2degrees (subjectcode, session, output_dir_umcu3TMB_merged)
+    % ======== MEAN VOLUME ========= % 
+    compute_mean_volume (subjectcode, session, output_dir_umcu3TMB_merged)
+
 end
 
 % =========  7T (GE) ========= % 
 
 if Analyze7TGE == true
+    session = 'ses-UMCU7TGE';
     disp('%%%%%%%%%%%% MERGED NIFTIS - Starting analyzePRF for UMCU 7T (GE) %%%%%%%%%%%%')
-
+    
     nifti_run1 = niftiread (['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/ses-UMCU7TGE/', subjectcode, '_ses-UMCU7TGE_task-bairprf_run-01_bold/', subjectcode, '_ses-UMCU7TGE_task-bairprf_run-01_bold.nii']);
     nifti_run2 = niftiread (['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/ses-UMCU7TGE/', subjectcode, '_ses-UMCU7TGE_task-bairprf_run-02_bold/', subjectcode, '_ses-UMCU7TGE_task-bairprf_run-02_bold.nii']);
     n_volumes_run1 = size(nifti_run1, 4);
@@ -74,14 +83,20 @@ if Analyze7TGE == true
 
     threshold = thresholdUMCU_7TGE(subjectnumber);        
 
+    % ========= ANALYZEPRF ========= % 
     compute_prf(nifti_merged, n_volumes, output_dir_umcu7TGE_merged, threshold)
+    % ======= PIXELS2DEGREES ======= % 
+    convert_pixels2degrees (subjectcode, session, output_dir_umcu7TGE_merged)
+    % ======== MEAN VOLUME ========= % 
+    compute_mean_volume (subjectcode, session, output_dir_umcu7TGE_merged)
 end
 
 % =========  7T (SE) ========= % 
 
 if Analyze7TSE == true
+    session = 'ses-UMCU7TSE';
     disp('%%%%%%%%%%%% MERGED NIFTIS -  Starting analyzePRF for UMCU 7T (SE) %%%%%%%%%%%%')
-
+    
     nifti_run1 = niftiread (['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/ses-UMCU7TSE/', subjectcode, '_ses-UMCU7TSE_task-bairprf_run-01_bold/', subjectcode, '_ses-UMCU7TSE_task-bairprf_run-01_bold.nii']);
     nifti_run2 = niftiread (['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/ses-UMCU7TSE/', subjectcode, '_ses-UMCU7TSE_task-bairprf_run-02_bold/', subjectcode, '_ses-UMCU7TSE_task-bairprf_run-02_bold.nii']);
     n_volumes_run1 = size(nifti_run1, 4);
@@ -89,14 +104,16 @@ if Analyze7TSE == true
     n_volumes = [n_volumes_run1, n_volumes_run2];
 
     nifti_merged = ['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/ses-UMCU7TSE/', subjectcode, '_ses-UMCU7TSE_task-bairprf_MERGED_bold/', subjectcode, '_ses-UMCU7TSE_task-bairprf_MERGED_bold-masked-mc-warp.nii'];
-
     output_dir_umcu7TSE_merged = ['/Fridge/users/margriet/projects/analysis/analyzeprf/results/umcu/', subjectcode, '/ses-UMCU7TSE/merged_bairprf'];
-
     threshold = thresholdUMCU_7TSE(subjectnumber);        
 
+    % ========= ANALYZEPRF ========= % 
     compute_prf(nifti_merged, n_volumes, output_dir_umcu7TSE_merged, threshold)
+    % ======= PIXELS2DEGREES ======= %  
+    convert_pixels2degrees (subjectcode, session, output_dir_umcu7TSE_merged)
+    % ======== MEAN VOLUME ========= % 
+    compute_mean_volume (subjectcode, session, output_dir_umcu7TSE_merged)       
 end
-
 
 %% UMCU preprocessing pipeline (3T, 7TGE, 7TSE) - Analyze pRF runs separately
 
@@ -186,4 +203,6 @@ end
 % % % fslmaths R2.nii -nan -thr 10 -bin R2mask_10.nii
 % % % fslmaths R2.nii -nan -thr 15 -bin R2mask_15.nii
 
+
+%% End
 

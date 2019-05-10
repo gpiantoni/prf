@@ -1,19 +1,17 @@
-% =========  SCRIPT pixels2degrees  ========= % 
+function convert_pixels2degrees (subject, session, output_dir)
 %
-% Script to convert pixels to visual angle in degrees.
+% function CONVERT_PIXELS2DEGREES (subject, session, output_dir)
 %
-% Input: <subject>, <session>
-% Output: <ecc_deg.nii> and <rfsize_deg> found in <output_dir>.
+% This function converts pixels to visual angle in degrees 
+%
+% Input: <subject>, <session>, <output_dir>
+% Output: <ecc_deg.nii> and <rfsize_deg> found in <output_dir>
 %
 %%
-clear;
+
 addpath(genpath('/Fridge/users/margriet/projects/analysis/analyzeprf'))
 addpath(genpath('/home/margriet/tools/prf/matlab'))
 
-%% Specify subject code
-
-subject = 'sub-visual02';               % Enter subject code
-session = 'ses-UMCU7TGE';               % Enter session
 
 %% Calculate visual angle
 
@@ -40,12 +38,15 @@ rfsize = niftiread (['/Fridge/users/margriet/projects/analysis/analyzeprf/result
 
 %% Convert pixels to degrees
 
+img_resolution = [100, 100];
+pix_div2 = img_resolution(1)/2;
+
 if session == 'ses-UMCU3TMB'
-    ecc_deg = ecc * (visual_angle_3T/50);
-    rfsize_deg = rfsize * (visual_angle_3T/50);
+    ecc_deg = ecc * (visual_angle_3T/pix_div2);
+    rfsize_deg = rfsize * (visual_angle_3T/pix_div2);
 else
-    ecc_deg = ecc * (visual_angle_7T/50);
-    rfsize_deg = rfsize * (visual_angle_7T/50); 
+    ecc_deg = ecc * (visual_angle_7T/pix_div2);
+    rfsize_deg = rfsize * (visual_angle_7T/pix_div2); 
 end
 
 %% Output
@@ -54,12 +55,9 @@ end
 hdr_ecc = niftiinfo (['/Fridge/users/margriet/projects/analysis/analyzeprf/results/umcu/', subject, '/', session, '/merged_bairprf/ecc.nii']);
 hdr_rfsize = niftiinfo (['/Fridge/users/margriet/projects/analysis/analyzeprf/results/umcu/', subject, '/', session, '/merged_bairprf/rfsize.nii']);
 
-% ========= Specify output dir ========= % 
-output_dir = ['/Fridge/users/margriet/projects/analysis/analyzeprf/results/umcu/', subject, '/', session, '/merged_bairprf/'];
-
 % ========= Write new nifti file ========= % 
 niftiwrite (ecc_deg, fullfile(output_dir, 'ecc_deg.nii'), hdr_ecc);
 niftiwrite (rfsize_deg, fullfile(output_dir, 'rfsize_deg.nii'), hdr_rfsize);
 
 
-%%
+%% End

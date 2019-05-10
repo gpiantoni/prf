@@ -1,19 +1,21 @@
-% =========  SCRIPT Compute mean volume  ========= % 
+function compute_mean_volume (subject, session, output_dir)
 %
-% Script compute the mean volume of the merged time series.
+% function COMPUTE_MEAN_VOLUME (subject, session, output_dir)
 %
-% Input: <subjectcode>, <session>
+% This function computes the mean volume of the merged time series. 
+%
+% Input: <subject>, <session>, <output_dir>
 % Output: <mean.nii> found in <output_dir>.
 %
-
 %%
+
 addpath(genpath('/Fridge/users/margriet/projects/analysis/analyzeprf'))
 addpath(genpath('/home/margriet/tools/prf/matlab'))
 
-%% Specify subject code
+%% Specify subject code & session
 
-subject = 'sub-visual12';               % Enter subject code
-session = 'ses-UMCU3TMB';
+% % subject = 'sub-visual03';               % Enter subject code
+% % session = 'ses-UMCU3TMB';               % Enter session
 
 %% Compute mean
 
@@ -33,7 +35,6 @@ hdr.PixelDimensions = hdr.PixelDimensions(1:3);
 hdr.Datatype = 'double';
 
 % ========= Write new nifti file ========= % 
-output_dir = ['/Fridge/users/margriet/projects/analysis/analyzeprf/results/umcu/', subject, '/', session, '/merged_bairprf/mean.nii'];
-niftiwrite(mean_nii, output_dir, hdr);
+niftiwrite (mean_nii, fullfile(output_dir, 'mean.nii'), hdr);
 
-%%
+%% End

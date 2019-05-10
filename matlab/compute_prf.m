@@ -25,6 +25,7 @@ function compute_prf(nifti, n_volumes, output_dir, threshold)
 %   Values are in percentages and generally range between 0% and 100%.  The R^2 values
 %   are computed after projecting out polynomials from both the data and the model fit.
 %   (Because of this projection, R^2 values can sometimes drop below 0%.)
+%% 
 
 disp('Loading stimuli')
 
@@ -73,3 +74,4 @@ for i = 1:length(fields)
     niftiwrite(results.(fields{i}), fullfile(output_dir, [fields{i}  '.nii']), hdr);
 end
 
+%% End

@@ -9,6 +9,7 @@ function output = read_bair_stimuli(n_volumes, TR)
 %
 % Output: 
 % <images> containing pRF stimulus information with added baseline.
+%%
 
 PATH_TO_APERTURES = '/Fridge/users/margriet/stimuli/BAIR_pRF/bar_apertures.mat';
 BASELINE = 11.9;     % seconds
@@ -39,3 +40,5 @@ for i = 1:length(n_volumes)
     output{i} = images(:, :, 1:n_volumes(i));
 end
 output = cat(3, output{:});
+
+%% End
