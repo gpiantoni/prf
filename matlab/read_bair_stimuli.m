@@ -23,12 +23,12 @@ for p=1:size(images,3)
 end
 images = temp;
 
-% Ensure that all images are binary
+% ========= Ensure that all images are binary ========= % 
 images_bin = zeros(size(images));
 images_bin(images > .5) = 1;
 images = images_bin;
 
-% Add baseline
+% ========= Add baseline ========= % 
 BASELINE_TR = round(BASELINE / TR);
 stimulus_baseline = zeros(RESOLUTION, RESOLUTION, BASELINE_TR);
 

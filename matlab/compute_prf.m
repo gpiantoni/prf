@@ -28,7 +28,9 @@ function compute_prf(nifti, n_volumes, output_dir, threshold)
 
 disp('Loading stimuli')
 
-% first run
+UseDenoise = false;
+
+% ========= Read in specs ========= % 
 hdr = niftiinfo(nifti);                           % read nifti header
 TR = hdr.PixelDimensions(4);                      % 850 ms
 if TR ~= 0.85
@@ -49,12 +51,17 @@ n_dim = size(nii{1});
 n_vox = prod(n_dim(1:3));
 fprintf('Selecting %d out of %d voxels (%.2f%%)\n', length(vxs), n_vox, length(vxs)/ n_vox *100)
 
-        % Compute pRF parameters WITHOUT GLMdenoise
-results = analyzePRF(images, nii, TR, struct('seedmode',[0 1 2],'display','off', 'wantglmdenoise', 0, 'vxs', vxs));
+ % ========= Compute pRF parameters WITH/WITHOUT GLMdenoise ========= % 
 
-        % Compute pRF parameters WITH GLMdenoise
-    % results = analyzePRF({images, images}, nii, TR, struct('seedmode',[0 1 2],'display','off', 'wantglmdenoise', 1, 'vxs', vxs));
+if UseDenoise == false
+    disp('%%%%%%%%%%%% Running analyzePRF without GLMdenoise %%%%%%%%%%%%')
+    results = analyzePRF(images, nii, TR, struct('seedmode',[0 1 2],'display','off', 'wantglmdenoise', 0, 'vxs', vxs));
+else
+    disp('%%%%%%%%%%%% Running analyzePRF with GLMdenoise %%%%%%%%%%%%')
+    results = analyzePRF({images, images}, nii, TR, struct('seedmode',[0 1 2],'display','off', 'wantglmdenoise', 1, 'vxs', vxs));
+end
 
+% ========= OUTPUT ========= %
 
 hdr.ImageSize = hdr.ImageSize(1:3);
 hdr.PixelDimensions = hdr.PixelDimensions(1:3);
