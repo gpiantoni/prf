@@ -5,7 +5,7 @@ function compute_mean_volume (subject, session, output_dir)
 % This function computes the mean volume of the merged time series. 
 %
 % Input: <subject>, <session>, <output_dir>
-% Output: <mean.nii> found in <output_dir>.
+% Output: <mean> found in <output_dir>.
 %
 %%
 

@@ -5,7 +5,7 @@ function convert_pixels2degrees (subject, session, output_dir)
 % This function converts pixels to visual angle in degrees 
 %
 % Input: <subject>, <session>, <output_dir>
-% Output: <ecc_deg.nii> and <rfsize_deg> found in <output_dir>
+% Output: <ecc_deg> and <rfsize_deg> found in <output_dir>
 %
 %%
 
@@ -30,8 +30,8 @@ visual_angle_7T = (atan((screen_size_7T(1)/2) / distance_7T)) * 180/pi;      % i
    
 %% Read in results (eccentricity and rf size)
 
-ecc = niftiread (['/Fridge/users/margriet/projects/analysis/analyzeprf/results/umcu/', subject, '/', session, '/merged_bairprf/ecc.nii']);
-rfsize = niftiread (['/Fridge/users/margriet/projects/analysis/analyzeprf/results/umcu/', subject, '/', session, '/merged_bairprf/rfsize.nii']);
+ecc = niftiread (['/Fridge/users/margriet/projects/prf/analyzeprf/results/umcu/', subject, '/', session, '/merged_bairprf/ecc.nii']);
+rfsize = niftiread (['/Fridge/users/margriet/projects/prf/analyzeprf/results/umcu/', subject, '/', session, '/merged_bairprf/rfsize.nii']);
 
 
 %% Convert pixels to degrees
@@ -50,8 +50,8 @@ end
 %% Output
 
 % ========= Read in header information ========= % 
-hdr_ecc = niftiinfo (['/Fridge/users/margriet/projects/analysis/analyzeprf/results/umcu/', subject, '/', session, '/merged_bairprf/ecc.nii']);
-hdr_rfsize = niftiinfo (['/Fridge/users/margriet/projects/analysis/analyzeprf/results/umcu/', subject, '/', session, '/merged_bairprf/rfsize.nii']);
+hdr_ecc = niftiinfo (['/Fridge/users/margriet/projects/prf/analyzeprf/results/umcu/', subject, '/', session, '/merged_bairprf/ecc.nii']);
+hdr_rfsize = niftiinfo (['/Fridge/users/margriet/projects/prf/analyzeprf/results/umcu/', subject, '/', session, '/merged_bairprf/rfsize.nii']);
 
 % ========= Write output nifti file ========= % 
 niftiwrite (ecc_deg, fullfile(output_dir, 'ecc_deg.nii'), hdr_ecc);
