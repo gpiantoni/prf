@@ -1,4 +1,4 @@
-function compute_prf(nifti, n_volumes, output_dir, threshold, UseDenoise)
+function compute_prf(nifti, n_volumes, output_dir, threshold, AnalyzeMergedRuns, UseDenoise)
 %
 % function COMPUTE_PRF (nifti, output_dir, threshold)
 %
@@ -8,6 +8,8 @@ function compute_prf(nifti, n_volumes, output_dir, threshold, UseDenoise)
 % <output_dir> 
 % <threshold> voxels with values greater than the given threshold will be
 % included in the computation. 
+% <AnalyzeMergedRuns> true/false
+% <UseDenoise> true/false
 %
 % Outputs:
 % <ang> contains pRF angle estimates.  Values range between 0 and 360 degrees.
@@ -31,25 +33,64 @@ disp('Loading stimuli')
 
 % ========= Read in parameters ========= % 
 
-hdr = niftiinfo(nifti);                           % read nifti header
-TR = hdr.PixelDimensions(4);                      % 850 ms
-if TR ~= 0.85
-    fprintf('TR from the nifti is %.fs but it should be 0.850s. Fixing it\n', TR)
-    TR = 0.850;
-end    
-images = {};
-images{1} = read_bair_stimuli(n_volumes, TR);
+if AnalyzeMergedRuns == true
+   disp('Starting analyzePRF for merged runs')
+    hdr = niftiinfo(nifti);                           % read nifti header
+    TR = hdr.PixelDimensions(4);                      % 850 ms
+    if TR ~= 0.85
+        fprintf('TR from the nifti is %.fs but it should be 0.850s. Fixing it\n', TR)
+        TR = 0.850;
+    end    
+    images = {};
+    images{1} = read_bair_stimuli(n_volumes, TR);
 
-disp('Loading fMRI')
-nii = {};
-nii{1} = niftiread(nifti);
+    disp('Loading fMRI')
+    nii = {};
+    nii{1} = niftiread(nifti);
 
-first_nii = nii{1}(:, :,:, 1);      % reference scan: first volume
-vxs = find(first_nii > threshold);  % find voxels above threshold
+    first_nii = nii{1}(:, :,:, 1);      % reference scan: first volume
+    vxs = find(first_nii > threshold);  % find voxels above threshold
 
-n_dim = size(nii{1});
-n_vox = prod(n_dim(1:3));
-fprintf('Selecting %d out of %d voxels (%.2f%%)\n', length(vxs), n_vox, length(vxs)/ n_vox *100)
+    n_dim = size(nii{1});
+    n_vox = prod(n_dim(1:3));
+    fprintf('Selecting %d out of %d voxels (%.2f%%)\n', length(vxs), n_vox, length(vxs)/ n_vox *100)
+end
+
+if AnalyzeMergedRuns == false
+    disp('Starting analyzePRF for separate runs')
+    MAX_N_VOLUMES = 248;
+    
+    % 1st run
+    hdr = niftiinfo(nifti{1});                        % read nifti header
+    TR = hdr.PixelDimensions(4);                      % 850 ms
+    n_volumes = hdr.ImageSize(4);                     % no. of dynamics
+    n_volumes = min(n_volumes, MAX_N_VOLUMES);
+    images{1} = read_bair_stimuli(n_volumes, TR);
+    
+    % 2nd run
+    hdr = niftiinfo(nifti{2});                        % read nifti header
+    TR = hdr.PixelDimensions(4);                      % 850 ms
+    n_volumes = hdr.ImageSize(4);                     % no. of dynamics
+    n_volumes = min(n_volumes, MAX_N_VOLUMES);
+    images{2} = read_bair_stimuli(n_volumes, TR);
+    
+    disp('Loading fMRI')
+    nii = {};
+    for i = 1:length(nifti)
+        temp = niftiread(nifti{i});
+        n_volumes = size(temp, 4);
+        n_volumes = min(n_volumes, MAX_N_VOLUMES);
+        nii{i} = temp(:, :, :, 1:n_volumes);
+    end
+    
+    first_nii = nii{1}(:, :,:, 1);      % reference scan: first volume
+    vxs = find(first_nii > threshold);  % find voxels above threshold
+    
+    n_dim = size(nii{1});
+    n_vox = prod(n_dim(1:3));
+    fprintf('Selecting %d out of %d voxels (%.2f%%)\n', length(vxs), n_vox, length(vxs)/ n_vox *100)
+end
+   
 
  % ========= Compute pRF parameters WITH/WITHOUT GLMdenoise ========= % 
 
