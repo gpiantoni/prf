@@ -14,17 +14,21 @@ disp('Converting pixels to degrees visual angle')
 %% Calculate visual angle
 
 % ========= 3T scanner ========= % 
-% scanner3T = load ('/Fridge/R01_BAIR/visual_fmri/data/raw/visual01/3T_MB/log/sub-visual01_ses-umc3t02_task-prf_run-1.mat');        % 3T scanner parameters
-screen_size_3T = [32.40, 51.84];                            % [32.40, 51.84] cm
-distance_3T = 141.8;                                        % 141.8 cm
+scanner3T = load ('/Fridge/users/margriet/stimuli/BAIR_pRF/scanner_params/Scanner_3T.mat');        % 3T scanner parameters
+scanner3T.params.display.numPixels = [1200, 1920];          % pixels
+scanner3T.params.display.dimensions = [32.40, 51.84];       % [32.40, 51.84] cm 
+scanner3T.params.display.distance = 141.8;                  % 141.8 cm
+scanner3T.params.display.pixelSize = scanner3T.params.display.dimensions / scanner3T.params.display.numPixels;  % 1 pixel = 0.027 X 0.027 cm
+screen_size_3T = scanner3T.params.display.dimensions;
+distance_3T = scanner3T.params.display.distance;
 
 visual_angle_3T = (atan((screen_size_3T(1)/2) / distance_3T)) * 180/pi;      % in degrees (6.5175 deg)
 
 % ========= 7T scanner ========= % 
-scanner7T = load ('/Fridge/R01_BAIR/visual_fmri/data/raw/visual01/7T_GE/log/sub-visual01GE_ses-umc7t01_task-prf_run-1.mat');        % 7T scanner parameters
-screen_size_7T = scanner7T.stimulus.display.dimensions;     % [14.22, 8] cm
-screen_size_7T = [screen_size_7T(2), screen_size_7T(1)];    % [8, 14.22] cm
-distance_7T = scanner7T.stimulus.display.distance;          % 35.5 cm
+scanner7T = load ('/Fridge/users/margriet/stimuli/BAIR_pRF/scanner_params/Scanner_7T.mat');        % 7T scanner parameters
+screen_size_7T = scanner7T.params.display.dimensions;     % [14.22, 8] cm
+screen_size_7T = [screen_size_7T(2), screen_size_7T(1)];  % [8, 14.22] cm
+distance_7T = scanner7T.params.display.distance;          % 35.5 cm
 
 visual_angle_7T = (atan((screen_size_7T(1)/2) / distance_7T)) * 180/pi;      % in degrees (6.428 deg)
    
