@@ -12,11 +12,11 @@
 clear;
 
 addpath(genpath('/Fridge/users/margriet/projects/prf/analyzeprf'))
-addpath(genpath('/home/margriet/tools/prf/matlab'))
+addpath(genpath('/home/margriet/tools/prf/matlab'))  
 
 %% Specify parameters
 
-subjectcode = 'sub-visual06';               
+subjectcode = 'sub-visual09';               
 subjectnumber = str2num(subjectcode (11:12));
 
 UseDenoise = false;

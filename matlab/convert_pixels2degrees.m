@@ -14,11 +14,11 @@ disp('Converting pixels to degrees visual angle')
 %% Calculate visual angle
 
 % ========= 3T scanner ========= % 
-scanner3T = load ('/Fridge/R01_BAIR/visual_fmri/data/raw/visual01/3T_MB/log/sub-visual01_ses-umc3t02_task-prf_run-1.mat');          % 3T scanner parameters
-screen_size_3T = scanner3T.stimulus.display.dimensions;     % [32.5, 52] cm
-distance_3T = scanner3T.stimulus.display.distance;          % 112 cm
+% scanner3T = load ('/Fridge/R01_BAIR/visual_fmri/data/raw/visual01/3T_MB/log/sub-visual01_ses-umc3t02_task-prf_run-1.mat');        % 3T scanner parameters
+screen_size_3T = [32.40, 51.84];                            % [32.40, 51.84] cm
+distance_3T = 141.8;                                        % 141.8 cm
 
-visual_angle_3T = (atan((screen_size_3T(1)/2) / distance_3T)) * 180/pi;      % in degrees (8.2555 deg)
+visual_angle_3T = (atan((screen_size_3T(1)/2) / distance_3T)) * 180/pi;      % in degrees (6.5175 deg)
 
 % ========= 7T scanner ========= % 
 scanner7T = load ('/Fridge/R01_BAIR/visual_fmri/data/raw/visual01/7T_GE/log/sub-visual01GE_ses-umc7t01_task-prf_run-1.mat');        % 7T scanner parameters
