@@ -1,4 +1,4 @@
-function compute_prf(nifti, n_volumes, output_dir, threshold, AnalyzeMergedRuns, AnalyzeAveragedRuns, UseDenoise)
+function compute_prf(subjectcode, session, nifti, n_volumes, output_dir, threshold, AnalyzeMergedRuns, AnalyzeAveragedRuns, UseDenoise)
 %
 % function COMPUTE_PRF (nifti, output_dir, threshold)
 %
@@ -33,6 +33,7 @@ disp('Loading stimuli')
 
 % ========= Read in parameters ========= % 
 
+    % ========= AVERAGED RUNS ========= % 
 if AnalyzeAveragedRuns == true
    disp('Starting analyzePRF for averaged runs')
     hdr = niftiinfo(nifti);                           % read nifti header
@@ -43,7 +44,7 @@ if AnalyzeAveragedRuns == true
     end    
     
     images = {};
-    images{1} = read_bair_stimuli(n_volumes, TR);
+    images{1} = read_bair_stimuli(subjectcode, session, n_volumes, TR);
 
     disp('Loading fMRI')
     nii = {};
@@ -57,6 +58,7 @@ if AnalyzeAveragedRuns == true
     fprintf('Selecting %d out of %d voxels (%.2f%%)\n', length(vxs), n_vox, length(vxs)/ n_vox *100)
 end
 
+    % ========= MERGED RUNS ========= % 
 if AnalyzeAveragedRuns == false
     if AnalyzeMergedRuns == true
        disp('Starting analyzePRF for merged runs')
@@ -68,7 +70,7 @@ if AnalyzeAveragedRuns == false
         end    
 
         images = {};
-        images{1} = read_bair_stimuli(n_volumes, TR);
+        images{1} = read_bair_stimuli(subjectcode, session, n_volumes, TR);
 
         disp('Loading fMRI')
         nii = {};
@@ -82,6 +84,7 @@ if AnalyzeAveragedRuns == false
         fprintf('Selecting %d out of %d voxels (%.2f%%)\n', length(vxs), n_vox, length(vxs)/ n_vox *100)
     end
 
+    % ========= SEPARATE RUNS ========= % 
     if AnalyzeMergedRuns == false
         disp('Starting analyzePRF for separate runs')
         MAX_N_VOLUMES = 248;
@@ -92,14 +95,16 @@ if AnalyzeAveragedRuns == false
         TR = hdr.PixelDimensions(4);                      % 850 ms
         n_volumes = hdr.ImageSize(4);                     % no. of dynamics
         n_volumes = min(n_volumes, MAX_N_VOLUMES);
-        images{1} = read_bair_stimuli(n_volumes, TR);
+        output_img = read_bair_stimuli(subjectcode, session, n_volumes, TR);
+        images_run1 = output_img{1};
 
         % 2nd run
         hdr = niftiinfo(nifti{2});                        % read nifti header
         TR = hdr.PixelDimensions(4);                      % 850 ms
         n_volumes = hdr.ImageSize(4);                     % no. of dynamics
         n_volumes = min(n_volumes, MAX_N_VOLUMES);
-        images{2} = read_bair_stimuli(n_volumes, TR);
+        output_img = read_bair_stimuli(subjectcode, session, n_volumes, TR);
+        images_run2 = output_img{2};
 
         disp('Loading fMRI')
         nii = {};

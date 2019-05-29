@@ -26,7 +26,7 @@ Analyze7TGE = 1;
 Analyze7TSE = 1;
 
 AnalyzeMergedRuns = false;
-AnalyzeAveragedRuns = true;
+AnalyzeAveragedRuns = false;
 
 %% Log thresholds
  
@@ -66,7 +66,7 @@ if AnalyzeAveragedRuns == true
             end
 
         % ========= ANALYZEPRF ========= % 
-        compute_prf(nifti_averaged, n_volumes, output_dir_umcu3TMB_averaged, threshold, AnalyzeMergedRuns, AnalyzeAveragedRuns, UseDenoise)
+        compute_prf(subjectcode, session, nifti_averaged, n_volumes, output_dir_umcu3TMB_averaged, threshold, AnalyzeMergedRuns, AnalyzeAveragedRuns, UseDenoise)
         % ======= PIXELS2DEGREES ======= % 
         convert_pixels2degrees (subjectcode, session, output_dir_umcu3TMB_averaged)
         % ======== MEAN VOLUME ========= % 
@@ -93,7 +93,7 @@ if AnalyzeAveragedRuns == true
             end
 
         % ========= ANALYZEPRF ========= % 
-        compute_prf(nifti_averaged, n_volumes, output_dir_umcu7TGE_averaged, threshold, AnalyzeMergedRuns, AnalyzeAveragedRuns, UseDenoise)
+        compute_prf(subjectcode, session, nifti_averaged, n_volumes, output_dir_umcu7TGE_averaged, threshold, AnalyzeMergedRuns, AnalyzeAveragedRuns, UseDenoise)
         % ======= PIXELS2DEGREES ======= % 
         convert_pixels2degrees (subjectcode, session, output_dir_umcu7TGE_averaged)
         % ======== MEAN VOLUME ========= % 
@@ -120,7 +120,7 @@ if AnalyzeAveragedRuns == true
             end
 
         % ========= ANALYZEPRF ========= % 
-        compute_prf(nifti_averaged, n_volumes, output_dir_umcu7TSE_averaged, threshold, AnalyzeMergedRuns, AnalyzeAveragedRuns, UseDenoise)
+        compute_prf(subjectcode, session, nifti_averaged, n_volumes, output_dir_umcu7TSE_averaged, threshold, AnalyzeMergedRuns, AnalyzeAveragedRuns, UseDenoise)
         % ======= PIXELS2DEGREES ======= %  
         convert_pixels2degrees (subjectcode, session, output_dir_umcu7TSE_averaged)
         % ======== MEAN VOLUME ========= % 
@@ -158,7 +158,7 @@ if AnalyzeAveragedRuns == false
                 end
 
             % ========= ANALYZEPRF ========= % 
-            compute_prf(nifti_merged, n_volumes, output_dir_umcu3TMB_merged, threshold, AnalyzeMergedRuns, AnalyzeAveragedRuns, UseDenoise)
+            compute_prf(subjectcode, session, nifti_merged, n_volumes, output_dir_umcu3TMB_merged, threshold, AnalyzeMergedRuns, AnalyzeAveragedRuns, UseDenoise)
             % ======= PIXELS2DEGREES ======= % 
             convert_pixels2degrees (subjectcode, session, output_dir_umcu3TMB_merged)
             % ======== MEAN VOLUME ========= % 
@@ -189,7 +189,7 @@ if AnalyzeAveragedRuns == false
                 end
 
             % ========= ANALYZEPRF ========= % 
-            compute_prf(nifti_merged, n_volumes, output_dir_umcu7TGE_merged, threshold, AnalyzeMergedRuns, AnalyzeAveragedRuns, UseDenoise)
+            compute_prf(subjectcode, session, nifti_merged, n_volumes, output_dir_umcu7TGE_merged, threshold, AnalyzeMergedRuns, AnalyzeAveragedRuns, UseDenoise)
             % ======= PIXELS2DEGREES ======= % 
             convert_pixels2degrees (subjectcode, session, output_dir_umcu7TGE_merged)
             % ======== MEAN VOLUME ========= % 
@@ -219,7 +219,7 @@ if AnalyzeAveragedRuns == false
                 end
 
             % ========= ANALYZEPRF ========= % 
-            compute_prf(nifti_merged, n_volumes, output_dir_umcu7TSE_merged, threshold, AnalyzeMergedRuns, AnalyzeAveragedRuns, UseDenoise)
+            compute_prf(subjectcode, session, nifti_merged, n_volumes, output_dir_umcu7TSE_merged, threshold, AnalyzeMergedRuns, AnalyzeAveragedRuns, UseDenoise)
             % ======= PIXELS2DEGREES ======= %  
             convert_pixels2degrees (subjectcode, session, output_dir_umcu7TSE_merged)
             % ======== MEAN VOLUME ========= % 
@@ -259,7 +259,7 @@ if AnalyzeAveragedRuns == false
             end
 
             % ========= ANALYZEPRF ========= % 
-            compute_prf(nifti, n_volumes, output_dir_umcu3TMB, threshold, AnalyzeMergedRuns, AnalyzeAveragedRuns, UseDenoise)
+            compute_prf(subjectcode, session, nifti, n_volumes, output_dir_umcu3TMB, threshold, AnalyzeMergedRuns, AnalyzeAveragedRuns, UseDenoise)
             % ======= PIXELS2DEGREES ======= %  
             convert_pixels2degrees (subjectcode, session, output_dir_umcu3TMB)
             % ======== MEAN VOLUME ========= % 
@@ -291,7 +291,7 @@ if AnalyzeAveragedRuns == false
             end   
 
             % ========= ANALYZEPRF ========= % 
-            compute_prf(nifti, n_volumes, output_dir_umcu7TGE, threshold, AnalyzeMergedRuns, AnalyzeAveragedRuns, UseDenoise)
+            compute_prf(subjectcode, session, nifti, n_volumes, output_dir_umcu7TGE, threshold, AnalyzeMergedRuns, AnalyzeAveragedRuns, UseDenoise)
             % ======= PIXELS2DEGREES ======= %  
             convert_pixels2degrees (subjectcode, session, output_dir_umcu7TGE)
             % ======== MEAN VOLUME ========= % 
@@ -323,7 +323,7 @@ if AnalyzeAveragedRuns == false
             end  
 
             % ========= ANALYZEPRF ========= % 
-            compute_prf(nifti, n_volumes, output_dir_umcu7TSE, threshold, AnalyzeMergedRuns, AnalyzeAveragedRuns, UseDenoise)
+            compute_prf(subjectcode, session, nifti, n_volumes, output_dir_umcu7TSE, threshold, AnalyzeMergedRuns, AnalyzeAveragedRuns, UseDenoise)
             % ======= PIXELS2DEGREES ======= %  
             convert_pixels2degrees (subjectcode, session, output_dir_umcu7TSE)
             % ======== MEAN VOLUME ========= % 
@@ -354,7 +354,7 @@ end
 % %     end
 % %     
 % %     % ========= ANALYZEPRF ========= % 
-% %     compute_prf(nifti_merged, n_volumes, output_dir_nyu3TMB, threshold, UseDenoise)
+% %     compute_prf(subjectcode, session, nifti_merged, n_volumes, output_dir_nyu3TMB, threshold, UseDenoise)
 % %     % ======= PIXELS2DEGREES ======= %  
 % %     convert_pixels2degrees (subjectcode, session, output_dir_nyu3TMB)
 % %     % ======== MEAN VOLUME ========= % 
