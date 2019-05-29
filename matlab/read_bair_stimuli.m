@@ -1,4 +1,4 @@
-function output = read_bair_stimuli(n_volumes, TR)
+function output_img = read_bair_stimuli(n_volumes, TR)
 % 
 % function images = READ_BAIR_STIMULI (n_volumes, TR)
 %
@@ -8,7 +8,7 @@ function output = read_bair_stimuli(n_volumes, TR)
 % session
 %
 % Output: 
-% <images> containing pRF stimulus information with added baseline.
+% <output_img> containing pRF stimulus information with added baseline.
 %%
 
 PATH_TO_APERTURES = '/Fridge/users/margriet/stimuli/BAIR_pRF/bar_apertures.mat';
@@ -37,12 +37,11 @@ stimulus_baseline = zeros(RESOLUTION, RESOLUTION, BASELINE_TR);
 
 images = cat(3, stimulus_baseline, images, stimulus_baseline);
 
-
-% ========= OUTPUT ========= % 
-output = {};
+% ========= OUTPUT with n_volumes ========= % 
+output_img = {};
 for i = 1:length(n_volumes)
-    output{i} = images(:, :, 1:n_volumes(i));
+    output_img{i} = images(:, :, 1:n_volumes(i));
 end
-output = cat(3, output{:});
+output_img = cat(3, output_img{:});
 
 %% End
