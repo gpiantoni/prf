@@ -1,24 +1,16 @@
-% % =========  SCRIPT split up merged pRF timeseries  ========= % 
+function split_merged_runs (subjectcode, session, output_dir)
 %
-% Script splits the merged nifti up in 2 separate pRF runs
+% function SPLIT_MERGED_RUNS (subjectcode, session)
+%
+% This function reads in the merged nifti of <subjectcode> <session> and 
+% splits up the concatinated runs to create 2 separate pRF runs. 
 %
 % Input: <subjectcode>, <session>
-% Output: <bairprf_AVERAGED_bold.nii>
-%%
-clear;
-
-addpath(genpath('/Fridge/users/margriet/projects/prf/analyzeprf'))
-addpath(genpath('/home/margriet/tools/prf/matlab'))  
-
-%% Specify parameters
-
-subjectcode = 'sub-visual03';              
-session = 'ses-UMCU7TSE';
-
+% Output: <bairprf_MERGED_runxx_bold.nii>
 %%
 
 % ========= Read in nifti  ========= % 
-if session == 'ses-UMCU3TMB'
+if session == 'ses-UMCU3TMB'                % 3T data
     merged = niftiread (['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/', session, '/', subjectcode, '_', session, '_task-bairprf_MERGED_bold/', subjectcode, '_', session, '_task-bairprf_MERGED_bold-rwm.nii']);
     run1 = niftiread (['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/', session, '/', subjectcode, '_', session, '_task-bairprf_run-01_bold/', subjectcode, '_', session, '_task-bairprf_run-01_bold-rwm.nii']);
     dyn_run1 = size(run1,4);
@@ -30,7 +22,7 @@ if session == 'ses-UMCU3TMB'
     merged_part1 = merged (:,:,:, 1:dyn_run1);
     merged_part2 = merged (:,:,:, (1+dyn_run1):(dyn_run1+dyn_run2));
     
-else
+else                                        % 7T data
     merged = niftiread (['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/', session, '/', subjectcode, '_', session, '_task-bairprf_MERGED_bold/', subjectcode, '_', session, '_task-bairprf_MERGED_bold-masked-mc-warp.nii']);
     run1 = niftiread (['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/', session, '/', subjectcode, '_', session, '_task-bairprf_run-01_bold/', subjectcode, '_', session, '_task-bairprf_run-01_bold-masked-mc-warp.nii']);
     dyn_run1 = size(run1,4);
@@ -44,27 +36,26 @@ else
 end
 
 % ========= Write output nifti (task-bairprf_MERGED_runxx_bold)  ========= % 
-path = ['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/', session, '/', subjectcode, '_', session, '_task-bairprf_MERGED_bold'];
-
-if session == 'ses-UMCU3TMB'
+   
+if session == 'ses-UMCU3TMB'                % 3T data
     % Run1
     hdr = niftiinfo (['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/', session, '/', subjectcode, '_', session, '_task-bairprf_run-01_bold/', subjectcode, '_', session, '_task-bairprf_run-01_bold-rwm.nii']);
     filename_run1 = [subjectcode, '_', session, '_task-bairprf_MERGED_run01_bold-rwm.nii'];
-    niftiwrite (merged_part1, fullfile(path, filename_run1), hdr)
+    niftiwrite (merged_part1, fullfile(output_dir, filename_run1), hdr)
     % Run2
     hdr = niftiinfo (['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/', session, '/', subjectcode, '_', session, '_task-bairprf_run-02_bold/', subjectcode, '_', session, '_task-bairprf_run-02_bold-rwm.nii']);
     filename_run2 = [subjectcode, '_', session, '_task-bairprf_MERGED_run02_bold-rwm.nii'];
-    niftiwrite (merged_part2, fullfile(path, filename_run2), hdr)
+    niftiwrite (merged_part2, fullfile(output_dir, filename_run2), hdr)
    
-else
+else                                        % 7T data
     % Run1
     hdr = niftiinfo (['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/', session, '/', subjectcode, '_', session, '_task-bairprf_run-01_bold/', subjectcode, '_', session, '_task-bairprf_run-01_bold-masked-mc-warp.nii']);
     filename_run1 = [subjectcode, '_', session, '_task-bairprf_MERGED_run01_bold-masked-mc-warp.nii'];
-    niftiwrite (merged_part1, fullfile(path, filename_run1), hdr)
+    niftiwrite (merged_part1, fullfile(output_dir, filename_run1), hdr)
     % Run2
     hdr = niftiinfo (['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/', session, '/', subjectcode, '_', session, '_task-bairprf_run-02_bold/', subjectcode, '_', session, '_task-bairprf_run-02_bold-masked-mc-warp.nii']);
     filename_run2 = [subjectcode, '_', session, '_task-bairprf_MERGED_run02_bold-masked-mc-warp.nii'];
-    niftiwrite (merged_part2, fullfile(path, filename_run2), hdr)
+    niftiwrite (merged_part2, fullfile(output_dir, filename_run2), hdr)
 end
 
 %%
@@ -79,8 +70,7 @@ end
 % hold off
 
 
-disp ('Done')
-
+disp (['Done splitting merged pRF runs for ', subjectcode, ': ', session])
 
 
 
