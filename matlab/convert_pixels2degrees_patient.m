@@ -1,4 +1,4 @@
-function convert_pixels2degrees (session, output_dir)
+function convert_pixels2degrees_patient (session, output_dir)
 %
 % function CONVERT_PIXELS2DEGREES (subject, session, output_dir)
 %
@@ -41,7 +41,7 @@ rfsize = niftiread (fullfile(output_dir, 'rfsize.nii'));
 img_resolution = [100, 100];
 pix_div2 = img_resolution(1)/2;
 
-if session == 'ses-UMCU3TMB'
+if session == 'ses-UMCU3Tday139'
     ecc_deg = ecc * (visual_angle_3T/pix_div2);
     rfsize_deg = rfsize * (visual_angle_3T/pix_div2);
 else

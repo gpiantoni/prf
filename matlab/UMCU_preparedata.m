@@ -12,8 +12,8 @@ addpath(genpath('/home/margriet/tools/prf/matlab'))
 
 %% Specify parameters
 
-subjectcode = 'sub-visual01';              
-session = 'ses-UMCU7TSE';
+subjectcode = 'sub-visual06';              
+session = 'ses-UMCU3TMB';
 output_dir_averaged = ['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/', session];
 output_dir_merged = ['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/', session, '/', subjectcode, '_', session, '_task-bairprf_MERGED_bold'];
 

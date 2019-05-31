@@ -5,7 +5,7 @@ function split_merged_runs (subjectcode, session, output_dir)
 % This function reads in the merged nifti of <subjectcode> <session> and 
 % splits up the concatinated runs to create 2 separate pRF runs. 
 %
-% Input: <subjectcode>, <session>
+% Input: <subjectcode>, <session>, <output_dir>
 % Output: <bairprf_MERGED_runxx_bold.nii>
 %%
 
