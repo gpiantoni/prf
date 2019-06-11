@@ -16,14 +16,14 @@ addpath(genpath('/home/margriet/tools/prf/matlab'))
 
 %% Specify parameters
 
-subjectcode = 'sub-visual01';              
+subjectcode = 'sub-visual03'; 
 subjectnumber = str2num(subjectcode (11:12));
 
 UseDenoise = false;
 
-Analyze3TMB = 0;
+Analyze3TMB = 1;
 Analyze7TGE = 1;
-Analyze7TSE = 0;
+Analyze7TSE = 1;
 
 AnalyzeMergedRuns = false;
 AnalyzeSeparateRuns = true;
@@ -166,7 +166,7 @@ if AnalyzeSeparateRuns == true
 
         output_dir_umcu3TMB = ['/Fridge/users/margriet/projects/prf/analyzeprf/results/umcu/', subjectcode, '/ses-UMCU3TMB/separate_bairprf'];
         output_dir_umcu3TMB_denoise = ['/Fridge/users/margriet/projects/prf/analyzeprf/results_glmdenoise/umcu/', subjectcode, '/ses-UMCU3TMB/separate_bairprf'];
-       
+                   
         if UseDenoise == true
             output_dir_umcu3TMB = output_dir_umcu3TMB_denoise;
         end
@@ -466,6 +466,8 @@ end
 
 %% Manually create R2 mask 
 
+%% fslmaths R2.nii -nan -thr 1 -bin R2mask_1.nii
+
 % % % fslmaths R2.nii -nan -thr 5 -bin R2mask_5.nii
 % % % fslmaths R2.nii -nan -thr 10 -bin R2mask_10.nii
 % % % fslmaths R2.nii -nan -thr 15 -bin R2mask_15.nii
@@ -474,3 +476,4 @@ end
 %% End
 
 disp (['Done running analyzePRF for ', subjectcode])
+

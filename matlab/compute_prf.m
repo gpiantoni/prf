@@ -35,7 +35,7 @@ disp('-- Loading stimuli --')
 
 %% MERGED RUNS 
     % ========= MERGED RUNS ========= % 
-
+  
 if AnalyzeMergedRuns == true
    disp('-- Starting analyzePRF for merged runs --')
     hdr = niftiinfo(nifti);                           % read nifti header
@@ -45,8 +45,9 @@ if AnalyzeMergedRuns == true
         TR = 0.850;
     end    
 
+    run =1;
     images = {};
-    images{1} = read_bair_stimuli(subjectcode, session, n_volumes, TR);
+    images{1} = read_bair_stimuli(subjectcode, session, run, n_volumes, TR);
 
     disp('-- Loading fMRI --')
     nii = {};
@@ -120,8 +121,9 @@ if AnalyzeAveragedRuns == true
         TR = 0.850;
     end    
     
+    run = 1;
     images = {};
-    images{1} = read_bair_stimuli(subjectcode, session, n_volumes, TR);
+    images{1} = read_bair_stimuli(subjectcode, session, run, n_volumes, TR);
 
     disp('-- Loading fMRI --')
     nii = {};
@@ -158,5 +160,10 @@ fields = {'ang', 'ecc', 'expt', 'rfsize', 'R2', 'gain'};
 for i = 1:length(fields)
     niftiwrite(results.(fields{i}), fullfile(output_dir, [fields{i}  '.nii']), hdr);
 end
+
+% Save whole results structure
+cd (output_dir)
+save('results.mat', '-struct', 'results')       % Save results struct in output_dir
+cd ('/home/margriet/tools/prf/matlab')
 
 %% End
