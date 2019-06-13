@@ -21,8 +21,8 @@ subjectnumber = str2num(subjectcode (11:12));
 
 UseDenoise = false;
 
-Analyze3TMB = 0;
-Analyze7TGE = 0;
+Analyze3TMB = 1;
+Analyze7TGE = 1;
 Analyze7TSE = 1;
 
 AnalyzeMergedRuns = false;
@@ -34,7 +34,7 @@ AnalyzeAveragedRuns = false;
 % =========  Threshold UMCU preprocessed data ========= % 
 thresholdUMCU_3TMB = [700, 750, 200, 550, 800, 950  NaN, 600, 700, 550, 450, 250];
 thresholdUMCU_7TGE = [150, 100, 100, 100, 100, 300, NaN, 250, 250, 250, 200, 150];
-thresholdUMCU_7TSE = [50, 50, 50, NaN, 175, 50, NaN, 50, NaN, 100, 300, 120];
+thresholdUMCU_7TSE = [50, 50, 50, NaN, 175, 50, NaN, 50, 50, 100, 300, 120];
 
 % =========  Threshold NYU preprocessed data ========= % 
 thresholdNYU_3TMB = [800, 700];
@@ -141,10 +141,10 @@ if AnalyzeMergedRuns == true
 end
 
 
-%%  Separate pRF runs - new: analyze split up merged runs
+%%  Separate pRF runs - new: analyze split up merged runs - Filtered data
 
 if AnalyzeSeparateRuns == true
-         disp('-- Starting analyzePRF for separate runs - new model --')
+         disp('-- Starting analyzePRF for separate runs - FILTERED --')
     % =========  3T (MB) ========= % 
 
     if Analyze3TMB == true
@@ -152,8 +152,8 @@ if AnalyzeSeparateRuns == true
         disp('%%%%%%%%%%%% Starting analyzePRF for UMCU 3T (MB) %%%%%%%%%%%%')
        
         % Read in split up niftis
-        nifti =  {['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/ses-UMCU3TMB/', subjectcode, '_ses-UMCU3TMB_task-bairprf_MERGED_bold/', subjectcode, '_ses-UMCU3TMB_task-bairprf_MERGED_run01_bold-rwm.nii'],
-             ['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/ses-UMCU3TMB/', subjectcode, '_ses-UMCU3TMB_task-bairprf_MERGED_bold/', subjectcode, '_ses-UMCU3TMB_task-bairprf_MERGED_run02_bold-rwm.nii']};
+        nifti =  {['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/ses-UMCU3TMB/', subjectcode, '_ses-UMCU3TMB_task-bairprf_MERGED_bold/DTMedFiltMasked_run1.nii'],
+             ['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/ses-UMCU3TMB/', subjectcode, '_ses-UMCU3TMB_task-bairprf_MERGED_bold/DTMedFiltMasked_run2.nii']};
 
         % Read no. of dynamics per run
         nifti_run1 = niftiread (nifti{1});
@@ -164,8 +164,8 @@ if AnalyzeSeparateRuns == true
 
         threshold = thresholdUMCU_3TMB(subjectnumber);    
 
-        output_dir_umcu3TMB = ['/Fridge/users/margriet/projects/prf/analyzeprf/results/umcu/', subjectcode, '/ses-UMCU3TMB/separate_bairprf'];
-        output_dir_umcu3TMB_denoise = ['/Fridge/users/margriet/projects/prf/analyzeprf/results_glmdenoise/umcu/', subjectcode, '/ses-UMCU3TMB/separate_bairprf'];
+        output_dir_umcu3TMB = ['/Fridge/users/margriet/projects/prf/analyzeprf/results/umcu/', subjectcode, '/ses-UMCU3TMB/filtered'];
+        output_dir_umcu3TMB_denoise = ['/Fridge/users/margriet/projects/prf/analyzeprf/results_glmdenoise/umcu/', subjectcode, '/ses-UMCU3TMB/filtered'];
                    
         if UseDenoise == true
             output_dir_umcu3TMB = output_dir_umcu3TMB_denoise;
@@ -184,10 +184,10 @@ if AnalyzeSeparateRuns == true
     if Analyze7TGE == true
         session = 'ses-UMCU7TGE';
         disp('%%%%%%%%%%%% Starting analyzePRF for UMCU 7T (GE) %%%%%%%%%%%%')
-    
+    da
         % Read in split up niftis
-        nifti =  {['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/ses-UMCU7TGE/', subjectcode, '_ses-UMCU7TGE_task-bairprf_MERGED_bold/', subjectcode, '_ses-UMCU7TGE_task-bairprf_MERGED_run01_bold-masked-mc-warp.nii'],
-            ['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/ses-UMCU7TGE/', subjectcode, '_ses-UMCU7TGE_task-bairprf_MERGED_bold/', subjectcode, '_ses-UMCU7TGE_task-bairprf_MERGED_run02_bold-masked-mc-warp.nii']};
+        nifti =  {['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/ses-UMCU7TGE/', subjectcode, '_ses-UMCU7TGE_task-bairprf_MERGED_bold/DTMedFiltMasked_run1.nii'],
+            ['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/ses-UMCU7TGE/', subjectcode, '_ses-UMCU7TGE_task-bairprf_MERGED_bold/DTMedFiltMasked_run2.nii']};
  
         % Read no. of dynamics per run
         nifti_run1 = niftiread (nifti{1});
@@ -198,8 +198,8 @@ if AnalyzeSeparateRuns == true
 
         threshold = thresholdUMCU_7TGE(subjectnumber);  
         
-        output_dir_umcu7TGE = ['/Fridge/users/margriet/projects/prf/analyzeprf/results/umcu/', subjectcode, '/ses-UMCU7TGE/separate_bairprf'];
-        output_dir_umcu7TGE_denoise = ['/Fridge/users/margriet/projects/prf/analyzeprf/results_glmdenoise/umcu/', subjectcode, '/ses-UMCU7TGE/separate_bairprf'];
+        output_dir_umcu7TGE = ['/Fridge/users/margriet/projects/prf/analyzeprf/results/umcu/', subjectcode, '/ses-UMCU7TGE/filtered'];
+        output_dir_umcu7TGE_denoise = ['/Fridge/users/margriet/projects/prf/analyzeprf/results_glmdenoise/umcu/', subjectcode, '/ses-UMCU7TGE/filtered'];
 
         if UseDenoise == true
             output_dir_umcu7TGE = output_dir_umcu7TGE_denoise;
@@ -220,8 +220,8 @@ if AnalyzeSeparateRuns == true
         disp('%%%%%%%%%%%% Starting analyzePRF for UMCU 7T (SE) %%%%%%%%%%%%')
 
         % Read in split up niftis
-        nifti =  {['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/ses-UMCU7TSE/', subjectcode, '_ses-UMCU7TSE_task-bairprf_MERGED_bold/', subjectcode, '_ses-UMCU7TSE_task-bairprf_MERGED_run01_bold-masked-mc-warp.nii'],
-            ['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/ses-UMCU7TSE/', subjectcode, '_ses-UMCU7TSE_task-bairprf_MERGED_bold/', subjectcode, '_ses-UMCU7TSE_task-bairprf_MERGED_run02_bold-masked-mc-warp.nii']};
+        nifti =  {['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/ses-UMCU7TSE/', subjectcode, '_ses-UMCU7TSE_task-bairprf_MERGED_bold/DTMedFiltMasked_run1.nii'],
+            ['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/ses-UMCU7TSE/', subjectcode, '_ses-UMCU7TSE_task-bairprf_MERGED_bold/DTMedFiltMasked_run2.nii']};
  
         % Read no. of dynamics per run
         nifti_run1 = niftiread (nifti{1});
@@ -232,8 +232,8 @@ if AnalyzeSeparateRuns == true
 
         threshold = thresholdUMCU_7TSE(subjectnumber); 
        
-        output_dir_umcu7TSE = ['/Fridge/users/margriet/projects/prf/analyzeprf/results/umcu/', subjectcode, '/ses-UMCU7TSE/separate_bairprf'];
-        output_dir_umcu7TSE_denoise = ['/Fridge/users/margriet/projects/prf/analyzeprf/results_glmdenoise/umcu/', subjectcode, '/ses-UMCU7TSE/separate_bairprf'];
+        output_dir_umcu7TSE = ['/Fridge/users/margriet/projects/prf/analyzeprf/results/umcu/', subjectcode, '/ses-UMCU7TSE/filtered'];
+        output_dir_umcu7TSE_denoise = ['/Fridge/users/margriet/projects/prf/analyzeprf/results_glmdenoise/umcu/', subjectcode, '/ses-UMCU7TSE/filtered'];
 
         if UseDenoise == true
             output_dir_umcu7TSE = output_dir_umcu7TSE_denoise;
@@ -248,106 +248,6 @@ if AnalyzeSeparateRuns == true
     end
 end
 
-%%  Separate pRF runs - old
-% % % 
-% % % if AnalyzeSeparateRuns == true
-% % %          disp('-- Starting analyzePRF for separate runs --')
-% % %     % =========  3T (MB) ========= % 
-% % % 
-% % %     if Analyze3TMB == true
-% % %         session = 'ses-UMCU3TMB';
-% % %         disp('%%%%%%%%%%%% Starting analyzePRF for UMCU 3T (MB) %%%%%%%%%%%%')
-% % % 
-% % %         nifti =  {['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/ses-UMCU3TMB/', subjectcode, '_ses-UMCU3TMB_task-bairprf_run-01_bold/', subjectcode '_ses-UMCU3TMB_task-bairprf_run-01_bold-rwm.nii'],
-% % %             ['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/ses-UMCU3TMB/', subjectcode, '_ses-UMCU3TMB_task-bairprf_run-02_bold/', subjectcode '_ses-UMCU3TMB_task-bairprf_run-02_bold-rwm.nii']};
-% % % 
-% % %         nifti_run1 = niftiread (nifti{1});
-% % %         nifti_run2 = niftiread (nifti{2});
-% % %         n_volumes_run1 = size(nifti_run1, 4);
-% % %         n_volumes_run2 = size(nifti_run2, 4);
-% % %         n_volumes = [n_volumes_run1, n_volumes_run2];
-% % % 
-% % %         threshold = thresholdUMCU_3TMB(subjectnumber);    
-% % % 
-% % %         output_dir_umcu3TMB = ['/Fridge/users/margriet/projects/prf/analyzeprf/results/umcu/', subjectcode, '/ses-UMCU3TMB'];
-% % %         output_dir_umcu3TMB_denoise = ['/Fridge/users/margriet/projects/prf/analyzeprf/results_glmdenoise/umcu/', subjectcode, '/ses-UMCU3TMB'];
-% % % 
-% % %         if UseDenoise == true
-% % %             output_dir_umcu3TMB = output_dir_umcu3TMB_denoise;
-% % %         end
-% % % 
-% % %         % ========= ANALYZEPRF ========= % 
-% % %         compute_prf(subjectcode, session, nifti, n_volumes, output_dir_umcu3TMB, threshold, AnalyzeMergedRuns, AnalyzeSeparateRuns, AnalyzeAveragedRuns, UseDenoise)
-% % %         % ======= PIXELS2DEGREES ======= %  
-% % %         convert_pixels2degrees (session, output_dir_umcu3TMB)
-% % %         % ======== MEAN VOLUME ========= % 
-% % %         compute_mean_volume (subjectcode, session, output_dir_umcu3TMB)  
-% % %     end
-% % % 
-% % %     % =========  7T (GE) ========= % 
-% % % 
-% % %     if Analyze7TGE == true
-% % %         session = 'ses-UMCU7TGE';
-% % %         disp('%%%%%%%%%%%% Starting analyzePRF for UMCU 7T (GE) %%%%%%%%%%%%')
-% % % 
-% % %         nifti =  {['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/ses-UMCU7TGE/', subjectcode, '_ses-UMCU7TGE_task-bairprf_run-01_bold/', subjectcode '_ses-UMCU7TGE_task-bairprf_run-01_bold-masked-mc-warp.nii'],
-% % %             ['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/ses-UMCU7TGE/', subjectcode, '_ses-UMCU7TGE_task-bairprf_run-02_bold/', subjectcode '_ses-UMCU7TGE_task-bairprf_run-02_bold-masked-mc-warp.nii']};
-% % % 
-% % %         nifti_run1 = niftiread (nifti{1});
-% % %         nifti_run2 = niftiread (nifti{2});
-% % %         n_volumes_run1 = size(nifti_run1, 4);
-% % %         n_volumes_run2 = size(nifti_run2, 4);
-% % %         n_volumes = [n_volumes_run1, n_volumes_run2];
-% % % 
-% % %         threshold = thresholdUMCU_7TGE(subjectnumber);  
-% % % 
-% % %         output_dir_umcu7TGE = ['/Fridge/users/margriet/projects/prf/analyzeprf/results/umcu/', subjectcode, '/ses-UMCU7TGE'];
-% % %         output_dir_umcu7TGE_denoise = ['/Fridge/users/margriet/projects/prf/analyzeprf/results_glmdenoise/umcu/', subjectcode, '/ses-UMCU7TGE'];
-% % % 
-% % %         if UseDenoise == true
-% % %             output_dir_umcu7TGE = output_dir_umcu7TGE_denoise;
-% % %         end   
-% % % 
-% % %         % ========= ANALYZEPRF ========= % 
-% % %         compute_prf(subjectcode, session, nifti, n_volumes, output_dir_umcu7TGE, threshold, AnalyzeMergedRuns, AnalyzeSeparateRuns, AnalyzeAveragedRuns, UseDenoise)
-% % %         % ======= PIXELS2DEGREES ======= %  
-% % %         convert_pixels2degrees (session, output_dir_umcu7TGE)
-% % %         % ======== MEAN VOLUME ========= % 
-% % %         compute_mean_volume (subjectcode, session, output_dir_umcu7TGE)  
-% % %     end
-% % % 
-% % %     % =========  7T (SE) ========= %     
-% % % 
-% % %     if Analyze7TSE == true
-% % %         session = 'ses-UMCU7TSE';
-% % %         disp('%%%%%%%%%%%% Starting analyzePRF for UMCU 7T (SE) %%%%%%%%%%%%')
-% % % 
-% % %         nifti =  {['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/ses-UMCU7TSE/', subjectcode, '_ses-UMCU7TSE_task-bairprf_run-01_bold/', subjectcode '_ses-UMCU7TSE_task-bairprf_run-01_bold-masked-mc-warp.nii'],
-% % %             ['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/ses-UMCU7TSE/', subjectcode, '_ses-UMCU7TSE_task-bairprf_run-02_bold/', subjectcode '_ses-UMCU7TSE_task-bairprf_run-02_bold-masked-mc-warp.nii']};
-% % % 
-% % %         nifti_run1 = niftiread (nifti{1});
-% % %         nifti_run2 = niftiread (nifti{2});
-% % %         n_volumes_run1 = size(nifti_run1, 4);
-% % %         n_volumes_run2 = size(nifti_run2, 4);
-% % %         n_volumes = [n_volumes_run1, n_volumes_run2];
-% % % 
-% % %         threshold = thresholdUMCU_7TSE(subjectnumber); 
-% % % 
-% % %         output_dir_umcu7TSE = ['/Fridge/users/margriet/projects/prf/analyzeprf/results/umcu/', subjectcode, '/ses-UMCU7TSE'];
-% % %         output_dir_umcu7TSE_denoise = ['/Fridge/users/margriet/projects/prf/analyzeprf/results_glmdenoise/umcu/', subjectcode, '/ses-UMCU7TSE'];
-% % % 
-% % %         if UseDenoise == true
-% % %             output_dir_umcu7TSE = output_dir_umcu7TSE_denoise;
-% % %         end  
-% % % 
-% % %         % ========= ANALYZEPRF ========= % 
-% % %         compute_prf(subjectcode, session, nifti, n_volumes, output_dir_umcu7TSE, threshold, AnalyzeMergedRuns, AnalyzeSeparateRuns, AnalyzeAveragedRuns, UseDenoise)
-% % %         % ======= PIXELS2DEGREES ======= %  
-% % %         convert_pixels2degrees (session, output_dir_umcu7TSE)
-% % %         % ======== MEAN VOLUME ========= % 
-% % %         compute_mean_volume (subjectcode, session, output_dir_umcu7TSE)    
-% % %     end
-% % % end
 
 %%  Averaged pRF runs
 
@@ -434,44 +334,6 @@ if AnalyzeAveragedRuns == true
         compute_mean_volume (subjectcode, session, output_dir_umcu7TSE_averaged)       
     end
 end
-
-
-%% NYU preprocessing pipeline (3T)
-% % 
-% % % =========  3T (MB) ========= % 
-% % 
-% % if Analyze3TMB == true
-% %     session = 'ses-UMCU3TMB';
-% %     disp('%%%%%%%%%%%% Starting analyzePRF for NYU 3T (MB) %%%%%%%%%%%%')
-% % 
-% %     nifti =  {['/Fridge/users/margriet/subjects/bids_nyupreproc/data/derivatives/preprocessed/', subjectcode, '/ses-UMCU3TMB/volume/', subjectcode, '_ses-UMCU3TMB_task-bairprf_run-01_preproc.nii.gz'],
-% %         ['/Fridge/users/margriet/subjects/bids_nyupreproc/data/derivatives/preprocessed/', subjectcode, '/ses-UMCU3TMB/volume/', subjectcode, '_ses-UMCU3TMB_task-bairprf_run-02_preproc.nii.gz']};
-% % 
-% %     threshold = thresholdNYU_3TMB(subjectnumber);  
-% %     
-% %     output_dir_nyu3TMB = ['/Fridge/users/margriet/projects/prf/analyzeprf/results/nyu/', subjectcode, '/ses-UMCU3TMB'];
-% %     output_dir_nyu3TMB_denoise = ['/Fridge/users/margriet/projects/prf/analyzeprf/results_glmdenoise/nyu/', subjectcode, '/ses-UMCU3TMB'];
-% %    
-% %     if UseDenoise == true
-% %         output_dir_nyu3TMB = output_dir_nyu3TMB_denoise;
-% %     end
-% %     
-% %     % ========= ANALYZEPRF ========= % 
-% %     compute_prf(subjectcode, session, nifti_merged, n_volumes, output_dir_nyu3TMB, threshold, UseDenoise)
-% %     % ======= PIXELS2DEGREES ======= %  
-% %     convert_pixels2degrees (session, output_dir_nyu3TMB)
-% %     % ======== MEAN VOLUME ========= % 
-% %     compute_mean_volume (subjectcode, session, output_dir_nyu3TMB)  
-% % end
-
-%% Manually create R2 mask 
-
-%% fslmaths R2.nii -nan -thr 1 -bin R2mask_1.nii
-
-% % % fslmaths R2.nii -nan -thr 5 -bin R2mask_5.nii
-% % % fslmaths R2.nii -nan -thr 10 -bin R2mask_10.nii
-% % % fslmaths R2.nii -nan -thr 15 -bin R2mask_15.nii
-
 
 %% End
 
