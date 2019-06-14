@@ -21,7 +21,7 @@ Benson_ROI_Names = {'V1', 'V2', 'V3', 'hV4', 'VO1', 'VO2', 'LO1', 'LO2', 'TO1', 
 
 %% Specify parameters
 
-subjectcode = 'sub-visual06'; 
+subjectcode = 'sub-visual03'; 
 method = 'separate_bairprf';
 
 %% 3TMB DATA
@@ -109,17 +109,20 @@ if Analyze3TMB == true
     %%% FIND BAD DATA IN ANG %%%
     indexInf = find(isinf(V1_ang));
     indexNaN = find(isnan(V1_ang));
-    index_ang = cat (1, indexInf, indexNaN);
+    indexZero = find(V1_ang == 0);
+    index_ang = cat (1, indexInf, indexNaN, indexZero);
 
     %%% FIND BAD DATA IN ECC %%%
     indexInf = find(isinf(V1_ecc));
     indexNaN = find(isnan(V1_ecc));
-    index_ecc = cat (1, indexInf, indexNaN);
+    indexZero = find(V1_ecc == 0);
+    index_ecc = cat (1, indexInf, indexNaN, indexZero);
     
     %%% FIND BAD DATA IN RFSIZE %%%
     indexInf = find(isinf(V1_rfsize));
     indexNaN = find(isnan(V1_rfsize));
-    index_rfsize = cat (1, indexInf, indexNaN);
+    indexZero = find (V1_rfsize == 0);
+    index_rfsize = cat (1, indexInf, indexNaN, indexZero);
     
     indexdims = [length(index_ang), length(index_ecc), length(index_rfsize)];
     [maxdim position] = max(indexdims);
@@ -142,17 +145,20 @@ if Analyze3TMB == true
     %%% FIND BAD DATA IN ANG %%%
     indexInf = find(isinf(V2_ang));
     indexNaN = find(isnan(V2_ang));
-    index_ang = cat (1, indexInf, indexNaN);
+    indexZero = find(V2_ang == 0);
+    index_ang = cat (1, indexInf, indexNaN, indexZero);
 
     %%% FIND BAD DATA IN ECC %%%
     indexInf = find(isinf(V2_ecc));
     indexNaN = find(isnan(V2_ecc));
-    index_ecc = cat (1, indexInf, indexNaN);
+    indexZero = find(V2_ecc == 0);
+    index_ecc = cat (1, indexInf, indexNaN, indexZero);
     
     %%% FIND BAD DATA IN RFSIZE %%%
     indexInf = find(isinf(V2_rfsize));
     indexNaN = find(isnan(V2_rfsize));
-    index_rfsize = cat (1, indexInf, indexNaN);
+    indexZero = find (V2_rfsize == 0);
+    index_rfsize = cat (1, indexInf, indexNaN, indexZero);
     
     indexdims = [length(index_ang), length(index_ecc), length(index_rfsize)];
     [maxdim position] = max(indexdims);
@@ -175,17 +181,20 @@ if Analyze3TMB == true
     %%% FIND BAD DATA IN ANG %%%
     indexInf = find(isinf(V3_ang));
     indexNaN = find(isnan(V3_ang));
-    index_ang = cat (1, indexInf, indexNaN);
+    indexZero = find (V3_ang == 0);
+    index_ang = cat (1, indexInf, indexNaN, indexZero);
 
     %%% FIND BAD DATA IN ECC %%%
     indexInf = find(isinf(V3_ecc));
     indexNaN = find(isnan(V3_ecc));
-    index_ecc = cat (1, indexInf, indexNaN);
+    indexZero = find (V3_ecc == 0);
+    index_ecc = cat (1, indexInf, indexNaN, indexZero);
     
     %%% FIND BAD DATA IN RFSIZE %%%
     indexInf = find(isinf(V3_rfsize));
     indexNaN = find(isnan(V3_rfsize));
-    index_rfsize = cat (1, indexInf, indexNaN);
+    indexZero = find (V3_rfsize == 0);
+    index_rfsize = cat (1, indexInf, indexNaN, indexZero);
     
     indexdims = [length(index_ang), length(index_ecc), length(index_rfsize)];
     [maxdim position] = max(indexdims);
@@ -232,6 +241,7 @@ if Analyze3TMB == true
     yfit_R = polyval (R, V3_3TMB.ecc);
         
     % ========= SCATTERPLOT 3T MULTIBAND ========= %
+   
     figure (1) 
         subplot (1,3,1)
     plot (V1_3TMB.ecc, V1_3TMB.rfsize, '*r')
@@ -363,17 +373,20 @@ if Analyze7TGE == true
     %%% FIND BAD DATA IN ANG %%%
     indexInf = find(isinf(V1_ang));
     indexNaN = find(isnan(V1_ang));
-    index_ang = cat (1, indexInf, indexNaN);
+    indexZero = find (V1_ang == 0);
+    index_ang = cat (1, indexInf, indexNaN, indexZero);
 
     %%% FIND BAD DATA IN ECC %%%
     indexInf = find(isinf(V1_ecc));
     indexNaN = find(isnan(V1_ecc));
-    index_ecc = cat (1, indexInf, indexNaN);
+    indexZero = find (V1_ecc == 0);
+    index_ecc = cat (1, indexInf, indexNaN, indexZero);
     
     %%% FIND BAD DATA IN RFSIZE %%%
     indexInf = find(isinf(V1_rfsize));
     indexNaN = find(isnan(V1_rfsize));
-    index_rfsize = cat (1, indexInf, indexNaN);
+    indexZero = find (V1_rfsize == 0);
+    index_rfsize = cat (1, indexInf, indexNaN, indexZero);
     
     indexdims = [length(index_ang), length(index_ecc), length(index_rfsize)];
     [maxdim position] = max(indexdims);
@@ -396,17 +409,20 @@ if Analyze7TGE == true
     %%% FIND BAD DATA IN ANG %%%
     indexInf = find(isinf(V2_ang));
     indexNaN = find(isnan(V2_ang));
-    index_ang = cat (1, indexInf, indexNaN);
+    indexZero = find (V2_ang == 0);
+    index_ang = cat (1, indexInf, indexNaN, indexZero);
 
     %%% FIND BAD DATA IN ECC %%%
     indexInf = find(isinf(V2_ecc));
     indexNaN = find(isnan(V2_ecc));
-    index_ecc = cat (1, indexInf, indexNaN);
+    indexZero = find (V2_ecc == 0);
+    index_ecc = cat (1, indexInf, indexNaN, indexZero);
     
     %%% FIND BAD DATA IN RFSIZE %%%
     indexInf = find(isinf(V2_rfsize));
     indexNaN = find(isnan(V2_rfsize));
-    index_rfsize = cat (1, indexInf, indexNaN);
+    indexZero = find (V2_rfsize == 0);
+    index_rfsize = cat (1, indexInf, indexNaN, indexZero);
     
     indexdims = [length(index_ang), length(index_ecc), length(index_rfsize)];
     [maxdim position] = max(indexdims);
@@ -429,17 +445,20 @@ if Analyze7TGE == true
     %%% FIND BAD DATA IN ANG %%%
     indexInf = find(isinf(V3_ang));
     indexNaN = find(isnan(V3_ang));
-    index_ang = cat (1, indexInf, indexNaN);
+    indexZero = find (V3_ang == 0);
+    index_ang = cat (1, indexInf, indexNaN, indexZero);
 
     %%% FIND BAD DATA IN ECC %%%
     indexInf = find(isinf(V3_ecc));
     indexNaN = find(isnan(V3_ecc));
-    index_ecc = cat (1, indexInf, indexNaN);
+    indexZero = find (V3_ecc == 0);
+    index_ecc = cat (1, indexInf, indexNaN, indexZero);
     
     %%% FIND BAD DATA IN RFSIZE %%%
     indexInf = find(isinf(V3_rfsize));
     indexNaN = find(isnan(V3_rfsize));
-    index_rfsize = cat (1, indexInf, indexNaN);
+    indexZero = find (V3_rfsize == 0);
+    index_rfsize = cat (1, indexInf, indexNaN, indexZero);
     
     indexdims = [length(index_ang), length(index_ecc), length(index_rfsize)];
     [maxdim position] = max(indexdims);
@@ -487,6 +506,16 @@ if Analyze7TGE == true
     yfit_U = polyval (U, V3_7TGE.ecc);
  
     % ========= SCATTERPLOT 7T GRADIENT ECHO ========= %
+    figure;
+        plot (V1_7TGE.ecc, V1_7TGE.rfsize, '*r')
+    hold on
+    plot (V1_7TGE.ecc, yfit_S, '-k')
+    hold off
+    xlabel ('Eccentricity (^{o})')
+    ylabel ('Receptive field size (^{o})')
+    title ('V1 (ses-UMCU7TGE)')
+    axis([0 16 0 12])
+    
     figure (3) 
         subplot (1,3,1)
     plot (V1_7TGE.ecc, V1_7TGE.rfsize, '*r')
@@ -618,17 +647,20 @@ if Analyze7TSE == true
     %%% FIND BAD DATA IN ANG %%%
     indexInf = find(isinf(V1_ang));
     indexNaN = find(isnan(V1_ang));
-    index_ang = cat (1, indexInf, indexNaN);
+    indexZero = find (V1_ang == 0);
+    index_ang = cat (1, indexInf, indexNaN, indexZero);
 
     %%% FIND BAD DATA IN ECC %%%
     indexInf = find(isinf(V1_ecc));
     indexNaN = find(isnan(V1_ecc));
-    index_ecc = cat (1, indexInf, indexNaN);
+    indexZero = find (V1_ecc == 0);
+    index_ecc = cat (1, indexInf, indexNaN, indexZero);
     
     %%% FIND BAD DATA IN RFSIZE %%%
     indexInf = find(isinf(V1_rfsize));
     indexNaN = find(isnan(V1_rfsize));
-    index_rfsize = cat (1, indexInf, indexNaN);
+    indexZero = find (V1_rfsize == 0);
+    index_rfsize = cat (1, indexInf, indexNaN, indexZero);
     
     indexdims = [length(index_ang), length(index_ecc), length(index_rfsize)];
     [maxdim position] = max(indexdims);
@@ -651,17 +683,20 @@ if Analyze7TSE == true
     %%% FIND BAD DATA IN ANG %%%
     indexInf = find(isinf(V2_ang));
     indexNaN = find(isnan(V2_ang));
-    index_ang = cat (1, indexInf, indexNaN);
+    indexZero = find (V2_ang == 0);
+    index_ang = cat (1, indexInf, indexNaN, indexZero);
 
     %%% FIND BAD DATA IN ECC %%
     indexInf = find(isinf(V2_ecc));
     indexNaN = find(isnan(V2_ecc));
-    index_ecc = cat (1, indexInf, indexNaN);
+    indexZero = find (V2_ecc == 0);
+    index_ecc = cat (1, indexInf, indexNaN, indexZero);
     
     %%% FIND BAD DATA IN RFSIZE %%
     indexInf = find(isinf(V2_rfsize));
     indexNaN = find(isnan(V2_rfsize));
-    index_rfsize = cat (1, indexInf, indexNaN);
+    indexZero = find (V2_rfsize == 0);
+    index_rfsize = cat (1, indexInf, indexNaN, indexZero);
     
     indexdims = [length(index_ang), length(index_ecc), length(index_rfsize)];
     [maxdim position] = max(indexdims);
@@ -684,17 +719,20 @@ if Analyze7TSE == true
     %%% FIND BAD DATA IN ANG %%
     indexInf = find(isinf(V3_ang));
     indexNaN = find(isnan(V3_ang));
-    index_ang = cat (1, indexInf, indexNaN);
+    indexZero = find (V3_ang == 0);
+    index_ang = cat (1, indexInf, indexNaN, indexZero);
 
     %%% FIND BAD DATA IN ECC %%
     indexInf = find(isinf(V3_ecc));
     indexNaN = find(isnan(V3_ecc));
+    indexZero = find (V3_ecc == 0);
     index_ecc = cat (1, indexInf, indexNaN);
     
     %%% FIND BAD DATA IN RFSIZE %%
     indexInf = find(isinf(V3_rfsize));
     indexNaN = find(isnan(V3_rfsize));
-    index_rfsize = cat (1, indexInf, indexNaN);
+    indexZero = find (V3_rfsize == 0);
+    index_rfsize = cat (1, indexInf, indexNaN, indexZero);
     
     indexdims = [length(index_ang), length(index_ecc), length(index_rfsize)];
     [maxdim position] = max(indexdims);
