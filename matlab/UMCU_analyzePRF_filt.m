@@ -16,7 +16,7 @@ addpath(genpath('/home/margriet/tools/prf/matlab'))
 
 %% Specify parameters
 
-subjectcode = 'sub-visual09'; 
+subjectcode = 'sub-visual02'; 
 subjectnumber = str2num(subjectcode (11:12));
 
 UseDenoise = false;
@@ -184,7 +184,7 @@ if AnalyzeSeparateRuns == true
     if Analyze7TGE == true
         session = 'ses-UMCU7TGE';
         disp('%%%%%%%%%%%% Starting analyzePRF for UMCU 7T (GE) %%%%%%%%%%%%')
-    da
+    
         % Read in split up niftis
         nifti =  {['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/ses-UMCU7TGE/', subjectcode, '_ses-UMCU7TGE_task-bairprf_MERGED_bold/DTMedFiltMasked_run1.nii'],
             ['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/ses-UMCU7TGE/', subjectcode, '_ses-UMCU7TGE_task-bairprf_MERGED_bold/DTMedFiltMasked_run2.nii']};
