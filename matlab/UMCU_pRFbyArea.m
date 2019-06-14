@@ -1,6 +1,7 @@
 % % =========  SCRIPT pRF results by area  ========= % 
 %
-% Script visualizes the rfsize/ecc relation in V1, V2 and V3.
+% Script visualizes the rfsize/ecc relation in V1, V2 and V3 based on the 
+% pRF results thresholded with 1% R2.
 %
 % Input: <subjectcode>, <method>, <Analyze3TMB>, <Analyze7TGE>, <Analyze7TSE>
 % Output: rfsize/ecc relation plots per area & rfsize histograms per area
@@ -20,7 +21,7 @@ Benson_ROI_Names = {'V1', 'V2', 'V3', 'hV4', 'VO1', 'VO2', 'LO1', 'LO2', 'TO1', 
 
 %% Specify parameters
 
-subjectcode = 'sub-visual03'; 
+subjectcode = 'sub-visual06'; 
 method = 'separate_bairprf';
 
 %% 3TMB DATA
@@ -105,17 +106,17 @@ if Analyze3TMB == true
     
     % ========= REMOVE BAD DATA (NaN & Inf) FOR V1 ========= %
     
-    %%% FIND BAD DATA IN ANG %%
+    %%% FIND BAD DATA IN ANG %%%
     indexInf = find(isinf(V1_ang));
     indexNaN = find(isnan(V1_ang));
     index_ang = cat (1, indexInf, indexNaN);
 
-    %%% FIND BAD DATA IN ECC %%
+    %%% FIND BAD DATA IN ECC %%%
     indexInf = find(isinf(V1_ecc));
     indexNaN = find(isnan(V1_ecc));
     index_ecc = cat (1, indexInf, indexNaN);
     
-    %%% FIND BAD DATA IN RFSIZE %%
+    %%% FIND BAD DATA IN RFSIZE %%%
     indexInf = find(isinf(V1_rfsize));
     indexNaN = find(isnan(V1_rfsize));
     index_rfsize = cat (1, indexInf, indexNaN);
@@ -131,24 +132,24 @@ if Analyze3TMB == true
         rm_index = index_rfsize;
     end
         
-    %%% REMOVE SELECTED INDICES %%
+    %%% REMOVE SELECTED INDICES %%%
     V1_rfsize(rm_index) = [];
     V1_ecc (rm_index) = [];
     V1_ang (rm_index) = [];
     
     % ========= REMOVE BAD DATA (NaN & Inf) FOR V2 ========= %
     
-    %%% FIND BAD DATA IN ANG %%
+    %%% FIND BAD DATA IN ANG %%%
     indexInf = find(isinf(V2_ang));
     indexNaN = find(isnan(V2_ang));
     index_ang = cat (1, indexInf, indexNaN);
 
-    %%% FIND BAD DATA IN ECC %%
+    %%% FIND BAD DATA IN ECC %%%
     indexInf = find(isinf(V2_ecc));
     indexNaN = find(isnan(V2_ecc));
     index_ecc = cat (1, indexInf, indexNaN);
     
-    %%% FIND BAD DATA IN RFSIZE %%
+    %%% FIND BAD DATA IN RFSIZE %%%
     indexInf = find(isinf(V2_rfsize));
     indexNaN = find(isnan(V2_rfsize));
     index_rfsize = cat (1, indexInf, indexNaN);
@@ -164,24 +165,24 @@ if Analyze3TMB == true
         rm_index = index_rfsize;
     end
 
-    %%% REMOVE SELECTED INDICES %%
+    %%% REMOVE SELECTED INDICES %%%
     V2_rfsize(rm_index) = [];
     V2_ecc (rm_index) = [];
     V2_ang (rm_index) = [];
     
     % ========= REMOVE BAD DATA (NaN & Inf) FOR V3 ========= %
     
-    %%% FIND BAD DATA IN ANG %%
+    %%% FIND BAD DATA IN ANG %%%
     indexInf = find(isinf(V3_ang));
     indexNaN = find(isnan(V3_ang));
     index_ang = cat (1, indexInf, indexNaN);
 
-    %%% FIND BAD DATA IN ECC %%
+    %%% FIND BAD DATA IN ECC %%%
     indexInf = find(isinf(V3_ecc));
     indexNaN = find(isnan(V3_ecc));
     index_ecc = cat (1, indexInf, indexNaN);
     
-    %%% FIND BAD DATA IN RFSIZE %%
+    %%% FIND BAD DATA IN RFSIZE %%%
     indexInf = find(isinf(V3_rfsize));
     indexNaN = find(isnan(V3_rfsize));
     index_rfsize = cat (1, indexInf, indexNaN);
@@ -197,12 +198,12 @@ if Analyze3TMB == true
         rm_index = index_rfsize;
     end
 
-    %%% REMOVE SELECTED INDICES %%
+    %%% REMOVE SELECTED INDICES %%%
     V3_rfsize(rm_index) = [];
     V3_ecc (rm_index) = [];
     V3_ang (rm_index) = [];             
        
-    %% CREATE CELLS
+    %% GROUP RESULTS - 3TMB
     
     % ========= RESULTS BY VISUAL AREA ========= %
     V1_3TMB = {};
@@ -272,7 +273,7 @@ if Analyze3TMB == true
     ylabel ('Receptive field size (^{o})')
     title ([subjectcode, ' (ses-UMCU3TMB)'])  
     axis([0 16 0 8])
-    legend ('V1', 'V2', 'V3')
+    legend ('V1', 'V2', 'V3', 'Location', 'Northwest') 
     set (gcf, 'Position', [800, 800, 600, 800])      
             
 end
@@ -359,17 +360,17 @@ if Analyze7TGE == true
     
     % ========= REMOVE BAD DATA (NaN & Inf) FOR V1 ========= %
     
-    %%% FIND BAD DATA IN ANG %%
+    %%% FIND BAD DATA IN ANG %%%
     indexInf = find(isinf(V1_ang));
     indexNaN = find(isnan(V1_ang));
     index_ang = cat (1, indexInf, indexNaN);
 
-    %%% FIND BAD DATA IN ECC %%
+    %%% FIND BAD DATA IN ECC %%%
     indexInf = find(isinf(V1_ecc));
     indexNaN = find(isnan(V1_ecc));
     index_ecc = cat (1, indexInf, indexNaN);
     
-    %%% FIND BAD DATA IN RFSIZE %%
+    %%% FIND BAD DATA IN RFSIZE %%%
     indexInf = find(isinf(V1_rfsize));
     indexNaN = find(isnan(V1_rfsize));
     index_rfsize = cat (1, indexInf, indexNaN);
@@ -385,24 +386,24 @@ if Analyze7TGE == true
         rm_index = index_rfsize;
     end
         
-    %%% REMOVE SELECTED INDICES %%
+    %%% REMOVE SELECTED INDICES %%%
     V1_rfsize(rm_index) = [];
     V1_ecc (rm_index) = [];
     V1_ang (rm_index) = [];
     
     % ========= REMOVE BAD DATA (NaN & Inf) FOR V2 ========= %
     
-    %%% FIND BAD DATA IN ANG %%
+    %%% FIND BAD DATA IN ANG %%%
     indexInf = find(isinf(V2_ang));
     indexNaN = find(isnan(V2_ang));
     index_ang = cat (1, indexInf, indexNaN);
 
-    %%% FIND BAD DATA IN ECC %%
+    %%% FIND BAD DATA IN ECC %%%
     indexInf = find(isinf(V2_ecc));
     indexNaN = find(isnan(V2_ecc));
     index_ecc = cat (1, indexInf, indexNaN);
     
-    %%% FIND BAD DATA IN RFSIZE %%
+    %%% FIND BAD DATA IN RFSIZE %%%
     indexInf = find(isinf(V2_rfsize));
     indexNaN = find(isnan(V2_rfsize));
     index_rfsize = cat (1, indexInf, indexNaN);
@@ -418,24 +419,24 @@ if Analyze7TGE == true
         rm_index = index_rfsize;
     end
         
-    %%% REMOVE SELECTED INDICES %%
+    %%% REMOVE SELECTED INDICES %%%
     V2_rfsize(rm_index) = [];
     V2_ecc (rm_index) = [];
     V2_ang (rm_index) = [];
     
     % ========= REMOVE BAD DATA (NaN & Inf) FOR V3 ========= %
     
-    %%% FIND BAD DATA IN ANG %%
+    %%% FIND BAD DATA IN ANG %%%
     indexInf = find(isinf(V3_ang));
     indexNaN = find(isnan(V3_ang));
     index_ang = cat (1, indexInf, indexNaN);
 
-    %%% FIND BAD DATA IN ECC %%
+    %%% FIND BAD DATA IN ECC %%%
     indexInf = find(isinf(V3_ecc));
     indexNaN = find(isnan(V3_ecc));
     index_ecc = cat (1, indexInf, indexNaN);
     
-    %%% FIND BAD DATA IN RFSIZE %%
+    %%% FIND BAD DATA IN RFSIZE %%%
     indexInf = find(isinf(V3_rfsize));
     indexNaN = find(isnan(V3_rfsize));
     index_rfsize = cat (1, indexInf, indexNaN);
@@ -451,13 +452,13 @@ if Analyze7TGE == true
         rm_index = index_rfsize;
     end
     
-    %%% REMOVE SELECTED INDICES %%    
+    %%% REMOVE SELECTED INDICES %%%   
     V3_rfsize(rm_index) = [];
     V3_ecc (rm_index) = [];
     V3_ang (rm_index) = [];        
      
        
-    %% CREATE CELLS
+    %% GROUP RESULTS - 7TGE
     
     % ========= RESULTS BY VISUAL AREA ========= %
     V1_7TGE = {};
@@ -527,7 +528,7 @@ if Analyze7TGE == true
     ylabel ('Receptive field size (^{o})')
     title ([subjectcode, ' (ses-UMCU7TGE)'])  
     axis([0 16 0 8])
-    legend ('V1', 'V2', 'V3')          
+    legend ('V1', 'V2', 'V3', 'Location', 'Northwest')           
     set (gcf, 'Position', [800, 800, 600, 800])
     
 end
@@ -614,17 +615,17 @@ if Analyze7TSE == true
     
     % ========= REMOVE BAD DATA (NaN & Inf) FOR V1 ========= %
     
-    %%% FIND BAD DATA IN ANG %%
+    %%% FIND BAD DATA IN ANG %%%
     indexInf = find(isinf(V1_ang));
     indexNaN = find(isnan(V1_ang));
     index_ang = cat (1, indexInf, indexNaN);
 
-    %%% FIND BAD DATA IN ECC %%
+    %%% FIND BAD DATA IN ECC %%%
     indexInf = find(isinf(V1_ecc));
     indexNaN = find(isnan(V1_ecc));
     index_ecc = cat (1, indexInf, indexNaN);
     
-    %%% FIND BAD DATA IN RFSIZE %%
+    %%% FIND BAD DATA IN RFSIZE %%%
     indexInf = find(isinf(V1_rfsize));
     indexNaN = find(isnan(V1_rfsize));
     index_rfsize = cat (1, indexInf, indexNaN);
@@ -640,13 +641,14 @@ if Analyze7TSE == true
         rm_index = index_rfsize;
     end
         
+    %%% REMOVE SELECTED INDICES %%%   
     V1_rfsize(rm_index) = [];
     V1_ecc (rm_index) = [];
     V1_ang (rm_index) = [];
     
     % ========= REMOVE BAD DATA (NaN & Inf) FOR V2 ========= %
     
-    %%% FIND BAD DATA IN ANG %%
+    %%% FIND BAD DATA IN ANG %%%
     indexInf = find(isinf(V2_ang));
     indexNaN = find(isnan(V2_ang));
     index_ang = cat (1, indexInf, indexNaN);
@@ -672,6 +674,7 @@ if Analyze7TSE == true
         rm_index = index_rfsize;
     end
         
+    %%% REMOVE SELECTED INDICES %%%   
     V2_rfsize(rm_index) = [];
     V2_ecc (rm_index) = [];
     V2_ang (rm_index) = [];
@@ -704,12 +707,13 @@ if Analyze7TSE == true
         rm_index = index_rfsize;
     end
         
+    %%% REMOVE SELECTED INDICES %%%   
     V3_rfsize(rm_index) = [];
     V3_ecc (rm_index) = [];
     V3_ang (rm_index) = [];        
      
        
-    %% CREATE CELLS
+    %% GROUP RESULTS - 7TSE
     
     % ========= RESULTS BY VISUAL AREA ========= %
     V1_7TSE = {};
@@ -779,7 +783,7 @@ if Analyze7TSE == true
     ylabel ('Receptive field size (^{o})')
     title ([subjectcode, ' (ses-UMCU7TSE)'])  
     axis([0 16 0 8])
-    legend ('V1', 'V2', 'V3')
+    legend ('V1', 'V2', 'V3', 'Location', 'Northwest')
     set (gcf, 'Position', [800, 800, 600, 800])
      
 end
@@ -832,10 +836,6 @@ title ([subjectcode, ' (V3)'])
 axis([0 16 0 8])
 legend ('ses-UMCU3TMB', 'ses-UMCU7TGE', 'ses-UMCU7TSE', 'Location', 'Northwest') 
 set (gcf, 'Position', [800, 800, 600, 800])
-
-
-%% Save plots
-
 
 
 %% Compute mean rfsize per sequence per area
@@ -894,9 +894,78 @@ STD_rfsize = [STD_3TMB_rfsize; STD_7TGE_rfsize; STD_7TSE_rfsize];
 figure (11)
 bar (STD_rfsize)
 set (gca, 'XTickLabel', {'3TMB', '7TGE', '7TSE'})
-ylabel ('Standard deviation receptive field size (^{o})')
-title (' receptive field size per visual area')  
+ylabel ('Receptive field size (^{o})')
+title ('Standard deviation receptive field size per visual area')  
 legend ('V1', 'V2', 'V3')
+
+%% Plot histograms
+
+% ========= HISTOGRAM - 3TMB - EXCL zeroes ========= %
+figure (12)
+subplot (1,3,1)
+histogram (V1_3TMB.rfsize(V1_3TMB.rfsize>0.))
+axis ([0 15 0 350])
+xlabel ('Receptive field size (^{o})')
+ylabel ('Frequency')
+title ('V1 (ses-UMCU3TMB)')
+subplot (1,3,2)
+histogram (V2_3TMB.rfsize(V2_3TMB.rfsize>0))
+axis ([0 15 0 350])
+xlabel ('Receptive field size (^{o})')
+ylabel ('Frequency')
+title ('V2 (ses-UMCU3TMB)')
+subplot(1,3,3)
+histogram (V3_3TMB.rfsize(V3_3TMB.rfsize>0))
+axis ([0 15 0 350])
+xlabel ('Receptive field size (^{o})')
+ylabel ('Frequency')
+title ('V3 (ses-UMCU3TMB)')
+
+% ========= HISTOGRAM - 7TGE - EXCL zeroes ========= %
+figure (13)
+subplot (1,3,1)
+histogram (V1_7TGE.rfsize(V1_7TGE.rfsize>0))
+axis ([0 15 0 350])
+xlabel ('Receptive field size (^{o})')
+ylabel ('Frequency')
+title ('V1 (ses-UMCU7TGE)')
+subplot (1,3,2)
+histogram (V2_7TGE.rfsize(V2_7TGE.rfsize>0))
+axis ([0 15 0 350])
+xlabel ('Receptive field size (^{o})')
+ylabel ('Frequency')
+title ('V2 (ses-UMCU7TGE)')
+subplot(1,3,3)
+histogram (V3_7TGE.rfsize(V3_7TGE.rfsize>0))
+axis ([0 15 0 350])
+xlabel ('Receptive field size (^{o})')
+ylabel ('Frequency')
+title ('V3 (ses-UMCU7TGE)')
+
+% ========= HISTOGRAM - 7TSE - EXCL zeroes ========= %
+figure (14)
+subplot (1,3,1)
+histogram (V1_7TSE.rfsize(V1_7TSE.rfsize>0))
+axis ([0 15 0 350])
+xlabel ('Receptive field size (^{o})')
+ylabel ('Frequency')
+title ('V1 (ses-UMCU7TSE)')
+subplot (1,3,2)
+histogram (V2_7TSE.rfsize(V2_7TSE.rfsize>0))
+axis ([0 15 0 350])
+xlabel ('Receptive field size (^{o})')
+ylabel ('Frequency')
+title ('V2 (ses-UMCU7TSE)')
+subplot(1,3,3)
+histogram (V3_7TSE.rfsize(V3_7TSE.rfsize>0))
+axis ([0 15 0 350])
+xlabel ('Receptive field size (^{o})')
+ylabel ('Frequency')
+title ('V3 (ses-UMCU7TSE)')
+
+%% Save plots
+
+
 
 
 %% Clear variables in workspace
@@ -916,12 +985,7 @@ clear rfsize
 clear ang_1d
 clear ecc_1d
 clear rfsize_1d
-clear index_ang
-clear index_ecc
-clear index_rfsize
-clear indexdims
-clear indexInf
-clear indexNaN
+clear index*
 clear maxdim
 clear position
 clear varea
