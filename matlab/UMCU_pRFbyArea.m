@@ -21,8 +21,8 @@ Benson_ROI_Names = {'V1', 'V2', 'V3', 'hV4', 'VO1', 'VO2', 'LO1', 'LO2', 'TO1', 
 
 %% Specify parameters
 
-subjectcode = 'sub-visual03'; 
-method = 'separate_bairprf';
+subjectcode = 'sub-visual01'; 
+method = 'filtered';
 
 %% 3TMB DATA
 
@@ -102,111 +102,195 @@ if Analyze3TMB == true
         end
     end
 
-    %% REMOVE NaN & Inf FROM DATA
+    %% REMOVE NaN & Inf & zeroes & outliers FROM DATA
     
-    % ========= REMOVE BAD DATA (NaN & Inf) FOR V1 ========= %
+    % ========= REMOVE BAD DATA (NaN & Inf & zeroes) FOR V1 ========= %
     
     %%% FIND BAD DATA IN ANG %%%
     indexInf = find(isinf(V1_ang));
     indexNaN = find(isnan(V1_ang));
     indexZero = find(V1_ang == 0);
-    index_ang = cat (1, indexInf, indexNaN, indexZero);
-
+    indexOutlier = find (V1_ang > 360);
+    index_ang = cat (1, indexInf, indexNaN, indexZero, indexOutlier);
+    
+    if ~isempty(indexInf)
+        rm_Inf_ang = indexInf;
+    else 
+        rm_Inf_ang = [];
+    end
+    
     %%% FIND BAD DATA IN ECC %%%
     indexInf = find(isinf(V1_ecc));
     indexNaN = find(isnan(V1_ecc));
     indexZero = find(V1_ecc == 0);
-    index_ecc = cat (1, indexInf, indexNaN, indexZero);
+    indexOutlier = find (V1_ecc > 25);
+    index_ecc = cat (1, indexInf, indexNaN, indexZero, indexOutlier);
     
+    if ~isempty(indexInf)
+        rm_Inf_ecc = indexInf;
+    else 
+        rm_Inf_ecc = [];
+    end
+          
     %%% FIND BAD DATA IN RFSIZE %%%
     indexInf = find(isinf(V1_rfsize));
     indexNaN = find(isnan(V1_rfsize));
     indexZero = find (V1_rfsize == 0);
-    index_rfsize = cat (1, indexInf, indexNaN, indexZero);
+    indexOutlier = find (V1_rfsize > 20);
+    index_rfsize = cat (1, indexInf, indexNaN, indexZero, indexOutlier);
     
+    if ~isempty(indexInf)
+        rm_Inf_rfsize = indexInf;
+    else 
+        rm_Inf_rfsize = [];
+    end
+           
+    %%% SELECT LARGEST MATRIX TO REMOVE %%%
     indexdims = [length(index_ang), length(index_ecc), length(index_rfsize)];
-    [maxdim position] = max(indexdims);
+    [maxdim, position] = max(indexdims);
     
     if position == 1 
-        rm_index = index_ang;
+        tmp_rm_index = index_ang;
     elseif position == 2
-        rm_index = index_ecc;
+        tmp_rm_index = index_ecc;
     else 
-        rm_index = index_rfsize;
+        tmp_rm_index = index_rfsize;
     end
+    
+    %%% MAKE SURE INF VALUES ARE INCLUDED %%%
+    tmp_rm_index_cat = cat (1, tmp_rm_index, rm_Inf_ang, rm_Inf_ecc, rm_Inf_rfsize);
+    
+    %%% REMOVE DUPLICATE VALUES %%%
+    rm_index = unique (tmp_rm_index_cat);
         
     %%% REMOVE SELECTED INDICES %%%
     V1_rfsize(rm_index) = [];
     V1_ecc (rm_index) = [];
     V1_ang (rm_index) = [];
     
-    % ========= REMOVE BAD DATA (NaN & Inf) FOR V2 ========= %
+    % ========= REMOVE BAD DATA (NaN & Inf & zeroes) FOR V2 ========= %
     
     %%% FIND BAD DATA IN ANG %%%
     indexInf = find(isinf(V2_ang));
     indexNaN = find(isnan(V2_ang));
     indexZero = find(V2_ang == 0);
-    index_ang = cat (1, indexInf, indexNaN, indexZero);
+    indexOutlier = find (V2_ang > 360);
+    index_ang = cat (1, indexInf, indexNaN, indexZero, indexOutlier);
+    
+    if ~isempty(indexInf)
+        rm_Inf_ang = indexInf;
+    else 
+        rm_Inf_ang = [];
+    end
 
     %%% FIND BAD DATA IN ECC %%%
     indexInf = find(isinf(V2_ecc));
     indexNaN = find(isnan(V2_ecc));
     indexZero = find(V2_ecc == 0);
-    index_ecc = cat (1, indexInf, indexNaN, indexZero);
+    indexOutlier = find (V2_ecc > 25);
+    index_ecc = cat (1, indexInf, indexNaN, indexZero, indexOutlier);
     
+    if ~isempty(indexInf)
+        rm_Inf_ecc = indexInf;
+    else 
+        rm_Inf_ecc = [];
+    end
+
     %%% FIND BAD DATA IN RFSIZE %%%
     indexInf = find(isinf(V2_rfsize));
     indexNaN = find(isnan(V2_rfsize));
     indexZero = find (V2_rfsize == 0);
-    index_rfsize = cat (1, indexInf, indexNaN, indexZero);
+    indexOutlier = find (V2_rfsize > 20);
+    index_rfsize = cat (1, indexInf, indexNaN, indexZero, indexOutlier);
     
+    if ~isempty(indexInf)
+        rm_Inf_rfsize = indexInf;
+    else 
+        rm_Inf_rfsize = [];
+    end
+    
+    %%% SELECT LARGEST MATRIX TO REMOVE %%%
     indexdims = [length(index_ang), length(index_ecc), length(index_rfsize)];
-    [maxdim position] = max(indexdims);
+    [maxdim, position] = max(indexdims);
     
     if position == 1 
-        rm_index = index_ang;
+        tmp_rm_index = index_ang;
     elseif position == 2
-        rm_index = index_ecc;
+        tmp_rm_index = index_ecc;
     else 
-        rm_index = index_rfsize;
+        tmp_rm_index = index_rfsize;
     end
+    
+    %%% MAKE SURE INF VALUES ARE INCLUDED %%%
+    tmp_rm_index_cat = cat (1, tmp_rm_index, rm_Inf_ang, rm_Inf_ecc, rm_Inf_rfsize);
+    
+    %%% REMOVE DUPLICATE VALUES %%%
+    rm_index = unique (tmp_rm_index_cat);
 
     %%% REMOVE SELECTED INDICES %%%
     V2_rfsize(rm_index) = [];
     V2_ecc (rm_index) = [];
     V2_ang (rm_index) = [];
     
-    % ========= REMOVE BAD DATA (NaN & Inf) FOR V3 ========= %
+    % ========= REMOVE BAD DATA (NaN & Inf & zeroes) FOR V3 ========= %
     
     %%% FIND BAD DATA IN ANG %%%
     indexInf = find(isinf(V3_ang));
     indexNaN = find(isnan(V3_ang));
     indexZero = find (V3_ang == 0);
-    index_ang = cat (1, indexInf, indexNaN, indexZero);
+    indexOutlier = find (V3_ang > 360);
+    index_ang = cat (1, indexInf, indexNaN, indexZero, indexOutlier);
+    
+    if ~isempty(indexInf)
+        rm_Inf_ang = indexInf;
+    else 
+        rm_Inf_ang = [];
+    end
 
     %%% FIND BAD DATA IN ECC %%%
     indexInf = find(isinf(V3_ecc));
     indexNaN = find(isnan(V3_ecc));
     indexZero = find (V3_ecc == 0);
-    index_ecc = cat (1, indexInf, indexNaN, indexZero);
+    indexOutlier = find (V3_ecc > 25);
+    index_ecc = cat (1, indexInf, indexNaN, indexZero, indexOutlier);
+    
+    if ~isempty(indexInf)
+        rm_Inf_ecc = indexInf;
+    else 
+        rm_Inf_ecc = [];
+    end
     
     %%% FIND BAD DATA IN RFSIZE %%%
     indexInf = find(isinf(V3_rfsize));
     indexNaN = find(isnan(V3_rfsize));
     indexZero = find (V3_rfsize == 0);
-    index_rfsize = cat (1, indexInf, indexNaN, indexZero);
+    indexOutlier = find (V3_rfsize > 20);
+    index_rfsize = cat (1, indexInf, indexNaN, indexZero, indexOutlier);
     
+    if ~isempty(indexInf)
+        rm_Inf_rfsize = indexInf;
+    else 
+        rm_Inf_rfsize = [];
+    end
+    
+    %%% SELECT LARGEST MATRIX TO REMOVE %%%
     indexdims = [length(index_ang), length(index_ecc), length(index_rfsize)];
-    [maxdim position] = max(indexdims);
+    [maxdim, position] = max(indexdims);
     
     if position == 1 
-        rm_index = index_ang;
+        tmp_rm_index = index_ang;
     elseif position == 2
-        rm_index = index_ecc;
+        tmp_rm_index = index_ecc;
     else 
-        rm_index = index_rfsize;
+        tmp_rm_index = index_rfsize;
     end
-
+    
+    %%% MAKE SURE INF VALUES ARE INCLUDED %%%
+    tmp_rm_index_cat = cat (1, tmp_rm_index, rm_Inf_ang, rm_Inf_ecc, rm_Inf_rfsize);
+    
+    %%% REMOVE DUPLICATE VALUES %%%
+    rm_index = unique (tmp_rm_index_cat);
+    
     %%% REMOVE SELECTED INDICES %%%
     V3_rfsize(rm_index) = [];
     V3_ecc (rm_index) = [];
@@ -366,117 +450,201 @@ if Analyze7TGE == true
         end
     end
 
-    %% REMOVE NaN & Inf FROM DATA
+    %% REMOVE NaN & Inf & zeroes & outliers FROM DATA
     
-    % ========= REMOVE BAD DATA (NaN & Inf) FOR V1 ========= %
+    % ========= REMOVE BAD DATA (NaN & Inf & zeroes & outliers) FOR V1 ========= %
     
     %%% FIND BAD DATA IN ANG %%%
     indexInf = find(isinf(V1_ang));
     indexNaN = find(isnan(V1_ang));
     indexZero = find (V1_ang == 0);
-    index_ang = cat (1, indexInf, indexNaN, indexZero);
+    indexOutlier = find (V1_ang > 360);
+    index_ang = cat (1, indexInf, indexNaN, indexZero, indexOutlier);
+    
+    if ~isempty(indexInf)
+        rm_Inf_ang = indexInf;
+    else 
+        rm_Inf_ang = [];
+    end    
 
     %%% FIND BAD DATA IN ECC %%%
     indexInf = find(isinf(V1_ecc));
     indexNaN = find(isnan(V1_ecc));
     indexZero = find (V1_ecc == 0);
-    index_ecc = cat (1, indexInf, indexNaN, indexZero);
+    indexOutlier = find (V1_ecc > 25);
+    index_ecc = cat (1, indexInf, indexNaN, indexZero, indexOutlier);
+    
+    if ~isempty(indexInf)
+        rm_Inf_ecc = indexInf;
+    else 
+        rm_Inf_ecc = [];
+    end
     
     %%% FIND BAD DATA IN RFSIZE %%%
     indexInf = find(isinf(V1_rfsize));
     indexNaN = find(isnan(V1_rfsize));
     indexZero = find (V1_rfsize == 0);
-    index_rfsize = cat (1, indexInf, indexNaN, indexZero);
+    indexOutlier = find (V1_rfsize > 20);
+    index_rfsize = cat (1, indexInf, indexNaN, indexZero, indexOutlier);
     
+    if ~isempty(indexInf)
+        rm_Inf_rfsize = indexInf;
+    else 
+        rm_Inf_rfsize = [];
+    end
+    
+    %%% SELECT LARGEST MATRIX TO REMOVE %%%
     indexdims = [length(index_ang), length(index_ecc), length(index_rfsize)];
-    [maxdim position] = max(indexdims);
+    [maxdim, position] = max(indexdims);
     
     if position == 1 
-        rm_index = index_ang;
+        tmp_rm_index = index_ang;
     elseif position == 2
-        rm_index = index_ecc;
+        tmp_rm_index = index_ecc;
     else 
-        rm_index = index_rfsize;
+        tmp_rm_index = index_rfsize;
     end
-        
+    
+    %%% MAKE SURE INF VALUES ARE INCLUDED %%%
+    tmp_rm_index_cat = cat (1, tmp_rm_index, rm_Inf_ang, rm_Inf_ecc, rm_Inf_rfsize);
+    
+    %%% REMOVE DUPLICATE VALUES %%%
+    rm_index = unique (tmp_rm_index_cat);
+            
     %%% REMOVE SELECTED INDICES %%%
     V1_rfsize(rm_index) = [];
     V1_ecc (rm_index) = [];
-    V1_ang (rm_index) = [];
+    V1_ang (rm_index) = [];    
     
-    % ========= REMOVE BAD DATA (NaN & Inf) FOR V2 ========= %
+    % ========= REMOVE BAD DATA (NaN & Inf & zeroes % outliers) FOR V2 ========= %
     
     %%% FIND BAD DATA IN ANG %%%
     indexInf = find(isinf(V2_ang));
     indexNaN = find(isnan(V2_ang));
     indexZero = find (V2_ang == 0);
-    index_ang = cat (1, indexInf, indexNaN, indexZero);
+    indexOutlier = find (V2_ang > 360);    
+    index_ang = cat (1, indexInf, indexNaN, indexZero, indexOutlier);
+    
+    if ~isempty(indexInf)
+        rm_Inf_ang = indexInf;
+    else 
+        rm_Inf_ang = [];
+    end
 
     %%% FIND BAD DATA IN ECC %%%
     indexInf = find(isinf(V2_ecc));
     indexNaN = find(isnan(V2_ecc));
     indexZero = find (V2_ecc == 0);
-    index_ecc = cat (1, indexInf, indexNaN, indexZero);
+    indexOutlier = find (V2_ecc > 25);
+    index_ecc = cat (1, indexInf, indexNaN, indexZero, indexOutlier);
+    
+    if ~isempty(indexInf)
+        rm_Inf_ecc = indexInf;
+    else 
+        rm_Inf_ecc = [];
+    end
     
     %%% FIND BAD DATA IN RFSIZE %%%
     indexInf = find(isinf(V2_rfsize));
     indexNaN = find(isnan(V2_rfsize));
     indexZero = find (V2_rfsize == 0);
-    index_rfsize = cat (1, indexInf, indexNaN, indexZero);
+    indexOutlier = find (V2_rfsize > 20);
+    index_rfsize = cat (1, indexInf, indexNaN, indexZero, indexOutlier);
     
+    if ~isempty(indexInf)
+        rm_Inf_rfsize = indexInf;
+    else 
+        rm_Inf_rfsize = [];
+    end
+    
+    %%% SELECT LARGEST MATRIX TO REMOVE %%%
     indexdims = [length(index_ang), length(index_ecc), length(index_rfsize)];
-    [maxdim position] = max(indexdims);
+    [maxdim, position] = max(indexdims);
     
     if position == 1 
-        rm_index = index_ang;
+        tmp_rm_index = index_ang;
     elseif position == 2
-        rm_index = index_ecc;
+        tmp_rm_index = index_ecc;
     else 
-        rm_index = index_rfsize;
+        tmp_rm_index = index_rfsize;
     end
+
+    %%% MAKE SURE INF VALUES ARE INCLUDED %%%
+    tmp_rm_index_cat = cat (1, tmp_rm_index, rm_Inf_ang, rm_Inf_ecc, rm_Inf_rfsize);
+    
+    %%% REMOVE DUPLICATE VALUES %%%
+    rm_index = unique (tmp_rm_index_cat);
         
     %%% REMOVE SELECTED INDICES %%%
     V2_rfsize(rm_index) = [];
     V2_ecc (rm_index) = [];
     V2_ang (rm_index) = [];
-    
-    % ========= REMOVE BAD DATA (NaN & Inf) FOR V3 ========= %
+   
+    % ========= REMOVE BAD DATA (NaN & Inf & zeroes & outliers) FOR V3 ========= %
     
     %%% FIND BAD DATA IN ANG %%%
     indexInf = find(isinf(V3_ang));
     indexNaN = find(isnan(V3_ang));
     indexZero = find (V3_ang == 0);
-    index_ang = cat (1, indexInf, indexNaN, indexZero);
+    indexOutlier = find (V3_ang > 360);
+    index_ang = cat (1, indexInf, indexNaN, indexZero, indexOutlier);
+    
+    if ~isempty(indexInf)
+        rm_Inf_ang = indexInf;
+    else 
+        rm_Inf_ang = [];
+    end
 
     %%% FIND BAD DATA IN ECC %%%
     indexInf = find(isinf(V3_ecc));
     indexNaN = find(isnan(V3_ecc));
     indexZero = find (V3_ecc == 0);
-    index_ecc = cat (1, indexInf, indexNaN, indexZero);
+     indexOutlier = find (V3_ecc > 25);
+    index_ecc = cat (1, indexInf, indexNaN, indexZero, indexOutlier);
+    
+    if ~isempty(indexInf)
+        rm_Inf_ecc = indexInf;
+    else 
+        rm_Inf_ecc = [];
+    end
     
     %%% FIND BAD DATA IN RFSIZE %%%
     indexInf = find(isinf(V3_rfsize));
     indexNaN = find(isnan(V3_rfsize));
     indexZero = find (V3_rfsize == 0);
-    index_rfsize = cat (1, indexInf, indexNaN, indexZero);
+    indexOutlier = find (V3_rfsize > 20);
+    index_rfsize = cat (1, indexInf, indexNaN, indexZero, indexOutlier);
     
+    if ~isempty(indexInf)
+        rm_Inf_rfsize = indexInf;
+    else 
+        rm_Inf_rfsize = [];
+    end
+    
+    %%% SELECT LARGEST MATRIX TO REMOVE %%%
     indexdims = [length(index_ang), length(index_ecc), length(index_rfsize)];
-    [maxdim position] = max(indexdims);
+    [maxdim, position] = max(indexdims);
     
     if position == 1 
-        rm_index = index_ang;
+        tmp_rm_index = index_ang;
     elseif position == 2
-        rm_index = index_ecc;
+        tmp_rm_index = index_ecc;
     else 
-        rm_index = index_rfsize;
+        tmp_rm_index = index_rfsize;
     end
+    
+    %%% MAKE SURE INF VALUES ARE INCLUDED %%%
+    tmp_rm_index_cat = cat (1, tmp_rm_index, rm_Inf_ang, rm_Inf_ecc, rm_Inf_rfsize);
+    
+    %%% REMOVE DUPLICATE VALUES %%%
+    rm_index = unique (tmp_rm_index_cat);
     
     %%% REMOVE SELECTED INDICES %%%   
     V3_rfsize(rm_index) = [];
     V3_ecc (rm_index) = [];
-    V3_ang (rm_index) = [];        
-     
-       
+    V3_ang (rm_index) = [];       
+    
+   
     %% GROUP RESULTS - 7TGE
     
     % ========= RESULTS BY VISUAL AREA ========= %
@@ -506,16 +674,6 @@ if Analyze7TGE == true
     yfit_U = polyval (U, V3_7TGE.ecc);
  
     % ========= SCATTERPLOT 7T GRADIENT ECHO ========= %
-    figure;
-        plot (V1_7TGE.ecc, V1_7TGE.rfsize, '*r')
-    hold on
-    plot (V1_7TGE.ecc, yfit_S, '-k')
-    hold off
-    xlabel ('Eccentricity (^{o})')
-    ylabel ('Receptive field size (^{o})')
-    title ('V1 (ses-UMCU7TGE)')
-    axis([0 16 0 12])
-    
     figure (3) 
         subplot (1,3,1)
     plot (V1_7TGE.ecc, V1_7TGE.rfsize, '*r')
@@ -642,108 +800,192 @@ if Analyze7TSE == true
 
     %% REMOVE NaN & Inf FROM DATA
     
-    % ========= REMOVE BAD DATA (NaN & Inf) FOR V1 ========= %
+    % ========= REMOVE BAD DATA (NaN & Inf & zeroes) FOR V1 ========= %
     
     %%% FIND BAD DATA IN ANG %%%
     indexInf = find(isinf(V1_ang));
     indexNaN = find(isnan(V1_ang));
     indexZero = find (V1_ang == 0);
-    index_ang = cat (1, indexInf, indexNaN, indexZero);
+    indexOutlier = find (V1_ang > 360);
+    index_ang = cat (1, indexInf, indexNaN, indexZero, indexOutlier);
+    
+    if ~isempty(indexInf)
+        rm_Inf_ang = indexInf;
+    else 
+        rm_Inf_ang = [];
+    end
 
     %%% FIND BAD DATA IN ECC %%%
     indexInf = find(isinf(V1_ecc));
     indexNaN = find(isnan(V1_ecc));
     indexZero = find (V1_ecc == 0);
-    index_ecc = cat (1, indexInf, indexNaN, indexZero);
+    indexOutlier = find (V1_ecc > 25);
+    index_ecc = cat (1, indexInf, indexNaN, indexZero, indexOutlier);
+    
+    if ~isempty(indexInf)
+        rm_Inf_ecc = indexInf;
+    else 
+        rm_Inf_ecc = [];
+    end
     
     %%% FIND BAD DATA IN RFSIZE %%%
     indexInf = find(isinf(V1_rfsize));
     indexNaN = find(isnan(V1_rfsize));
     indexZero = find (V1_rfsize == 0);
-    index_rfsize = cat (1, indexInf, indexNaN, indexZero);
+    indexOutlier = find (V1_rfsize > 20);
+    index_rfsize = cat (1, indexInf, indexNaN, indexZero, indexOutlier);
     
+    if ~isempty(indexInf)
+        rm_Inf_rfsize = indexInf;
+    else 
+        rm_Inf_rfsize = [];
+    end
+    
+    %%% SELECT LARGEST MATRIX TO REMOVE %%%
     indexdims = [length(index_ang), length(index_ecc), length(index_rfsize)];
-    [maxdim position] = max(indexdims);
+    [maxdim, position] = max(indexdims);
     
     if position == 1 
-        rm_index = index_ang;
+        tmp_rm_index = index_ang;
     elseif position == 2
-        rm_index = index_ecc;
+        tmp_rm_index = index_ecc;
     else 
-        rm_index = index_rfsize;
+        tmp_rm_index = index_rfsize;
     end
+    
+    %%% MAKE SURE INF VALUES ARE INCLUDED %%%
+    tmp_rm_index_cat = cat (1, tmp_rm_index, rm_Inf_ang, rm_Inf_ecc, rm_Inf_rfsize);
+    
+    %%% REMOVE DUPLICATE VALUES %%%
+    rm_index = unique (tmp_rm_index_cat);
         
     %%% REMOVE SELECTED INDICES %%%   
     V1_rfsize(rm_index) = [];
     V1_ecc (rm_index) = [];
     V1_ang (rm_index) = [];
     
-    % ========= REMOVE BAD DATA (NaN & Inf) FOR V2 ========= %
+    % ========= REMOVE BAD DATA (NaN & Inf & zeroes) FOR V2 ========= %
     
     %%% FIND BAD DATA IN ANG %%%
     indexInf = find(isinf(V2_ang));
     indexNaN = find(isnan(V2_ang));
     indexZero = find (V2_ang == 0);
-    index_ang = cat (1, indexInf, indexNaN, indexZero);
+    indexOutlier = find (V2_ang > 360);
+    index_ang = cat (1, indexInf, indexNaN, indexZero, indexOutlier);
+    
+    if ~isempty(indexInf)
+        rm_Inf_ang = indexInf;
+    else 
+        rm_Inf_ang = [];
+    end
 
     %%% FIND BAD DATA IN ECC %%
     indexInf = find(isinf(V2_ecc));
     indexNaN = find(isnan(V2_ecc));
     indexZero = find (V2_ecc == 0);
-    index_ecc = cat (1, indexInf, indexNaN, indexZero);
+    indexOutlier = find (V2_ecc > 25);
+    index_ecc = cat (1, indexInf, indexNaN, indexZero, indexOutlier);
+    
+    if ~isempty(indexInf)
+        rm_Inf_ecc = indexInf;
+    else 
+        rm_Inf_ecc = [];
+    end
     
     %%% FIND BAD DATA IN RFSIZE %%
     indexInf = find(isinf(V2_rfsize));
     indexNaN = find(isnan(V2_rfsize));
     indexZero = find (V2_rfsize == 0);
-    index_rfsize = cat (1, indexInf, indexNaN, indexZero);
+    indexOutlier = find (V2_rfsize > 20);
+    index_rfsize = cat (1, indexInf, indexNaN, indexZero, indexOutlier);
     
+    if ~isempty(indexInf)
+        rm_Inf_rfsize = indexInf;
+    else 
+        rm_Inf_rfsize = [];
+    end
+    
+    %%% SELECT LARGEST MATRIX TO REMOVE %%%
     indexdims = [length(index_ang), length(index_ecc), length(index_rfsize)];
-    [maxdim position] = max(indexdims);
+    [maxdim, position] = max(indexdims);
     
     if position == 1 
-        rm_index = index_ang;
+        tmp_rm_index = index_ang;
     elseif position == 2
-        rm_index = index_ecc;
+        tmp_rm_index = index_ecc;
     else 
-        rm_index = index_rfsize;
+        tmp_rm_index = index_rfsize;
     end
+    
+    %%% MAKE SURE INF VALUES ARE INCLUDED %%%
+    tmp_rm_index_cat = cat (1, tmp_rm_index, rm_Inf_ang, rm_Inf_ecc, rm_Inf_rfsize);
+    
+    %%% REMOVE DUPLICATE VALUES %%%
+    rm_index = unique (tmp_rm_index_cat);
         
     %%% REMOVE SELECTED INDICES %%%   
     V2_rfsize(rm_index) = [];
     V2_ecc (rm_index) = [];
     V2_ang (rm_index) = [];
     
-    % ========= REMOVE BAD DATA (NaN & Inf) FOR V3 ========= %
+    % ========= REMOVE BAD DATA (NaN & Inf & zeroes) FOR V3 ========= %
     
     %%% FIND BAD DATA IN ANG %%
     indexInf = find(isinf(V3_ang));
     indexNaN = find(isnan(V3_ang));
     indexZero = find (V3_ang == 0);
-    index_ang = cat (1, indexInf, indexNaN, indexZero);
+    indexOutlier = find (V3_ang > 360);
+    index_ang = cat (1, indexInf, indexNaN, indexZero, indexOutlier);
+    
+    if ~isempty(indexInf)
+        rm_Inf_ang = indexInf;
+    else 
+        rm_Inf_ang = [];
+    end
 
     %%% FIND BAD DATA IN ECC %%
     indexInf = find(isinf(V3_ecc));
     indexNaN = find(isnan(V3_ecc));
     indexZero = find (V3_ecc == 0);
-    index_ecc = cat (1, indexInf, indexNaN);
+    indexOutlier = find (V3_ecc > 25);
+    index_ecc = cat (1, indexInf, indexNaN, indexZero, indexOutlier);
+    
+    if ~isempty(indexInf)
+        rm_Inf_ecc = indexInf;
+    else 
+        rm_Inf_ecc = [];
+    end
     
     %%% FIND BAD DATA IN RFSIZE %%
     indexInf = find(isinf(V3_rfsize));
     indexNaN = find(isnan(V3_rfsize));
     indexZero = find (V3_rfsize == 0);
-    index_rfsize = cat (1, indexInf, indexNaN, indexZero);
+    indexOutlier = find (V3_rfsize > 20);
+    index_rfsize = cat (1, indexInf, indexNaN, indexZero, indexOutlier);
     
+    if ~isempty(indexInf)
+        rm_Inf_rfsize = indexInf;
+    else 
+        rm_Inf_rfsize = [];
+    end
+    
+    %%% SELECT LARGEST MATRIX TO REMOVE %%%
     indexdims = [length(index_ang), length(index_ecc), length(index_rfsize)];
-    [maxdim position] = max(indexdims);
+    [maxdim, position] = max(indexdims);
     
     if position == 1 
-        rm_index = index_ang;
+        tmp_rm_index = index_ang;
     elseif position == 2
-        rm_index = index_ecc;
+        tmp_rm_index = index_ecc;
     else 
-        rm_index = index_rfsize;
+        tmp_rm_index = index_rfsize;
     end
+    
+    %%% MAKE SURE INF VALUES ARE INCLUDED %%%
+    tmp_rm_index_cat = cat (1, tmp_rm_index, rm_Inf_ang, rm_Inf_ecc, rm_Inf_rfsize);
+    
+    %%% REMOVE DUPLICATE VALUES %%%
+    rm_index = unique (tmp_rm_index_cat);
         
     %%% REMOVE SELECTED INDICES %%%   
     V3_rfsize(rm_index) = [];
@@ -941,7 +1183,7 @@ legend ('V1', 'V2', 'V3')
 % ========= HISTOGRAM - 3TMB - EXCL zeroes ========= %
 figure (12)
 subplot (1,3,1)
-histogram (V1_3TMB.rfsize(V1_3TMB.rfsize>0.))
+histogram (V1_3TMB.rfsize(V1_3TMB.rfsize>0))
 axis ([0 15 0 350])
 xlabel ('Receptive field size (^{o})')
 ylabel ('Frequency')
@@ -1004,8 +1246,6 @@ title ('V3 (ses-UMCU7TSE)')
 %% Save plots
 
 
-
-
 %% Clear variables in workspace
 
 clear V1_ang
@@ -1030,5 +1270,7 @@ clear varea
 clear i
 clear mean*
 clear std*
+clear tmp*
+clear rm*
 
 %% END

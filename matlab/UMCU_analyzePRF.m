@@ -16,13 +16,13 @@ addpath(genpath('/home/margriet/tools/prf/matlab'))
 
 %% Specify parameters
 
-subjectcode = 'sub-visual02'; 
+subjectcode = 'sub-visual09'; 
 subjectnumber = str2num(subjectcode (11:12));
 
-UseDenoise = true;
+UseDenoise = false;
 
-Analyze3TMB = 1;
-Analyze7TGE = 1;
+Analyze3TMB = 0;
+Analyze7TGE = 0;
 Analyze7TSE = 1;
 
 AnalyzeMergedRuns = false;
@@ -34,7 +34,7 @@ AnalyzeAveragedRuns = false;
 % =========  Threshold UMCU preprocessed data ========= % 
 thresholdUMCU_3TMB = [700, 750, 200, 550, 800, 950  NaN, 600, 700, 550, 450, 250];
 thresholdUMCU_7TGE = [150, 100, 100, 100, 100, 300, NaN, 250, 250, 250, 200, 150];
-thresholdUMCU_7TSE = [50, 50, 50, NaN, 175, 50, NaN, 50, NaN, 100, 300, 120];
+thresholdUMCU_7TSE = [50, 50, 50, 50, 175, 50, NaN, 50, 50, 100, 300, 120];
 
 % =========  Threshold NYU preprocessed data ========= % 
 thresholdNYU_3TMB = [800, 700];
