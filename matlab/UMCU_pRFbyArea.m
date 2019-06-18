@@ -22,7 +22,7 @@ Benson_ROI_Names = {'V1', 'V2', 'V3', 'hV4', 'VO1', 'VO2', 'LO1', 'LO2', 'TO1', 
 %% Specify parameters
 
 subjectcode = 'sub-visual01'; 
-method = 'filtered';
+method = 'separate_bairprf';
 
 %% 3TMB DATA
 
@@ -104,7 +104,7 @@ if Analyze3TMB == true
 
     %% REMOVE NaN & Inf & zeroes & outliers FROM DATA
     
-    % ========= REMOVE BAD DATA (NaN & Inf & zeroes) FOR V1 ========= %
+    % ========= REMOVE BAD DATA FOR V1 ========= %
     
     %%% FIND BAD DATA IN ANG %%%
     indexInf = find(isinf(V1_ang));
@@ -168,7 +168,7 @@ if Analyze3TMB == true
     V1_ecc (rm_index) = [];
     V1_ang (rm_index) = [];
     
-    % ========= REMOVE BAD DATA (NaN & Inf & zeroes) FOR V2 ========= %
+    % ========= REMOVE BAD DATA FOR V2 ========= %
     
     %%% FIND BAD DATA IN ANG %%%
     indexInf = find(isinf(V2_ang));
@@ -232,7 +232,7 @@ if Analyze3TMB == true
     V2_ecc (rm_index) = [];
     V2_ang (rm_index) = [];
     
-    % ========= REMOVE BAD DATA (NaN & Inf & zeroes) FOR V3 ========= %
+    % ========= REMOVE BAD DATA FOR V3 ========= %
     
     %%% FIND BAD DATA IN ANG %%%
     indexInf = find(isinf(V3_ang));
@@ -452,7 +452,7 @@ if Analyze7TGE == true
 
     %% REMOVE NaN & Inf & zeroes & outliers FROM DATA
     
-    % ========= REMOVE BAD DATA (NaN & Inf & zeroes & outliers) FOR V1 ========= %
+    % ========= REMOVE BAD DATA FOR V1 ========= %
     
     %%% FIND BAD DATA IN ANG %%%
     indexInf = find(isinf(V1_ang));
@@ -516,7 +516,7 @@ if Analyze7TGE == true
     V1_ecc (rm_index) = [];
     V1_ang (rm_index) = [];    
     
-    % ========= REMOVE BAD DATA (NaN & Inf & zeroes % outliers) FOR V2 ========= %
+    % ========= REMOVE BAD DATA FOR V2 ========= %
     
     %%% FIND BAD DATA IN ANG %%%
     indexInf = find(isinf(V2_ang));
@@ -580,7 +580,7 @@ if Analyze7TGE == true
     V2_ecc (rm_index) = [];
     V2_ang (rm_index) = [];
    
-    % ========= REMOVE BAD DATA (NaN & Inf & zeroes & outliers) FOR V3 ========= %
+    % ========= REMOVE BAD DATA FOR V3 ========= %
     
     %%% FIND BAD DATA IN ANG %%%
     indexInf = find(isinf(V3_ang));
@@ -798,9 +798,9 @@ if Analyze7TSE == true
         end
     end
 
-    %% REMOVE NaN & Inf FROM DATA
+    %% REMOVE NaN & Inf & zeroes & outliers FROM DATA
     
-    % ========= REMOVE BAD DATA (NaN & Inf & zeroes) FOR V1 ========= %
+    % ========= REMOVE BAD DATA FOR V1 ========= %
     
     %%% FIND BAD DATA IN ANG %%%
     indexInf = find(isinf(V1_ang));
@@ -864,7 +864,7 @@ if Analyze7TSE == true
     V1_ecc (rm_index) = [];
     V1_ang (rm_index) = [];
     
-    % ========= REMOVE BAD DATA (NaN & Inf & zeroes) FOR V2 ========= %
+    % ========= REMOVE BAD DATA FOR V2 ========= %
     
     %%% FIND BAD DATA IN ANG %%%
     indexInf = find(isinf(V2_ang));
@@ -928,7 +928,7 @@ if Analyze7TSE == true
     V2_ecc (rm_index) = [];
     V2_ang (rm_index) = [];
     
-    % ========= REMOVE BAD DATA (NaN & Inf & zeroes) FOR V3 ========= %
+    % ========= REMOVE BAD DATA FOR V3 ========= %
     
     %%% FIND BAD DATA IN ANG %%
     indexInf = find(isinf(V3_ang));
@@ -1242,6 +1242,45 @@ axis ([0 15 0 350])
 xlabel ('Receptive field size (^{o})')
 ylabel ('Frequency')
 title ('V3 (ses-UMCU7TSE)')
+
+% ========= HISTOGRAM - SUMMARY ========= %
+figure (15)
+subplot (1,3,1)
+histogram (V1_3TMB.rfsize(V1_3TMB.rfsize>0.5))
+hold on
+histogram (V1_7TGE.rfsize(V1_7TGE.rfsize>0.5))
+histogram (V1_7TSE.rfsize(V1_7TSE.rfsize>0.5))
+hold off
+axis ([0 15 0 200])
+xlabel ('Receptive field size (^{o})')
+ylabel ('Frequency')
+title (['V1 (', subjectcode, ')'])
+legend ('3TMB', '7TGE', '7TSE')
+subplot (1,3,2)
+histogram (V2_3TMB.rfsize(V2_3TMB.rfsize>0.5))
+hold on
+histogram (V2_7TGE.rfsize(V2_7TGE.rfsize>0.5))
+histogram (V2_7TSE.rfsize(V2_7TSE.rfsize>0.5))
+hold off
+axis ([0 15 0 200])
+xlabel ('Receptive field size (^{o})')
+ylabel ('Frequency')
+title (['V2 (', subjectcode, ')'])
+legend ('3TMB', '7TGE', '7TSE')
+subplot (1,3,3)
+histogram (V3_3TMB.rfsize(V3_3TMB.rfsize>0.5))
+hold on
+histogram (V3_7TGE.rfsize(V3_7TGE.rfsize>0.5))
+histogram (V3_7TSE.rfsize(V3_7TSE.rfsize>0.5))
+hold off
+axis ([0 15 0 200])
+xlabel ('Receptive field size (^{o})')
+ylabel ('Frequency')
+title (['V3 (', subjectcode, ')'])
+legend ('3TMB', '7TGE', '7TSE')
+
+
+
 
 %% Save plots
 

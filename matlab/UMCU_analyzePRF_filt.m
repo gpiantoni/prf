@@ -16,7 +16,7 @@ addpath(genpath('/home/margriet/tools/prf/matlab'))
 
 %% Specify parameters
 
-subjectcode = 'sub-visual02'; 
+subjectcode = 'sub-visual03'; 
 subjectnumber = str2num(subjectcode (11:12));
 
 UseDenoise = false;
