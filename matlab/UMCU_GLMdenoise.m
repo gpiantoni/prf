@@ -13,9 +13,8 @@ tr = 0.85;
 
 %%
 
-subjectcode = 'sub-visual09'; 
+subjectcode = 'sub-visual01'; 
 subjectnumber = str2num(subjectcode (11:12));
-session = 'ses-UMCU7TGE';
 method = 'separate_bairprf';
 
 Analyze3TMB = 1;
@@ -42,14 +41,15 @@ if Analyze3TMB == true
     % Run1 
     events1 = tdfread(tsv{1});
     nrscans1 = size(data{1}, 4);
-    
     onset1 = round(events1.onset / tr);
     baseline1 = find(events1.trial_type == 255);
     
     desmat1 = zeros(nrscans1, 1);   
     desmat1(onset1) = 1;
     desmat1(baseline1) = 0;
-
+    
+    desmat1 = desmat1(1:nrscans1, 1);
+    
     % Run2
     events2 = tdfread(tsv{2});
     nrscans2 = size(data{2}, 4);
@@ -58,8 +58,11 @@ if Analyze3TMB == true
     
     desmat2 = zeros(nrscans2, 1);   
     desmat2(onset2) = 1;
-    desmat2(baseline1) = 0;
-       
+    desmat2(baseline2) = 0;
+    
+    desmat2 = desmat2(1:nrscans2, 1);
+    
+    % Combine design matrices
     design = {};
     design = {desmat1, desmat2};
     
@@ -97,13 +100,14 @@ if Analyze7TGE == true
     % Run1 
     events1 = tdfread(tsv{1});
     nrscans1 = size(data{1}, 4);
-    
     onset1 = round(events1.onset / tr);
     baseline1 = find(events1.trial_type == 255);
     
     desmat1 = zeros(nrscans1, 1);   
     desmat1(onset1) = 1;
     desmat1(baseline1) = 0;
+    
+    desmat1 = desmat1(1:nrscans1, 1);
 
     % Run2
     events2 = tdfread(tsv{2});
@@ -113,8 +117,11 @@ if Analyze7TGE == true
     
     desmat2 = zeros(nrscans2, 1);   
     desmat2(onset2) = 1;
-    desmat2(baseline1) = 0;
+    desmat2(baseline2) = 0;
+    
+    desmat2 = desmat2(1:nrscans2, 1);
        
+    % Combine design matrices
     design = {};
     design = {desmat1, desmat2};
     
@@ -152,13 +159,14 @@ if Analyze7TSE == true
     % Run1 
     events1 = tdfread(tsv{1});
     nrscans1 = size(data{1}, 4);
-    
     onset1 = round(events1.onset / tr);
     baseline1 = find(events1.trial_type == 255);
     
     desmat1 = zeros(nrscans1, 1);   
     desmat1(onset1) = 1;
     desmat1(baseline1) = 0;
+    
+    desmat1 = desmat1(1:nrscans1, 1);
 
     % Run2
     events2 = tdfread(tsv{2});
@@ -168,8 +176,11 @@ if Analyze7TSE == true
     
     desmat2 = zeros(nrscans2, 1);   
     desmat2(onset2) = 1;
-    desmat2(baseline1) = 0;
+    desmat2(baseline2) = 0;
+    
+    desmat2 = desmat2(1:nrscans2, 1);
        
+    % Combine design matrices
     design = {};
     design = {desmat1, desmat2};
     
@@ -195,6 +206,11 @@ end
 xx = 77;
 yy = 90;
 zz = 2;
+
+xx = 50;
+yy = 32;
+zz = 6;
+
 
 figure(1)
 data_pre = flatten(data{1}(xx, yy, zz, :));
