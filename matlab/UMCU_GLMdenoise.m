@@ -13,7 +13,7 @@ tr = 0.85;
 
 %%
 
-subjectcode = 'sub-visual01'; 
+subjectcode = 'sub-visual02'; 
 subjectnumber = str2num(subjectcode (11:12));
 method = 'separate_bairprf';
 
@@ -42,7 +42,7 @@ if Analyze3TMB == true
     events1 = tdfread(tsv{1});
     nrscans1 = size(data{1}, 4);
     onset1 = round(events1.onset / tr);
-    baseline1 = find(events1.trial_type == 255);
+    baseline1 = find(events1.trial_name == 255);    % BLANK stimuli
     
     desmat1 = zeros(nrscans1, 1);   
     desmat1(onset1) = 1;
@@ -54,7 +54,7 @@ if Analyze3TMB == true
     events2 = tdfread(tsv{2});
     nrscans2 = size(data{2}, 4);
     onset2 = round(events2.onset / tr);
-    baseline2 = find(events2.trial_type == 255);
+    baseline2 = find(events2.trial_type == 255);     % BLANK stimuli
     
     desmat2 = zeros(nrscans2, 1);   
     desmat2(onset2) = 1;
@@ -101,7 +101,7 @@ if Analyze7TGE == true
     events1 = tdfread(tsv{1});
     nrscans1 = size(data{1}, 4);
     onset1 = round(events1.onset / tr);
-    baseline1 = find(events1.trial_type == 255);
+    baseline1 = find(events1.trial_type == 255);     % BLANK stimuli
     
     desmat1 = zeros(nrscans1, 1);   
     desmat1(onset1) = 1;
@@ -113,7 +113,7 @@ if Analyze7TGE == true
     events2 = tdfread(tsv{2});
     nrscans2 = size(data{2}, 4);
     onset2 = round(events2.onset / tr);
-    baseline2 = find(events2.trial_type == 255);
+    baseline2 = find(events2.trial_type == 255);     % BLANK stimuli
     
     desmat2 = zeros(nrscans2, 1);   
     desmat2(onset2) = 1;
@@ -160,7 +160,7 @@ if Analyze7TSE == true
     events1 = tdfread(tsv{1});
     nrscans1 = size(data{1}, 4);
     onset1 = round(events1.onset / tr);
-    baseline1 = find(events1.trial_type == 255);
+    baseline1 = find(events1.trial_type == 255);     % BLANK stimuli
     
     desmat1 = zeros(nrscans1, 1);   
     desmat1(onset1) = 1;
@@ -172,7 +172,7 @@ if Analyze7TSE == true
     events2 = tdfread(tsv{2});
     nrscans2 = size(data{2}, 4);
     onset2 = round(events2.onset / tr);
-    baseline2 = find(events2.trial_type == 255);
+    baseline2 = find(events2.trial_type == 255);     % BLANK stimuli
     
     desmat2 = zeros(nrscans2, 1);   
     desmat2(onset2) = 1;
@@ -203,14 +203,9 @@ end
 %% Visualize improvements
 
 % Voxel coordinates
-xx = 77;
-yy = 90;
-zz = 2;
-
-xx = 50;
-yy = 32;
-zz = 6;
-
+xx = 85;    % Z
+yy = 75;    % X
+zz = 2;     % Y (slices)
 
 figure(1)
 data_pre = flatten(data{1}(xx, yy, zz, :));
@@ -222,6 +217,7 @@ hold off
 xlabel ('Time (scans)')
 ylabel ('BOLD signal')
 legend ('Original signal', 'GLMdenoised signal')
+set (gcf, 'Position', [800, 800, 1800, 300])
 
 %% End
 

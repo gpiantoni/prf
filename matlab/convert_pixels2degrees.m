@@ -21,7 +21,7 @@ scanner3T.params.display.pixelSize = scanner3T.params.display.dimensions / scann
 screen_size_3T = scanner3T.params.display.dimensions;
 distance_3T = scanner3T.params.display.distance;
 
-visual_angle_3T = (atan((screen_size_3T(1)/2) / distance_3T)) * 180/pi;      % in degrees (6.5175 deg)
+visual_angle_3T = (atan((screen_size_3T(1)/2) / distance_3T)) * 180/pi;      % in degrees (6.5175 deg)  5.59
 
 % ========= 7T scanner ========= % 
 scanner7T = load ('/Fridge/users/margriet/stimuli/BAIR_pRF/scanner_params/Scanner_7T.mat');        % 7T scanner parameters

@@ -13,7 +13,11 @@ disp('Computing mean volume')
 
 %% Compute mean
 
-nifti = ['/Fridge/users/margriet/subjects/bids_umcupreproc/', subject, '/', session, '/', subject, '_', session, '_task-bairprf_MERGED_bold/', subject, '_', session, '_task-bairprf_MERGED_run02_preproc.nii'];
+if session == 'ses-UMCU3TMB'
+    nifti = ['/Fridge/users/margriet/subjects/bids_umcupreproc/', subject, '/', session, '/', subject, '_', session, '_task-bairprf_MERGED_bold/', subject, '_', session, '_task-bairprf_MERGED_bold-rwm'];
+else 
+    nifti = ['/Fridge/users/margriet/subjects/bids_umcupreproc/', subject, '/', session, '/', subject, '_', session, '_task-bairprf_MERGED_bold/', subject, '_', session, '_task-bairprf_MERGED_bold-masked-mc-warp.nii'];
+end
 
 hdr = niftiinfo(nifti);
 
@@ -28,5 +32,3 @@ hdr.Datatype = 'double';
 niftiwrite (mean_nii, fullfile(output_dir, 'mean.nii'), hdr);
 
 %% End
-
-

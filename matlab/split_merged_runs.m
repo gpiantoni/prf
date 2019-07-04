@@ -10,53 +10,32 @@ function split_merged_runs (subjectcode, session, output_dir)
 %%
 
 % ========= Read in nifti  ========= % 
-if session == 'ses-UMCU3TMB'                % 3T data
-    merged = niftiread (['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/', session, '/', subjectcode, '_', session, '_task-bairprf_MERGED_bold/', subjectcode, '_', session, '_task-bairprf_MERGED_bold-rwm.nii']);
-    run1 = niftiread (['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/', session, '/', subjectcode, '_', session, '_task-bairprf_run-01_bold/', subjectcode, '_', session, '_task-bairprf_run-01_bold-rwm.nii']);
-    dyn_run1 = size(run1,4);
-    run2 = niftiread (['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/', session, '/', subjectcode, '_', session, '_task-bairprf_run-02_bold/', subjectcode, '_', session, '_task-bairprf_run-02_bold-rwm.nii']);
-    dyn_run2 = size(run2,4);    
-    
-    n_vol = min(dyn_run1, dyn_run2);
-    
-    merged_part1 = merged (:,:,:, 1:dyn_run1);
-    merged_part2 = merged (:,:,:, (1+dyn_run1):(dyn_run1+dyn_run2));
-    
-else                                        % 7T data
-    merged = niftiread (['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/', session, '/', subjectcode, '_', session, '_task-bairprf_MERGED_bold/', subjectcode, '_', session, '_task-bairprf_MERGED_bold-masked-mc-warp.nii']);
-    run1 = niftiread (['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/', session, '/', subjectcode, '_', session, '_task-bairprf_run-01_bold/', subjectcode, '_', session, '_task-bairprf_run-01_bold-masked-mc-warp.nii']);
-    dyn_run1 = size(run1,4);
-    run2 = niftiread (['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/', session, '/', subjectcode, '_', session, '_task-bairprf_run-02_bold/', subjectcode, '_', session, '_task-bairprf_run-02_bold-masked-mc-warp.nii']);
-    dyn_run2 = size(run2,4);
- 
-    n_vol = min(dyn_run1, dyn_run2);
-    
-    merged_part1 = merged (:,:,:, 1:dyn_run1);
-    merged_part2 = merged (:,:,:, (1+dyn_run1):(dyn_run1+dyn_run2));
-end
+merged = niftiread (['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/', session, '/', subjectcode, '_', session '_task-bairprf_MERGED_bold/', subjectcode, '_', session, '_task-bairprf_MERGED_preproc.nii']);
 
-% ========= Write output nifti (task-bairprf_MERGED_runxx_bold)  ========= % 
-   
-if session == 'ses-UMCU3TMB'                % 3T data
-    % Run1
-    hdr = niftiinfo (['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/', session, '/', subjectcode, '_', session, '_task-bairprf_run-01_bold/', subjectcode, '_', session, '_task-bairprf_run-01_bold-rwm.nii']);
-    filename_run1 = [subjectcode, '_', session, '_task-bairprf_MERGED_run01_bold-rwm.nii'];
-    niftiwrite (merged_part1, fullfile(output_dir, filename_run1), hdr)
-    % Run2
-    hdr = niftiinfo (['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/', session, '/', subjectcode, '_', session, '_task-bairprf_run-02_bold/', subjectcode, '_', session, '_task-bairprf_run-02_bold-rwm.nii']);
-    filename_run2 = [subjectcode, '_', session, '_task-bairprf_MERGED_run02_bold-rwm.nii'];
-    niftiwrite (merged_part2, fullfile(output_dir, filename_run2), hdr)
-   
-else                                        % 7T data
-    % Run1
-    hdr = niftiinfo (['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/', session, '/', subjectcode, '_', session, '_task-bairprf_run-01_bold/', subjectcode, '_', session, '_task-bairprf_run-01_bold-masked-mc-warp.nii']);
-    filename_run1 = [subjectcode, '_', session, '_task-bairprf_MERGED_run01_bold-masked-mc-warp.nii'];
-    niftiwrite (merged_part1, fullfile(output_dir, filename_run1), hdr)
-    % Run2
-    hdr = niftiinfo (['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/', session, '/', subjectcode, '_', session, '_task-bairprf_run-02_bold/', subjectcode, '_', session, '_task-bairprf_run-02_bold-masked-mc-warp.nii']);
-    filename_run2 = [subjectcode, '_', session, '_task-bairprf_MERGED_run02_bold-masked-mc-warp.nii'];
-    niftiwrite (merged_part2, fullfile(output_dir, filename_run2), hdr)
-end
+run1 = niftiread (['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/', session, '/', subjectcode, '_', session, '_task-bairprf_run-01_bold/', subjectcode, '_', session, '_task-bairprf_run-01_bold.nii']);
+dyn_run1 = size(run1,4);
+run2 = niftiread (['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/', session, '/', subjectcode, '_', session, '_task-bairprf_run-02_bold/', subjectcode, '_', session, '_task-bairprf_run-02_bold.nii']);
+dyn_run2 = size(run2,4);    
+
+n_vol = min(dyn_run1, dyn_run2);
+
+merged_part1 = merged (:,:,:, 1:dyn_run1);
+merged_part2 = merged (:,:,:, (1+dyn_run1):(dyn_run1+dyn_run2));
+
+% ========= Write output nifti (task-bairprf_MERGED_runxx_preproc)  ========= % 
+% Run1
+hdr1 = niftiinfo (['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/', session, '/', subjectcode, '_', session '_task-bairprf_MERGED_bold/', subjectcode, '_', session, '_task-bairprf_MERGED_preproc.nii']);
+hdr1.ImageSize(4) = dyn_run1;
+filename_run1 = [subjectcode, '_', session, '_task-bairprf_MERGED_run01_preproc.nii'];
+niftiwrite (merged_part1, fullfile(output_dir, filename_run1), hdr1)
+
+% Run2
+hdr2 = niftiinfo (['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/', session, '/', subjectcode, '_', session '_task-bairprf_MERGED_bold/', subjectcode, '_', session, '_task-bairprf_MERGED_preproc.nii']);
+hdr2.ImageSize(4) = dyn_run2;
+filename_run2 = [subjectcode, '_', session, '_task-bairprf_MERGED_run02_preproc.nii'];
+niftiwrite (merged_part2, fullfile(output_dir, filename_run2), hdr2)
+
+
 
 %%
 

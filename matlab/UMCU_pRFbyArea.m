@@ -21,17 +21,19 @@ Benson_ROI_Names = {'V1', 'V2', 'V3', 'hV4', 'VO1', 'VO2', 'LO1', 'LO2', 'TO1', 
 
 %% Specify parameters
 
-subjectcode = 'sub-visual01'; 
-method = 'separate_bairprf';
+subjectcode = 'sub-visual12'; 
+method = 'final';
+
+disp ('Running')
 
 %% 3TMB DATA
 
 if Analyze3TMB == true
     % ========= READ IN PRF RESULTS ========= %
-    ang = niftiread (['/Fridge/users/margriet/projects/prf/analyzeprf/results/umcu/', subjectcode, '/ses-UMCU3TMB/', method, '/ang_masked1.nii']);
-    ecc = niftiread (['/Fridge/users/margriet/projects/prf/analyzeprf/results/umcu/', subjectcode, '/ses-UMCU3TMB/', method, '/ecc_masked1.nii']);
-    rfsize = niftiread (['/Fridge/users/margriet/projects/prf/analyzeprf/results/umcu/', subjectcode, '/ses-UMCU3TMB/', method, '/rfsize_masked1.nii']);
-    R2 = niftiread (['/Fridge/users/margriet/projects/prf/analyzeprf/results/umcu/', subjectcode, '/ses-UMCU3TMB/', method, '/R2.nii']);
+    ang = niftiread (['/Fridge/users/margriet/projects/prf/analyzeprf/results/umcu/', subjectcode, '/ses-UMCU3TMB/', method, '/ang_masked5clust.nii']);
+    ecc = niftiread (['/Fridge/users/margriet/projects/prf/analyzeprf/results/umcu/', subjectcode, '/ses-UMCU3TMB/', method, '/ecc_masked5clust.nii']);
+    rfsize = niftiread (['/Fridge/users/margriet/projects/prf/analyzeprf/results/umcu/', subjectcode, '/ses-UMCU3TMB/', method, '/rfsize_masked5clust.nii']);
+    R2 = niftiread (['/Fridge/users/margriet/projects/prf/analyzeprf/results/umcu/', subjectcode, '/ses-UMCU3TMB/', method, '/R2_masked5clust.nii']);
 
     % ========= RESHAPE ========= %
     nrnodes = size(R2,1) * size(R2,2) * size(R2,3);
@@ -42,7 +44,7 @@ if Analyze3TMB == true
     R2_1d = reshape (R2, [nrnodes,1]);
 
     % ========= READ IN BENSON ATLAS ========= %
-    varea = niftiread (['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/ses-UMCU3TMB/', subjectcode, '_ses-UMCU3TMB_task-bairprf_MERGED_bold/varea.nii']);
+    varea = niftiread (['/Fridge/users/margriet/projects/coregistration/anat2anat/', subjectcode, '/BENSON_varea_3TMB_func.nii.gz']);
     varea_3TMB = reshape (varea, [nrnodes,1]);
 
     % ========= COMPUTE RESULTS BY VISUAL AREA ========= %
@@ -99,6 +101,24 @@ if Analyze3TMB == true
     for i = 1:nrnodes
         if varea_3TMB(i) == 3
             V3_rfsize(i) = rfsize_1d(i);
+        end
+    end
+    V1_R2 = zeros (nrnodes, 1);         %%% R2 %%%
+    for i = 1:nrnodes
+        if varea_3TMB(i) == 1
+            V1_R2(i) = R2_1d (i);
+        end
+    end
+    V2_R2 = zeros (nrnodes, 1);         
+    for i = 1:nrnodes
+        if varea_3TMB(i) == 2
+            V2_R2(i) = R2_1d (i);
+        end
+    end
+    V3_R2 = zeros (nrnodes, 1);         
+    for i = 1:nrnodes
+        if varea_3TMB(i) == 3
+            V3_R2(i) = R2_1d(i);
         end
     end
 
@@ -167,6 +187,7 @@ if Analyze3TMB == true
     V1_rfsize(rm_index) = [];
     V1_ecc (rm_index) = [];
     V1_ang (rm_index) = [];
+    V1_R2 (rm_index) = [];
     
     % ========= REMOVE BAD DATA FOR V2 ========= %
     
@@ -231,6 +252,7 @@ if Analyze3TMB == true
     V2_rfsize(rm_index) = [];
     V2_ecc (rm_index) = [];
     V2_ang (rm_index) = [];
+    V2_R2 (rm_index) = [];
     
     % ========= REMOVE BAD DATA FOR V3 ========= %
     
@@ -294,7 +316,8 @@ if Analyze3TMB == true
     %%% REMOVE SELECTED INDICES %%%
     V3_rfsize(rm_index) = [];
     V3_ecc (rm_index) = [];
-    V3_ang (rm_index) = [];             
+    V3_ang (rm_index) = [];     
+    V3_R2 (rm_index) = [];
        
     %% GROUP RESULTS - 3TMB
     
@@ -303,27 +326,38 @@ if Analyze3TMB == true
     V1_3TMB.ang = V1_ang;
     V1_3TMB.ecc = V1_ecc;
     V1_3TMB.rfsize = V1_rfsize;
+    V1_3TMB.R2 = V1_R2;
     
     V2_3TMB = {};
     V2_3TMB.ang = V2_ang;
     V2_3TMB.ecc = V2_ecc;
     V2_3TMB.rfsize = V2_rfsize;
+    V2_3TMB.R2 = V2_R2;
     
     V3_3TMB = {};
     V3_3TMB.ang = V3_ang;
     V3_3TMB.ecc = V3_ecc;
     V3_3TMB.rfsize = V3_rfsize;
+    V3_3TMB.R2 = V3_R2;
     
     %% VISUALIZE RESULTS - ses-UMCU3TMB
     
-     % Linear regression
-    P = polyfit(V1_3TMB.ecc, V1_3TMB.rfsize, 1);
+%      % Linear regression
+%     P = polyfit(V1_3TMB.ecc, V1_3TMB.rfsize, 1);
+%     yfit_P = polyval (P, V1_3TMB.ecc);
+%     Q = polyfit(V2_3TMB.ecc, V2_3TMB.rfsize, 1);
+%     yfit_Q = polyval (Q, V2_3TMB.ecc);
+%     R = polyfit(V3_3TMB.ecc, V3_3TMB.rfsize, 1);
+%     yfit_R = polyval (R, V3_3TMB.ecc);
+    
+    % Linear regression - Weighted R2
+    P = polyfitweighted(V1_3TMB.ecc, V1_3TMB.rfsize, 1, V1_3TMB.R2);
     yfit_P = polyval (P, V1_3TMB.ecc);
-    Q = polyfit(V2_3TMB.ecc, V2_3TMB.rfsize, 1);
+    Q = polyfitweighted(V2_3TMB.ecc, V2_3TMB.rfsize, 1, V2_3TMB.R2);
     yfit_Q = polyval (Q, V2_3TMB.ecc);
-    R = polyfit(V3_3TMB.ecc, V3_3TMB.rfsize, 1);
+    R = polyfitweighted(V3_3TMB.ecc, V3_3TMB.rfsize, 1, V3_3TMB.R2);
     yfit_R = polyval (R, V3_3TMB.ecc);
-        
+              
     % ========= SCATTERPLOT 3T MULTIBAND ========= %
    
     figure (1) 
@@ -376,10 +410,10 @@ end
 
 if Analyze7TGE == true
     % ========= READ IN PRF RESULTS ========= %
-    ang = niftiread (['/Fridge/users/margriet/projects/prf/analyzeprf/results/umcu/', subjectcode, '/ses-UMCU7TGE/', method, '/ang_masked1.nii']);
-    ecc = niftiread (['/Fridge/users/margriet/projects/prf/analyzeprf/results/umcu/', subjectcode, '/ses-UMCU7TGE/', method, '/ecc_masked1.nii']);
-    rfsize = niftiread (['/Fridge/users/margriet/projects/prf/analyzeprf/results/umcu/', subjectcode, '/ses-UMCU7TGE/', method, '/rfsize_masked1.nii']);
-    R2 = niftiread (['/Fridge/users/margriet/projects/prf/analyzeprf/results/umcu/', subjectcode, '/ses-UMCU7TGE/', method, '/R2.nii']);
+    ang = niftiread (['/Fridge/users/margriet/projects/prf/analyzeprf/results/umcu/', subjectcode, '/ses-UMCU7TGE/', method, '/ang_masked5clust.nii']);
+    ecc = niftiread (['/Fridge/users/margriet/projects/prf/analyzeprf/results/umcu/', subjectcode, '/ses-UMCU7TGE/', method, '/ecc_masked5clust.nii']);
+    rfsize = niftiread (['/Fridge/users/margriet/projects/prf/analyzeprf/results/umcu/', subjectcode, '/ses-UMCU7TGE/', method, '/rfsize_masked5clust.nii']);
+    R2 = niftiread (['/Fridge/users/margriet/projects/prf/analyzeprf/results/umcu/', subjectcode, '/ses-UMCU7TGE/', method, '/R2_masked5clust.nii']);
 
     % ========= RESHAPE ========= %
     nrnodes = size(R2,1) * size(R2,2) * size(R2,3);
@@ -390,7 +424,7 @@ if Analyze7TGE == true
     R2_1d = reshape (R2, [nrnodes,1]);
 
     % ========= READ IN BENSON ATLAS ========= %
-    varea = niftiread (['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/ses-UMCU7TGE/', subjectcode, '_ses-UMCU7TGE_task-bairprf_MERGED_bold/varea.nii']);
+    varea = niftiread (['/Fridge/users/margriet/projects/coregistration/anat2anat/', subjectcode, '/BENSON_varea_7TGE_func.nii.gz']);
     varea_7TGE = reshape (varea, [nrnodes,1]);
 
     % ========= COMPUTE RESULTS BY VISUAL AREA ========= %
@@ -447,6 +481,24 @@ if Analyze7TGE == true
     for i = 1:nrnodes
         if varea_7TGE(i) == 3
             V3_rfsize(i) = rfsize_1d(i);
+        end
+    end
+    V1_R2 = zeros (nrnodes, 1);         %%% R2 %%%
+    for i = 1:nrnodes
+        if varea_7TGE(i) == 1
+            V1_R2(i) = R2_1d(i);
+        end
+    end
+    V2_R2 = zeros (nrnodes, 1);        
+    for i = 1:nrnodes
+        if varea_7TGE(i) == 2
+            V2_R2(i) = R2_1d(i);
+        end
+    end
+    V3_R2 = zeros (nrnodes, 1);         
+    for i = 1:nrnodes
+        if varea_7TGE(i) == 3
+            V3_R2(i) = R2_1d(i);
         end
     end
 
@@ -515,6 +567,7 @@ if Analyze7TGE == true
     V1_rfsize(rm_index) = [];
     V1_ecc (rm_index) = [];
     V1_ang (rm_index) = [];    
+    V1_R2 (rm_index) = [];  
     
     % ========= REMOVE BAD DATA FOR V2 ========= %
     
@@ -579,7 +632,8 @@ if Analyze7TGE == true
     V2_rfsize(rm_index) = [];
     V2_ecc (rm_index) = [];
     V2_ang (rm_index) = [];
-   
+    V2_R2 (rm_index) = [];  
+  
     % ========= REMOVE BAD DATA FOR V3 ========= %
     
     %%% FIND BAD DATA IN ANG %%%
@@ -643,7 +697,7 @@ if Analyze7TGE == true
     V3_rfsize(rm_index) = [];
     V3_ecc (rm_index) = [];
     V3_ang (rm_index) = [];       
-    
+    V3_R2 (rm_index) = [];      
    
     %% GROUP RESULTS - 7TGE
     
@@ -652,25 +706,36 @@ if Analyze7TGE == true
     V1_7TGE.ang = V1_ang;
     V1_7TGE.ecc = V1_ecc;
     V1_7TGE.rfsize = V1_rfsize;
-    
+    V1_7TGE.R2 = V1_R2;
+        
     V2_7TGE = {};
     V2_7TGE.ang = V2_ang;
     V2_7TGE.ecc = V2_ecc;
     V2_7TGE.rfsize = V2_rfsize;
+    V2_7TGE.R2 = V2_R2;
     
     V3_7TGE = {};
     V3_7TGE.ang = V3_ang;
     V3_7TGE.ecc = V3_ecc;
     V3_7TGE.rfsize = V3_rfsize;
-    
+    V3_7TGE.R2 = V3_R2;
+        
     %% VISUALIZE RESULTS - ses-UMCU7TGE
 
-     % Linear regression
-    S = polyfit(V1_7TGE.ecc, V1_7TGE.rfsize, 1);
+%      % Linear regression
+%     S = polyfit(V1_7TGE.ecc, V1_7TGE.rfsize, 1);
+%     yfit_S = polyval (S, V1_7TGE.ecc);
+%     T = polyfit(V2_7TGE.ecc, V2_7TGE.rfsize, 1);
+%     yfit_T = polyval (T, V2_7TGE.ecc);
+%     U = polyfit(V3_7TGE.ecc, V3_7TGE.rfsize, 1);
+%     yfit_U = polyval (U, V3_7TGE.ecc);
+    
+    % Linear regression - Weighted R2
+    S = polyfitweighted(V1_7TGE.ecc, V1_7TGE.rfsize, 1, V1_7TGE.R2);
     yfit_S = polyval (S, V1_7TGE.ecc);
-    T = polyfit(V2_7TGE.ecc, V2_7TGE.rfsize, 1);
+    T = polyfitweighted(V2_7TGE.ecc, V2_7TGE.rfsize, 1, V2_7TGE.R2);
     yfit_T = polyval (T, V2_7TGE.ecc);
-    U = polyfit(V3_7TGE.ecc, V3_7TGE.rfsize, 1);
+    U = polyfitweighted(V3_7TGE.ecc, V3_7TGE.rfsize, 1, V3_7TGE.R2);
     yfit_U = polyval (U, V3_7TGE.ecc);
  
     % ========= SCATTERPLOT 7T GRADIENT ECHO ========= %
@@ -724,10 +789,10 @@ end
 
 if Analyze7TSE == true
     % ========= READ IN PRF RESULTS ========= %
-    ang = niftiread (['/Fridge/users/margriet/projects/prf/analyzeprf/results/umcu/', subjectcode, '/ses-UMCU7TSE/', method, '/ang_masked1.nii']);
-    ecc = niftiread (['/Fridge/users/margriet/projects/prf/analyzeprf/results/umcu/', subjectcode, '/ses-UMCU7TSE/', method, '/ecc_masked1.nii']);
-    rfsize = niftiread (['/Fridge/users/margriet/projects/prf/analyzeprf/results/umcu/', subjectcode, '/ses-UMCU7TSE/', method, '/rfsize_masked1.nii']);
-    R2 = niftiread (['/Fridge/users/margriet/projects/prf/analyzeprf/results/umcu/', subjectcode, '/ses-UMCU7TSE/', method, '/R2.nii']);
+    ang = niftiread (['/Fridge/users/margriet/projects/prf/analyzeprf/results/umcu/', subjectcode, '/ses-UMCU7TSE/', method, '/ang_masked5clust.nii']);
+    ecc = niftiread (['/Fridge/users/margriet/projects/prf/analyzeprf/results/umcu/', subjectcode, '/ses-UMCU7TSE/', method, '/ecc_masked5clust.nii']);
+    rfsize = niftiread (['/Fridge/users/margriet/projects/prf/analyzeprf/results/umcu/', subjectcode, '/ses-UMCU7TSE/', method, '/rfsize_masked5clust.nii']);
+    R2 = niftiread (['/Fridge/users/margriet/projects/prf/analyzeprf/results/umcu/', subjectcode, '/ses-UMCU7TSE/', method, '/R2_masked5clust.nii']);
 
     % ========= RESHAPE ========= %
     nrnodes = size(R2,1) * size(R2,2) * size(R2,3);
@@ -738,7 +803,7 @@ if Analyze7TSE == true
     R2_1d = reshape (R2, [nrnodes,1]);
 
     % ========= READ IN BENSON ATLAS ========= %
-    varea = niftiread (['/Fridge/users/margriet/subjects/bids_umcupreproc/', subjectcode, '/ses-UMCU7TSE/', subjectcode, '_ses-UMCU7TSE_task-bairprf_MERGED_bold/varea.nii']);
+    varea = niftiread (['/Fridge/users/margriet/projects/coregistration/anat2anat/', subjectcode, '/BENSON_varea_7TSE_func.nii.gz']);
     varea_7TSE = reshape (varea, [nrnodes,1]);
 
     % ========= COMPUTE RESULTS BY VISUAL AREA ========= %
@@ -795,6 +860,24 @@ if Analyze7TSE == true
     for i = 1:nrnodes
         if varea_7TSE(i) == 3
             V3_rfsize(i) = rfsize_1d(i);
+        end
+    end
+    V1_R2 = zeros (nrnodes, 1);         %%% R2 %%%
+    for i = 1:nrnodes
+        if varea_7TSE(i) == 1
+            V1_R2(i) = R2_1d(i);
+        end
+    end
+    V2_R2 = zeros (nrnodes, 1);        
+    for i = 1:nrnodes
+        if varea_7TSE(i) == 2
+            V2_R2(i) = R2_1d(i);
+        end
+    end
+    V3_R2 = zeros (nrnodes, 1);         
+    for i = 1:nrnodes
+        if varea_7TSE(i) == 3
+            V3_R2(i) = R2_1d(i);
         end
     end
 
@@ -863,6 +946,7 @@ if Analyze7TSE == true
     V1_rfsize(rm_index) = [];
     V1_ecc (rm_index) = [];
     V1_ang (rm_index) = [];
+    V1_R2 (rm_index) = [];
     
     % ========= REMOVE BAD DATA FOR V2 ========= %
     
@@ -927,6 +1011,7 @@ if Analyze7TSE == true
     V2_rfsize(rm_index) = [];
     V2_ecc (rm_index) = [];
     V2_ang (rm_index) = [];
+    V2_R2 (rm_index) = [];
     
     % ========= REMOVE BAD DATA FOR V3 ========= %
     
@@ -991,6 +1076,7 @@ if Analyze7TSE == true
     V3_rfsize(rm_index) = [];
     V3_ecc (rm_index) = [];
     V3_ang (rm_index) = [];        
+    V3_R2 (rm_index) = [];
      
        
     %% GROUP RESULTS - 7TSE
@@ -1000,25 +1086,37 @@ if Analyze7TSE == true
     V1_7TSE.ang = V1_ang;
     V1_7TSE.ecc = V1_ecc;
     V1_7TSE.rfsize = V1_rfsize;
+    V1_7TSE.R2 = V1_R2;
     
     V2_7TSE = {};
     V2_7TSE.ang = V2_ang;
     V2_7TSE.ecc = V2_ecc;
     V2_7TSE.rfsize = V2_rfsize;
+    V2_7TSE.R2 = V2_R2;
     
     V3_7TSE = {};
     V3_7TSE.ang = V3_ang;
     V3_7TSE.ecc = V3_ecc;
     V3_7TSE.rfsize = V3_rfsize;
+    V3_7TSE.R2 = V3_R2;
+    
     
     %% VISUALIZE RESULTS - ses-UMCU7TSE
     
-    % Linear regression
-    V = polyfit(V1_7TSE.ecc, V1_7TSE.rfsize, 1);
+%     % Linear regression
+%     V = polyfit(V1_7TSE.ecc, V1_7TSE.rfsize, 1);
+%     yfit_V = polyval (V, V1_7TSE.ecc);
+%     W = polyfit(V2_7TSE.ecc, V2_7TSE.rfsize, 1);
+%     yfit_W = polyval (W, V2_7TSE.ecc);
+%     X = polyfit(V3_7TSE.ecc, V3_7TSE.rfsize, 1);
+%     yfit_X = polyval (X, V3_7TSE.ecc);
+    
+    % Linear regression - Weighted R2
+    V = polyfitweighted(V1_7TSE.ecc, V1_7TSE.rfsize, 1, V1_7TSE.R2);
     yfit_V = polyval (V, V1_7TSE.ecc);
-    W = polyfit(V2_7TSE.ecc, V2_7TSE.rfsize, 1);
+    W = polyfitweighted(V2_7TSE.ecc, V2_7TSE.rfsize, 1, V2_7TSE.R2);
     yfit_W = polyval (W, V2_7TSE.ecc);
-    X = polyfit(V3_7TSE.ecc, V3_7TSE.rfsize, 1);
+    X = polyfitweighted(V3_7TSE.ecc, V3_7TSE.rfsize, 1, V3_7TSE.R2);
     yfit_X = polyval (X, V3_7TSE.ecc);
     
     % ========= SCATTERPLOT - 7T SPIN ECHO ========= %
@@ -1313,3 +1411,27 @@ clear tmp*
 clear rm*
 
 %% END
+
+function [BINS_CENTER, rfsize_mean] = compute_bins(ecc, rfsize)
+bin_start = 0.5;
+bin_size = 1;
+n_bins = 20;
+
+BINS_EDGE = colon(bin_start, bin_size, n_bins * bin_size + bin_start);
+binned = discretize(ecc, BINS_EDGE);
+
+rfsize_mean = nan(1, length(BINS_EDGE));
+rfsize_sem = nan(1, length(BINS_EDGE));
+for i = 1:length(BINS_EDGE)
+    val = rfsize(binned == i);
+    rfsize_mean(i) = mean(val);
+    rfsize_sem(i) = std(val) / sqrt(length(val));
+end
+
+BINS_CENTER = BINS_EDGE + bin_size / 2;
+figure; errorbar(BINS_CENTER, rfsize_mean, rfsize_sem)
+
+BINS_CENTER = BINS_CENTER(~isnan(rfsize_mean));
+rfsize_mean = rfsize_mean(~isnan(rfsize_mean));
+
+end
