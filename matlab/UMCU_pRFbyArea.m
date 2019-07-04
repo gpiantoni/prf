@@ -1377,8 +1377,67 @@ ylabel ('Frequency')
 title (['V3 (', subjectcode, ')'])
 legend ('3TMB', '7TGE', '7TSE')
 
+%% Plot histogram eccentricity
 
+% ========= HISTOGRAM - V1 eccentricity ========= %
+figure (16)
+a = histfit (V1_3TMB.ecc,50);
+hold on
+b = histfit (V1_7TGE.ecc,50);
+c = histfit (V1_7TSE.ecc,50);
+hold off
+axis ([0 15 0 100])
+set(a(1), 'facecolor', color(1,:), 'FaceAlpha', 0.8)
+set(a(2), 'color', 'k')
+set(b(1), 'facecolor', color(2,:), 'FaceAlpha', 0.8)
+set(b(2), 'color', 'k')
+set(c(1), 'facecolor', color(3,:), 'FaceAlpha', 0.8)
+set(c(2), 'color', 'k')
+xlabel ('Eccentricity (^{o})')
+ylabel ('Frequency')
+title ('V1 eccentricity distribution')
+legend ([a(1), b(1), c(1)], '3TMB', '7TGE', '7TSE')
+set (gcf, 'Position', [800, 800, 600, 1200])
 
+% ========= HISTOGRAM - V2 eccentricity ========= %
+figure (17)
+a = histfit (V2_3TMB.ecc, 50, 'normal');
+hold on
+b = histfit (V2_7TGE.ecc, 50, 'normal');
+c = histfit (V2_7TSE.ecc, 50, 'normal');
+hold off
+axis ([0 15 0 100])
+set(a(1), 'facecolor', color(1,:), 'FaceAlpha', 0.8)
+set(a(2), 'color', 'k')
+set(b(1), 'facecolor', color(2,:), 'FaceAlpha', 0.8)
+set(b(2), 'color', 'k')
+set(c(1), 'facecolor', color(3,:), 'FaceAlpha', 0.8)
+set(c(2), 'color', 'k')
+xlabel ('Eccentricity (^{o})')
+ylabel ('Frequency')
+title ('V2 eccentricity distribution')
+legend ([a(1), b(1), c(1)], '3TMB', '7TGE', '7TSE')
+set (gcf, 'Position', [800, 800, 600, 1200])
+
+% ========= HISTOGRAM - V3 eccentricity ========= %
+figure (18)
+a = histfit (V3_3TMB.ecc, 50, 'normal');
+hold on
+b = histfit (V3_7TGE.ecc, 50, 'normal');
+c = histfit (V3_7TSE.ecc, 50, 'normal');
+hold off
+axis ([0 15 0 100])
+set(a(1), 'facecolor', color(1,:), 'FaceAlpha', 0.8)
+set(a(2), 'color', 'k')
+set(b(1), 'facecolor', color(2,:), 'FaceAlpha', 0.8)
+set(b(2), 'color', 'k')
+set(c(1), 'facecolor', color(3,:), 'FaceAlpha', 0.8)
+set(c(2), 'color', 'k')
+xlabel ('Eccentricity (^{o})')
+ylabel ('Frequency')
+title ('V3 eccentricity distribution')
+legend ([a(1), b(1), c(1)], '3TMB', '7TGE', '7TSE')
+set (gcf, 'Position', [800, 800, 600, 1200])
 
 %% Save plots
 
