@@ -82,4 +82,65 @@ per_7TSE = [(R2_total/R2_total)*100, (R2_5/R2_total)*100, (R2_10/R2_total)*100, 
 val = [val_3TMB; val_7TGE; val_7TSE];
 per = [per_3TMB; per_7TGE; per_7TSE];
 
+%% Calculate mean R2 pre and post filtering
+
+% ========= PRE-FILTERING ========= % 
+pre3TMB = niftiread (['/Fridge/users/margriet/projects/prf/analyzeprf/results/umcu/', subjectcode, '/ses-UMCU3TMB/unfiltered/R2_masked0clust.nii']);
+nrnodes = size(pre3TMB,1) * size(pre3TMB,2) * size(pre3TMB,3);
+pre3TMB = reshape (pre3TMB, [nrnodes,1]);
+indexInf = find(isinf(pre3TMB));
+indexNaN = find(isnan(pre3TMB));
+indexZero = find (pre3TMB == 0);
+index_rm = cat (1, indexInf, indexNaN, indexZero);
+pre3TMB(unique(index_rm)) = [];
+meanpre3TMB = mean (pre3TMB);
+
+pre7TGE = niftiread (['/Fridge/users/margriet/projects/prf/analyzeprf/results/umcu/', subjectcode, '/ses-UMCU7TGE/unfiltered/R2_masked0clust.nii']);
+nrnodes = size(pre7TGE,1) * size(pre7TGE,2) * size(pre7TGE,3);
+pre7TGE = reshape (pre7TGE, [nrnodes,1]);
+indexInf = find(isinf(pre7TGE));
+indexNaN = find(isnan(pre7TGE));
+indexZero = find (pre7TGE == 0);
+index_rm = cat (1, indexInf, indexNaN, indexZero);
+pre7TGE(unique(index_rm)) = [];
+meanpre7TGE = mean (pre7TGE);
+
+pre7TSE = niftiread (['/Fridge/users/margriet/projects/prf/analyzeprf/results/umcu/', subjectcode, '/ses-UMCU7TSE/unfiltered/R2_masked0clust.nii']);
+nrnodes = size(pre7TSE,1) * size(pre7TSE,2) * size(pre7TSE,3);
+pre7TSE = reshape (pre7TSE, [nrnodes,1]);
+indexInf = find(isinf(pre7TSE));
+indexNaN = find(isnan(pre7TSE));
+indexZero = find (pre7TSE == 0);
+index_rm = cat (1, indexInf, indexNaN, indexZero);
+pre7TSE(unique(index_rm)) = [];
+meanpre7TSE = mean (pre7TSE);
+
+meanpre = [meanpre3TMB; meanpre7TGE; meanpre7TSE];
+
+% ========= POST-FILTERING ========= % 
+
+meanpost3TMB = mean (R2_3TMB);
+meanpost7TGE = mean (R2_7TGE);
+meanpost7TSE = mean (R2_7TSE);
+
+meanpost = [meanpost3TMB; meanpost7TGE; meanpost7TSE];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

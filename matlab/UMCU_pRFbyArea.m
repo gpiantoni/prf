@@ -21,7 +21,7 @@ Benson_ROI_Names = {'V1', 'V2', 'V3', 'hV4', 'VO1', 'VO2', 'LO1', 'LO2', 'TO1', 
 
 %% Specify parameters
 
-subjectcode = 'sub-visual12'; 
+subjectcode = 'sub-visual0'; 
 method = 'final';
 
 disp ('Running')
@@ -483,7 +483,7 @@ if Analyze7TGE == true
             V3_rfsize(i) = rfsize_1d(i);
         end
     end
-    V1_R2 = zeros (nrnodes, 1);         %%% R2 %%%
+    V1_R2 = zeros (nrnodes, 1);              %%% R2 %%%
     for i = 1:nrnodes
         if varea_7TGE(i) == 1
             V1_R2(i) = R2_1d(i);
@@ -1427,17 +1427,63 @@ b = histfit (V3_7TGE.ecc, 50, 'normal');
 c = histfit (V3_7TSE.ecc, 50, 'normal');
 hold off
 axis ([0 15 0 100])
-set(a(1), 'facecolor', color(1,:), 'FaceAlpha', 0.8)
-set(a(2), 'color', 'k')
-set(b(1), 'facecolor', color(2,:), 'FaceAlpha', 0.8)
-set(b(2), 'color', 'k')
-set(c(1), 'facecolor', color(3,:), 'FaceAlpha', 0.8)
-set(c(2), 'color', 'k')
+set(a(1), 'facecolor', color(1,:), 'FaceAlpha', 0.8); set(a(2), 'color', 'k')
+set(b(1), 'facecolor', color(2,:), 'FaceAlpha', 0.8); set(b(2), 'color', 'k')
+set(c(1), 'facecolor', color(3,:), 'FaceAlpha', 0.8); set(c(2), 'color', 'k')
 xlabel ('Eccentricity (^{o})')
 ylabel ('Frequency')
 title ('V3 eccentricity distribution')
 legend ([a(1), b(1), c(1)], '3TMB', '7TGE', '7TSE')
 set (gcf, 'Position', [800, 800, 600, 1200])
+
+% ========= HISTOGRAM - Eccentricity ========= %
+figure(19)
+subplot (1,3,1)
+a = histfit (V1_3TMB.ecc,50);
+hold on
+b = histfit (V1_7TGE.ecc,50);
+c = histfit (V1_7TSE.ecc,50);
+hold off
+axis ([0 15 0 100])
+set(a(1), 'facecolor', color(1,:), 'FaceAlpha', 0.8); set(a(2), 'color', 'k')
+set(b(1), 'facecolor', color(2,:), 'FaceAlpha', 0.8); set(b(2), 'color', 'k')
+set(c(1), 'facecolor', color(3,:), 'FaceAlpha', 0.8); set(c(2), 'color', 'k')
+xlabel ('Eccentricity (^{o})')
+ylabel ('Frequency')
+title ('V1 eccentricity distribution')
+legend ([a(1), b(1), c(1)], '3TMB', '7TGE', '7TSE')
+set (gcf, 'Position', [800, 800, 600, 1200])
+subplot(1,3,2)
+a = histfit (V2_3TMB.ecc, 50, 'normal');
+hold on
+b = histfit (V2_7TGE.ecc, 50, 'normal');
+c = histfit (V2_7TSE.ecc, 50, 'normal');
+hold off
+axis ([0 15 0 100])
+set(a(1), 'facecolor', color(1,:), 'FaceAlpha', 0.8); set(a(2), 'color', 'k')
+set(b(1), 'facecolor', color(2,:), 'FaceAlpha', 0.8); set(b(2), 'color', 'k')
+set(c(1), 'facecolor', color(3,:), 'FaceAlpha', 0.8); set(c(2), 'color', 'k')
+xlabel ('Eccentricity (^{o})')
+ylabel ('Frequency')
+title ('V2 eccentricity distribution')
+legend ([a(1), b(1), c(1)], '3TMB', '7TGE', '7TSE')
+set (gcf, 'Position', [800, 800, 600, 1200])
+subplot (1,3,3)
+a = histfit (V3_3TMB.ecc, 50, 'normal');
+hold on
+b = histfit (V3_7TGE.ecc, 50, 'normal');
+c = histfit (V3_7TSE.ecc, 50, 'normal');
+hold off
+axis ([0 15 0 100])
+set(a(1), 'facecolor', color(1,:), 'FaceAlpha', 0.8); set(a(2), 'color', 'k')
+set(b(1), 'facecolor', color(2,:), 'FaceAlpha', 0.8); set(b(2), 'color', 'k')
+set(c(1), 'facecolor', color(3,:), 'FaceAlpha', 0.8); set(c(2), 'color', 'k')
+xlabel ('Eccentricity (^{o})')
+ylabel ('Frequency')
+title ('V3 eccentricity distribution')
+legend ([a(1), b(1), c(1)], '3TMB', '7TGE', '7TSE')
+
+
 
 %% Save plots
 
