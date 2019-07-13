@@ -21,7 +21,7 @@ Benson_ROI_Names = {'V1', 'V2', 'V3', 'hV4', 'VO1', 'VO2', 'LO1', 'LO2', 'TO1', 
 
 %% Specify parameters
 
-subjectcode = 'sub-visual0'; 
+subjectcode = 'sub-visual12'; 
 method = 'final';
 
 disp ('Running')
@@ -48,297 +48,18 @@ if Analyze3TMB == true
     varea_3TMB = reshape (varea, [nrnodes,1]);
 
     % ========= COMPUTE RESULTS BY VISUAL AREA ========= %
-         
-    V1_ang = zeros (nrnodes, 1);           %%% POLAR ANGLE %%%
-    for i = 1:nrnodes
-        if varea_3TMB(i) == 1
-            V1_ang(i) = ang_1d (i);
-        end
-    end
-    V2_ang = zeros (nrnodes, 1);            
-    for i = 1:nrnodes
-        if varea_3TMB(i) == 2
-            V2_ang(i) = ang_1d (i);
-        end
-    end
-    V3_ang = zeros (nrnodes, 1);           
-    for i = 1:nrnodes
-        if varea_3TMB(i) == 3
-            V3_ang(i) = ang_1d (i);
-        end
-    end
-    V1_ecc = zeros (nrnodes, 1);             %%% ECCENTRICITY %%%
-    for i = 1:nrnodes
-        if varea_3TMB(i) == 1
-            V1_ecc(i) = ecc_1d(i);
-        end
-    end
-    V2_ecc = zeros (nrnodes, 1);           
-    for i = 1:nrnodes
-        if varea_3TMB(i) == 2
-            V2_ecc(i) = ecc_1d(i);
-        end
-    end
-    V3_ecc = zeros (nrnodes, 1);           
-    for i = 1:nrnodes
-        if varea_3TMB(i) == 3
-            V3_ecc(i) = ecc_1d(i);
-        end
-    end
-    V1_rfsize = zeros (nrnodes, 1);         %%% RECEPTIVE FIELD SIZE %%%
-    for i = 1:nrnodes
-        if varea_3TMB(i) == 1
-            V1_rfsize(i) = rfsize_1d (i);
-        end
-    end
-    V2_rfsize = zeros (nrnodes, 1);         
-    for i = 1:nrnodes
-        if varea_3TMB(i) == 2
-            V2_rfsize(i) = rfsize_1d (i);
-        end
-    end
-    V3_rfsize = zeros (nrnodes, 1);         
-    for i = 1:nrnodes
-        if varea_3TMB(i) == 3
-            V3_rfsize(i) = rfsize_1d(i);
-        end
-    end
-    V1_R2 = zeros (nrnodes, 1);         %%% R2 %%%
-    for i = 1:nrnodes
-        if varea_3TMB(i) == 1
-            V1_R2(i) = R2_1d (i);
-        end
-    end
-    V2_R2 = zeros (nrnodes, 1);         
-    for i = 1:nrnodes
-        if varea_3TMB(i) == 2
-            V2_R2(i) = R2_1d (i);
-        end
-    end
-    V3_R2 = zeros (nrnodes, 1);         
-    for i = 1:nrnodes
-        if varea_3TMB(i) == 3
-            V3_R2(i) = R2_1d(i);
-        end
-    end
+    [V1_3TMB, V2_3TMB, V3_3TMB] = compute_pRFresults_byArea (varea_3TMB, ang_1d, ecc_1d, rfsize_1d, R2_1d, nrnodes); 
 
-    %% REMOVE NaN & Inf & zeroes & outliers FROM DATA
     
-    % ========= REMOVE BAD DATA FOR V1 ========= %
-    
-    %%% FIND BAD DATA IN ANG %%%
-    indexInf = find(isinf(V1_ang));
-    indexNaN = find(isnan(V1_ang));
-    indexZero = find(V1_ang == 0);
-    indexOutlier = find (V1_ang > 360);
-    index_ang = cat (1, indexInf, indexNaN, indexZero, indexOutlier);
-    
-    if ~isempty(indexInf)
-        rm_Inf_ang = indexInf;
-    else 
-        rm_Inf_ang = [];
-    end
-    
-    %%% FIND BAD DATA IN ECC %%%
-    indexInf = find(isinf(V1_ecc));
-    indexNaN = find(isnan(V1_ecc));
-    indexZero = find(V1_ecc == 0);
-    indexOutlier = find (V1_ecc > 25);
-    index_ecc = cat (1, indexInf, indexNaN, indexZero, indexOutlier);
-    
-    if ~isempty(indexInf)
-        rm_Inf_ecc = indexInf;
-    else 
-        rm_Inf_ecc = [];
-    end
-          
-    %%% FIND BAD DATA IN RFSIZE %%%
-    indexInf = find(isinf(V1_rfsize));
-    indexNaN = find(isnan(V1_rfsize));
-    indexZero = find (V1_rfsize == 0);
-    indexOutlier = find (V1_rfsize > 20);
-    index_rfsize = cat (1, indexInf, indexNaN, indexZero, indexOutlier);
-    
-    if ~isempty(indexInf)
-        rm_Inf_rfsize = indexInf;
-    else 
-        rm_Inf_rfsize = [];
-    end
-           
-    %%% SELECT LARGEST MATRIX TO REMOVE %%%
-    indexdims = [length(index_ang), length(index_ecc), length(index_rfsize)];
-    [maxdim, position] = max(indexdims);
-    
-    if position == 1 
-        tmp_rm_index = index_ang;
-    elseif position == 2
-        tmp_rm_index = index_ecc;
-    else 
-        tmp_rm_index = index_rfsize;
-    end
-    
-    %%% MAKE SURE INF VALUES ARE INCLUDED %%%
-    tmp_rm_index_cat = cat (1, tmp_rm_index, rm_Inf_ang, rm_Inf_ecc, rm_Inf_rfsize);
-    
-    %%% REMOVE DUPLICATE VALUES %%%
-    rm_index = unique (tmp_rm_index_cat);
-        
-    %%% REMOVE SELECTED INDICES %%%
-    V1_rfsize(rm_index) = [];
-    V1_ecc (rm_index) = [];
-    V1_ang (rm_index) = [];
-    V1_R2 (rm_index) = [];
-    
-    % ========= REMOVE BAD DATA FOR V2 ========= %
-    
-    %%% FIND BAD DATA IN ANG %%%
-    indexInf = find(isinf(V2_ang));
-    indexNaN = find(isnan(V2_ang));
-    indexZero = find(V2_ang == 0);
-    indexOutlier = find (V2_ang > 360);
-    index_ang = cat (1, indexInf, indexNaN, indexZero, indexOutlier);
-    
-    if ~isempty(indexInf)
-        rm_Inf_ang = indexInf;
-    else 
-        rm_Inf_ang = [];
-    end
-
-    %%% FIND BAD DATA IN ECC %%%
-    indexInf = find(isinf(V2_ecc));
-    indexNaN = find(isnan(V2_ecc));
-    indexZero = find(V2_ecc == 0);
-    indexOutlier = find (V2_ecc > 25);
-    index_ecc = cat (1, indexInf, indexNaN, indexZero, indexOutlier);
-    
-    if ~isempty(indexInf)
-        rm_Inf_ecc = indexInf;
-    else 
-        rm_Inf_ecc = [];
-    end
-
-    %%% FIND BAD DATA IN RFSIZE %%%
-    indexInf = find(isinf(V2_rfsize));
-    indexNaN = find(isnan(V2_rfsize));
-    indexZero = find (V2_rfsize == 0);
-    indexOutlier = find (V2_rfsize > 20);
-    index_rfsize = cat (1, indexInf, indexNaN, indexZero, indexOutlier);
-    
-    if ~isempty(indexInf)
-        rm_Inf_rfsize = indexInf;
-    else 
-        rm_Inf_rfsize = [];
-    end
-    
-    %%% SELECT LARGEST MATRIX TO REMOVE %%%
-    indexdims = [length(index_ang), length(index_ecc), length(index_rfsize)];
-    [maxdim, position] = max(indexdims);
-    
-    if position == 1 
-        tmp_rm_index = index_ang;
-    elseif position == 2
-        tmp_rm_index = index_ecc;
-    else 
-        tmp_rm_index = index_rfsize;
-    end
-    
-    %%% MAKE SURE INF VALUES ARE INCLUDED %%%
-    tmp_rm_index_cat = cat (1, tmp_rm_index, rm_Inf_ang, rm_Inf_ecc, rm_Inf_rfsize);
-    
-    %%% REMOVE DUPLICATE VALUES %%%
-    rm_index = unique (tmp_rm_index_cat);
-
-    %%% REMOVE SELECTED INDICES %%%
-    V2_rfsize(rm_index) = [];
-    V2_ecc (rm_index) = [];
-    V2_ang (rm_index) = [];
-    V2_R2 (rm_index) = [];
-    
-    % ========= REMOVE BAD DATA FOR V3 ========= %
-    
-    %%% FIND BAD DATA IN ANG %%%
-    indexInf = find(isinf(V3_ang));
-    indexNaN = find(isnan(V3_ang));
-    indexZero = find (V3_ang == 0);
-    indexOutlier = find (V3_ang > 360);
-    index_ang = cat (1, indexInf, indexNaN, indexZero, indexOutlier);
-    
-    if ~isempty(indexInf)
-        rm_Inf_ang = indexInf;
-    else 
-        rm_Inf_ang = [];
-    end
-
-    %%% FIND BAD DATA IN ECC %%%
-    indexInf = find(isinf(V3_ecc));
-    indexNaN = find(isnan(V3_ecc));
-    indexZero = find (V3_ecc == 0);
-    indexOutlier = find (V3_ecc > 25);
-    index_ecc = cat (1, indexInf, indexNaN, indexZero, indexOutlier);
-    
-    if ~isempty(indexInf)
-        rm_Inf_ecc = indexInf;
-    else 
-        rm_Inf_ecc = [];
-    end
-    
-    %%% FIND BAD DATA IN RFSIZE %%%
-    indexInf = find(isinf(V3_rfsize));
-    indexNaN = find(isnan(V3_rfsize));
-    indexZero = find (V3_rfsize == 0);
-    indexOutlier = find (V3_rfsize > 20);
-    index_rfsize = cat (1, indexInf, indexNaN, indexZero, indexOutlier);
-    
-    if ~isempty(indexInf)
-        rm_Inf_rfsize = indexInf;
-    else 
-        rm_Inf_rfsize = [];
-    end
-    
-    %%% SELECT LARGEST MATRIX TO REMOVE %%%
-    indexdims = [length(index_ang), length(index_ecc), length(index_rfsize)];
-    [maxdim, position] = max(indexdims);
-    
-    if position == 1 
-        tmp_rm_index = index_ang;
-    elseif position == 2
-        tmp_rm_index = index_ecc;
-    else 
-        tmp_rm_index = index_rfsize;
-    end
-    
-    %%% MAKE SURE INF VALUES ARE INCLUDED %%%
-    tmp_rm_index_cat = cat (1, tmp_rm_index, rm_Inf_ang, rm_Inf_ecc, rm_Inf_rfsize);
-    
-    %%% REMOVE DUPLICATE VALUES %%%
-    rm_index = unique (tmp_rm_index_cat);
-    
-    %%% REMOVE SELECTED INDICES %%%
-    V3_rfsize(rm_index) = [];
-    V3_ecc (rm_index) = [];
-    V3_ang (rm_index) = [];     
-    V3_R2 (rm_index) = [];
-       
-    %% GROUP RESULTS - 3TMB
-    
-    % ========= RESULTS BY VISUAL AREA ========= %
-    V1_3TMB = {};
-    V1_3TMB.ang = V1_ang;
-    V1_3TMB.ecc = V1_ecc;
-    V1_3TMB.rfsize = V1_rfsize;
-    V1_3TMB.R2 = V1_R2;
-    
-    V2_3TMB = {};
-    V2_3TMB.ang = V2_ang;
-    V2_3TMB.ecc = V2_ecc;
-    V2_3TMB.rfsize = V2_rfsize;
-    V2_3TMB.R2 = V2_R2;
-    
-    V3_3TMB = {};
-    V3_3TMB.ang = V3_ang;
-    V3_3TMB.ecc = V3_ecc;
-    V3_3TMB.rfsize = V3_rfsize;
-    V3_3TMB.R2 = V3_R2;
+    %% BIN RESULTS - ses-UMCU3TMB
+   
+%     [BINS_CENTER, rfsize_mean, rfsize_sem] = compute_bins(V1_3TMB.ecc, V1_3TMB.rfsize);
+%     V1_3TMB.BINS_CENTER= BINS_CENTER;
+%     V1_3TMB.rfsize_mean = rfsize_mean;
+%     V1_3TMB.rfsize_sem = rfsize_sem;
+%     
+%     [V2_3TMB.BINS_CENTER, V2_3TMB.rfsize_mean, V2_3TMB.rfsize_sem] = compute_bins(V2_3TMB.ecc, V2_3TMB.rfsize);   
+%     [V3_3TMB.BINS_CENTER, V3_3TMB.rfsize_mean, V3_3TMB.rfsize_sem] = compute_bins(V3_3TMB.ecc, V3_3TMB.rfsize);    
     
     %% VISUALIZE RESULTS - ses-UMCU3TMB
     
@@ -365,29 +86,32 @@ if Analyze3TMB == true
     plot (V1_3TMB.ecc, V1_3TMB.rfsize, '*r')
     hold on
     plot (V1_3TMB.ecc, yfit_P, '-k')
+%    errorbar(V1_3TMB.BINS_CENTER, V1_3TMB.rfsize_mean, V1_3TMB.rfsize_sem, 'LineStyle', 'none', 'Marker', 'o', 'LineWidth', 1.3, 'Color', 'k')
     hold off
     xlabel ('Eccentricity (^{o})')
     ylabel ('Receptive field size (^{o})')
     title ('V1 (ses-UMCU3TMB)')
-    axis([0 16 0 12])
+    axis([0 12 0 6])
         subplot(1,3,2)
     plot (V2_3TMB.ecc, V2_3TMB.rfsize, '*b')
     hold on
     plot (V2_3TMB.ecc, yfit_Q, '-k')
+%    errorbar(V2_3TMB.BINS_CENTER, V2_3TMB.rfsize_mean, V2_3TMB.rfsize_sem, 'LineStyle', 'none', 'Marker', 'o', 'LineWidth', 1.3, 'Color', 'k')
     hold off
     xlabel ('Eccentricity (^{o})')
     ylabel ('Receptive field size (^{o})')
     title ('V2 (ses-UMCU3TMB)')
-    axis([0 16 0 12])
+    axis([0 12 0 6])
         subplot(1,3,3)
     plot (V3_3TMB.ecc, V3_3TMB.rfsize, '*m')
     hold on
     plot (V3_3TMB.ecc, yfit_R, '-k')
+%    errorbar(V3_3TMB.BINS_CENTER, V3_3TMB.rfsize_mean, V3_3TMB.rfsize_sem, 'LineStyle', 'none', 'Marker', 'o', 'LineWidth', 1.3, 'Color', 'k')
     hold off
     xlabel ('Eccentricity (^{o})')
     ylabel ('Receptive field size (^{o})')
     title ('V3 (ses-UMCU3TMB)')  
-    axis([0 16 0 12])
+    axis([0 12 0 6])
     set (gcf, 'Position', [800, 800, 1900, 400])
         
     % ========= SUMMARY PLOT - 3T MULTIBAND ========= %
@@ -400,7 +124,7 @@ if Analyze3TMB == true
     xlabel ('Eccentricity (^{o})')
     ylabel ('Receptive field size (^{o})')
     title ([subjectcode, ' (ses-UMCU3TMB)'])  
-    axis([0 16 0 8])
+    axis([0 12 0 6])
     legend ('V1', 'V2', 'V3', 'Location', 'Northwest') 
     set (gcf, 'Position', [800, 800, 600, 800])      
             
@@ -428,297 +152,13 @@ if Analyze7TGE == true
     varea_7TGE = reshape (varea, [nrnodes,1]);
 
     % ========= COMPUTE RESULTS BY VISUAL AREA ========= %
-         
-    V1_ang = zeros (nrnodes, 1);            %%% POLAR ANGLE %%%
-    for i = 1:nrnodes
-        if varea_7TGE(i) == 1
-            V1_ang(i) = ang_1d (i);
-        end
-    end
-    V2_ang = zeros (nrnodes, 1);           
-    for i = 1:nrnodes
-        if varea_7TGE(i) == 2
-            V2_ang(i) = ang_1d (i);
-        end
-    end
-    V3_ang = zeros (nrnodes, 1);            
-    for i = 1:nrnodes
-        if varea_7TGE(i) == 3
-            V3_ang(i) = ang_1d (i);
-        end
-    end
-    V1_ecc = zeros (nrnodes, 1);             %%% ECCENTRICITY %%%
-    for i = 1:nrnodes
-        if varea_7TGE(i) == 1
-            V1_ecc(i) = ecc_1d(i);
-        end
-    end
-    V2_ecc = zeros (nrnodes, 1);            
-    for i = 1:nrnodes
-        if varea_7TGE(i) == 2
-            V2_ecc(i) = ecc_1d(i);
-        end
-    end
-    V3_ecc = zeros (nrnodes, 1);          
-    for i = 1:nrnodes
-        if varea_7TGE(i) == 3
-            V3_ecc(i) = ecc_1d(i);
-        end
-    end
-    V1_rfsize = zeros (nrnodes, 1);         %%% RECEPTIVE FIELD SIZE %%%
-    for i = 1:nrnodes
-        if varea_7TGE(i) == 1
-            V1_rfsize(i) = rfsize_1d(i);
-        end
-    end
-    V2_rfsize = zeros (nrnodes, 1);        
-    for i = 1:nrnodes
-        if varea_7TGE(i) == 2
-            V2_rfsize(i) = rfsize_1d(i);
-        end
-    end
-    V3_rfsize = zeros (nrnodes, 1);         
-    for i = 1:nrnodes
-        if varea_7TGE(i) == 3
-            V3_rfsize(i) = rfsize_1d(i);
-        end
-    end
-    V1_R2 = zeros (nrnodes, 1);              %%% R2 %%%
-    for i = 1:nrnodes
-        if varea_7TGE(i) == 1
-            V1_R2(i) = R2_1d(i);
-        end
-    end
-    V2_R2 = zeros (nrnodes, 1);        
-    for i = 1:nrnodes
-        if varea_7TGE(i) == 2
-            V2_R2(i) = R2_1d(i);
-        end
-    end
-    V3_R2 = zeros (nrnodes, 1);         
-    for i = 1:nrnodes
-        if varea_7TGE(i) == 3
-            V3_R2(i) = R2_1d(i);
-        end
-    end
-
-    %% REMOVE NaN & Inf & zeroes & outliers FROM DATA
+    [V1_7TGE, V2_7TGE, V3_7TGE] = compute_pRFresults_byArea (varea_7TGE, ang_1d, ecc_1d, rfsize_1d, R2_1d, nrnodes);
     
-    % ========= REMOVE BAD DATA FOR V1 ========= %
-    
-    %%% FIND BAD DATA IN ANG %%%
-    indexInf = find(isinf(V1_ang));
-    indexNaN = find(isnan(V1_ang));
-    indexZero = find (V1_ang == 0);
-    indexOutlier = find (V1_ang > 360);
-    index_ang = cat (1, indexInf, indexNaN, indexZero, indexOutlier);
-    
-    if ~isempty(indexInf)
-        rm_Inf_ang = indexInf;
-    else 
-        rm_Inf_ang = [];
-    end    
-
-    %%% FIND BAD DATA IN ECC %%%
-    indexInf = find(isinf(V1_ecc));
-    indexNaN = find(isnan(V1_ecc));
-    indexZero = find (V1_ecc == 0);
-    indexOutlier = find (V1_ecc > 25);
-    index_ecc = cat (1, indexInf, indexNaN, indexZero, indexOutlier);
-    
-    if ~isempty(indexInf)
-        rm_Inf_ecc = indexInf;
-    else 
-        rm_Inf_ecc = [];
-    end
-    
-    %%% FIND BAD DATA IN RFSIZE %%%
-    indexInf = find(isinf(V1_rfsize));
-    indexNaN = find(isnan(V1_rfsize));
-    indexZero = find (V1_rfsize == 0);
-    indexOutlier = find (V1_rfsize > 20);
-    index_rfsize = cat (1, indexInf, indexNaN, indexZero, indexOutlier);
-    
-    if ~isempty(indexInf)
-        rm_Inf_rfsize = indexInf;
-    else 
-        rm_Inf_rfsize = [];
-    end
-    
-    %%% SELECT LARGEST MATRIX TO REMOVE %%%
-    indexdims = [length(index_ang), length(index_ecc), length(index_rfsize)];
-    [maxdim, position] = max(indexdims);
-    
-    if position == 1 
-        tmp_rm_index = index_ang;
-    elseif position == 2
-        tmp_rm_index = index_ecc;
-    else 
-        tmp_rm_index = index_rfsize;
-    end
-    
-    %%% MAKE SURE INF VALUES ARE INCLUDED %%%
-    tmp_rm_index_cat = cat (1, tmp_rm_index, rm_Inf_ang, rm_Inf_ecc, rm_Inf_rfsize);
-    
-    %%% REMOVE DUPLICATE VALUES %%%
-    rm_index = unique (tmp_rm_index_cat);
-            
-    %%% REMOVE SELECTED INDICES %%%
-    V1_rfsize(rm_index) = [];
-    V1_ecc (rm_index) = [];
-    V1_ang (rm_index) = [];    
-    V1_R2 (rm_index) = [];  
-    
-    % ========= REMOVE BAD DATA FOR V2 ========= %
-    
-    %%% FIND BAD DATA IN ANG %%%
-    indexInf = find(isinf(V2_ang));
-    indexNaN = find(isnan(V2_ang));
-    indexZero = find (V2_ang == 0);
-    indexOutlier = find (V2_ang > 360);    
-    index_ang = cat (1, indexInf, indexNaN, indexZero, indexOutlier);
-    
-    if ~isempty(indexInf)
-        rm_Inf_ang = indexInf;
-    else 
-        rm_Inf_ang = [];
-    end
-
-    %%% FIND BAD DATA IN ECC %%%
-    indexInf = find(isinf(V2_ecc));
-    indexNaN = find(isnan(V2_ecc));
-    indexZero = find (V2_ecc == 0);
-    indexOutlier = find (V2_ecc > 25);
-    index_ecc = cat (1, indexInf, indexNaN, indexZero, indexOutlier);
-    
-    if ~isempty(indexInf)
-        rm_Inf_ecc = indexInf;
-    else 
-        rm_Inf_ecc = [];
-    end
-    
-    %%% FIND BAD DATA IN RFSIZE %%%
-    indexInf = find(isinf(V2_rfsize));
-    indexNaN = find(isnan(V2_rfsize));
-    indexZero = find (V2_rfsize == 0);
-    indexOutlier = find (V2_rfsize > 20);
-    index_rfsize = cat (1, indexInf, indexNaN, indexZero, indexOutlier);
-    
-    if ~isempty(indexInf)
-        rm_Inf_rfsize = indexInf;
-    else 
-        rm_Inf_rfsize = [];
-    end
-    
-    %%% SELECT LARGEST MATRIX TO REMOVE %%%
-    indexdims = [length(index_ang), length(index_ecc), length(index_rfsize)];
-    [maxdim, position] = max(indexdims);
-    
-    if position == 1 
-        tmp_rm_index = index_ang;
-    elseif position == 2
-        tmp_rm_index = index_ecc;
-    else 
-        tmp_rm_index = index_rfsize;
-    end
-
-    %%% MAKE SURE INF VALUES ARE INCLUDED %%%
-    tmp_rm_index_cat = cat (1, tmp_rm_index, rm_Inf_ang, rm_Inf_ecc, rm_Inf_rfsize);
-    
-    %%% REMOVE DUPLICATE VALUES %%%
-    rm_index = unique (tmp_rm_index_cat);
-        
-    %%% REMOVE SELECTED INDICES %%%
-    V2_rfsize(rm_index) = [];
-    V2_ecc (rm_index) = [];
-    V2_ang (rm_index) = [];
-    V2_R2 (rm_index) = [];  
-  
-    % ========= REMOVE BAD DATA FOR V3 ========= %
-    
-    %%% FIND BAD DATA IN ANG %%%
-    indexInf = find(isinf(V3_ang));
-    indexNaN = find(isnan(V3_ang));
-    indexZero = find (V3_ang == 0);
-    indexOutlier = find (V3_ang > 360);
-    index_ang = cat (1, indexInf, indexNaN, indexZero, indexOutlier);
-    
-    if ~isempty(indexInf)
-        rm_Inf_ang = indexInf;
-    else 
-        rm_Inf_ang = [];
-    end
-
-    %%% FIND BAD DATA IN ECC %%%
-    indexInf = find(isinf(V3_ecc));
-    indexNaN = find(isnan(V3_ecc));
-    indexZero = find (V3_ecc == 0);
-     indexOutlier = find (V3_ecc > 25);
-    index_ecc = cat (1, indexInf, indexNaN, indexZero, indexOutlier);
-    
-    if ~isempty(indexInf)
-        rm_Inf_ecc = indexInf;
-    else 
-        rm_Inf_ecc = [];
-    end
-    
-    %%% FIND BAD DATA IN RFSIZE %%%
-    indexInf = find(isinf(V3_rfsize));
-    indexNaN = find(isnan(V3_rfsize));
-    indexZero = find (V3_rfsize == 0);
-    indexOutlier = find (V3_rfsize > 20);
-    index_rfsize = cat (1, indexInf, indexNaN, indexZero, indexOutlier);
-    
-    if ~isempty(indexInf)
-        rm_Inf_rfsize = indexInf;
-    else 
-        rm_Inf_rfsize = [];
-    end
-    
-    %%% SELECT LARGEST MATRIX TO REMOVE %%%
-    indexdims = [length(index_ang), length(index_ecc), length(index_rfsize)];
-    [maxdim, position] = max(indexdims);
-    
-    if position == 1 
-        tmp_rm_index = index_ang;
-    elseif position == 2
-        tmp_rm_index = index_ecc;
-    else 
-        tmp_rm_index = index_rfsize;
-    end
-    
-    %%% MAKE SURE INF VALUES ARE INCLUDED %%%
-    tmp_rm_index_cat = cat (1, tmp_rm_index, rm_Inf_ang, rm_Inf_ecc, rm_Inf_rfsize);
-    
-    %%% REMOVE DUPLICATE VALUES %%%
-    rm_index = unique (tmp_rm_index_cat);
-    
-    %%% REMOVE SELECTED INDICES %%%   
-    V3_rfsize(rm_index) = [];
-    V3_ecc (rm_index) = [];
-    V3_ang (rm_index) = [];       
-    V3_R2 (rm_index) = [];      
+    %% BIN RESULTS - ses-UMCU7TGE
    
-    %% GROUP RESULTS - 7TGE
-    
-    % ========= RESULTS BY VISUAL AREA ========= %
-    V1_7TGE = {};
-    V1_7TGE.ang = V1_ang;
-    V1_7TGE.ecc = V1_ecc;
-    V1_7TGE.rfsize = V1_rfsize;
-    V1_7TGE.R2 = V1_R2;
-        
-    V2_7TGE = {};
-    V2_7TGE.ang = V2_ang;
-    V2_7TGE.ecc = V2_ecc;
-    V2_7TGE.rfsize = V2_rfsize;
-    V2_7TGE.R2 = V2_R2;
-    
-    V3_7TGE = {};
-    V3_7TGE.ang = V3_ang;
-    V3_7TGE.ecc = V3_ecc;
-    V3_7TGE.rfsize = V3_rfsize;
-    V3_7TGE.R2 = V3_R2;
+%     [V1_7TGE.BINS_CENTER, V1_7TGE.rfsize_mean, V1_7TGE.rfsize_sem] = compute_bins(V1_7TGE.ecc, V1_7TGE.rfsize);
+%     [V2_7TGE.BINS_CENTER, V2_7TGE.rfsize_mean, V2_7TGE.rfsize_sem] = compute_bins(V2_7TGE.ecc, V2_7TGE.rfsize);   
+%     [V3_7TGE.BINS_CENTER, V3_7TGE.rfsize_mean, V3_7TGE.rfsize_sem] = compute_bins(V3_7TGE.ecc, V3_7TGE.rfsize);  
         
     %% VISUALIZE RESULTS - ses-UMCU7TGE
 
@@ -748,7 +188,7 @@ if Analyze7TGE == true
     xlabel ('Eccentricity (^{o})')
     ylabel ('Receptive field size (^{o})')
     title ('V1 (ses-UMCU7TGE)')
-    axis([0 16 0 12])
+    axis([0 12 0 6])
         subplot(1,3,2)
     plot (V2_7TGE.ecc, V2_7TGE.rfsize, '*b')
     hold on
@@ -757,7 +197,7 @@ if Analyze7TGE == true
     xlabel ('Eccentricity (^{o})')
     ylabel ('Receptive field size (^{o})')
     title ('V2 (ses-UMCU7TGE)')
-    axis([0 16 0 12])
+    axis([0 12 0 6])
         subplot(1,3,3)
     plot (V3_7TGE.ecc, V3_7TGE.rfsize, '*m')
     hold on
@@ -766,7 +206,7 @@ if Analyze7TGE == true
     xlabel ('Eccentricity (^{o})')
     ylabel ('Receptive field size (^{o})')
     title ('V3 (ses-UMCU7TGE)')  
-    axis([0 16 0 12])
+    axis([0 12 0 6])
     set (gcf, 'Position', [800, 800, 1900, 400])
         
     % ========= SUMMARY PLOT - 7T GRADIENT ECHO ========= %
@@ -779,7 +219,7 @@ if Analyze7TGE == true
     xlabel ('Eccentricity (^{o})')
     ylabel ('Receptive field size (^{o})')
     title ([subjectcode, ' (ses-UMCU7TGE)'])  
-    axis([0 16 0 8])
+    axis([0 12 0 6])
     legend ('V1', 'V2', 'V3', 'Location', 'Northwest')           
     set (gcf, 'Position', [800, 800, 600, 800])
     
@@ -807,300 +247,14 @@ if Analyze7TSE == true
     varea_7TSE = reshape (varea, [nrnodes,1]);
 
     % ========= COMPUTE RESULTS BY VISUAL AREA ========= %
-         
-    V1_ang = zeros (nrnodes, 1);            %%% POLAR ANGLE %%%
-    for i = 1:nrnodes
-        if varea_7TSE(i) == 1
-            V1_ang(i) = ang_1d (i);
-        end
-    end
-    V2_ang = zeros (nrnodes, 1);            
-    for i = 1:nrnodes
-        if varea_7TSE(i) == 2
-            V2_ang(i) = ang_1d (i);
-        end
-    end
-    V3_ang = zeros (nrnodes, 1);            
-    for i = 1:nrnodes
-        if varea_7TSE(i) == 3
-            V3_ang(i) = ang_1d (i);
-        end
-    end
-    V1_ecc = zeros (nrnodes, 1);            %%% ECCENTRICITY %%%
-    for i = 1:nrnodes
-        if varea_7TSE(i) == 1
-            V1_ecc(i) = ecc_1d(i);
-        end
-    end
-    V2_ecc = zeros (nrnodes, 1);            
-    for i = 1:nrnodes
-        if varea_7TSE(i) == 2
-            V2_ecc(i) = ecc_1d(i);
-        end
-    end
-    V3_ecc = zeros (nrnodes, 1);           
-    for i = 1:nrnodes
-        if varea_7TSE(i) == 3
-            V3_ecc(i) = ecc_1d(i);
-        end
-    end
-    V1_rfsize = zeros (nrnodes, 1);         %%% RECEPTIVE FIELD SIZE %%%
-    for i = 1:nrnodes
-        if varea_7TSE(i) == 1
-            V1_rfsize(i) = rfsize_1d(i);
-        end
-    end
-    V2_rfsize = zeros (nrnodes, 1);        
-    for i = 1:nrnodes
-        if varea_7TSE(i) == 2
-            V2_rfsize(i) = rfsize_1d(i);
-        end
-    end
-    V3_rfsize = zeros (nrnodes, 1);         
-    for i = 1:nrnodes
-        if varea_7TSE(i) == 3
-            V3_rfsize(i) = rfsize_1d(i);
-        end
-    end
-    V1_R2 = zeros (nrnodes, 1);         %%% R2 %%%
-    for i = 1:nrnodes
-        if varea_7TSE(i) == 1
-            V1_R2(i) = R2_1d(i);
-        end
-    end
-    V2_R2 = zeros (nrnodes, 1);        
-    for i = 1:nrnodes
-        if varea_7TSE(i) == 2
-            V2_R2(i) = R2_1d(i);
-        end
-    end
-    V3_R2 = zeros (nrnodes, 1);         
-    for i = 1:nrnodes
-        if varea_7TSE(i) == 3
-            V3_R2(i) = R2_1d(i);
-        end
-    end
-
-    %% REMOVE NaN & Inf & zeroes & outliers FROM DATA
+    [V1_7TSE, V2_7TSE, V3_7TSE] = compute_pRFresults_byArea (varea_7TSE, ang_1d, ecc_1d, rfsize_1d, R2_1d, nrnodes);
     
-    % ========= REMOVE BAD DATA FOR V1 ========= %
-    
-    %%% FIND BAD DATA IN ANG %%%
-    indexInf = find(isinf(V1_ang));
-    indexNaN = find(isnan(V1_ang));
-    indexZero = find (V1_ang == 0);
-    indexOutlier = find (V1_ang > 360);
-    index_ang = cat (1, indexInf, indexNaN, indexZero, indexOutlier);
-    
-    if ~isempty(indexInf)
-        rm_Inf_ang = indexInf;
-    else 
-        rm_Inf_ang = [];
-    end
-
-    %%% FIND BAD DATA IN ECC %%%
-    indexInf = find(isinf(V1_ecc));
-    indexNaN = find(isnan(V1_ecc));
-    indexZero = find (V1_ecc == 0);
-    indexOutlier = find (V1_ecc > 25);
-    index_ecc = cat (1, indexInf, indexNaN, indexZero, indexOutlier);
-    
-    if ~isempty(indexInf)
-        rm_Inf_ecc = indexInf;
-    else 
-        rm_Inf_ecc = [];
-    end
-    
-    %%% FIND BAD DATA IN RFSIZE %%%
-    indexInf = find(isinf(V1_rfsize));
-    indexNaN = find(isnan(V1_rfsize));
-    indexZero = find (V1_rfsize == 0);
-    indexOutlier = find (V1_rfsize > 20);
-    index_rfsize = cat (1, indexInf, indexNaN, indexZero, indexOutlier);
-    
-    if ~isempty(indexInf)
-        rm_Inf_rfsize = indexInf;
-    else 
-        rm_Inf_rfsize = [];
-    end
-    
-    %%% SELECT LARGEST MATRIX TO REMOVE %%%
-    indexdims = [length(index_ang), length(index_ecc), length(index_rfsize)];
-    [maxdim, position] = max(indexdims);
-    
-    if position == 1 
-        tmp_rm_index = index_ang;
-    elseif position == 2
-        tmp_rm_index = index_ecc;
-    else 
-        tmp_rm_index = index_rfsize;
-    end
-    
-    %%% MAKE SURE INF VALUES ARE INCLUDED %%%
-    tmp_rm_index_cat = cat (1, tmp_rm_index, rm_Inf_ang, rm_Inf_ecc, rm_Inf_rfsize);
-    
-    %%% REMOVE DUPLICATE VALUES %%%
-    rm_index = unique (tmp_rm_index_cat);
+      %% BIN RESULTS - ses-UMCU7TSE
+   
+%     [V1_7TSE.BINS_CENTER, V1_7TSE.rfsize_mean, V1_7TSE.rfsize_sem] = compute_bins(V1_7TSE.ecc, V1_7TSE.rfsize);
+%     [V2_7TSE.BINS_CENTER, V2_7TSE.rfsize_mean, V2_7TSE.rfsize_sem] = compute_bins(V2_7TSE.ecc, V2_7TSE.rfsize);   
+%     [V3_7TSE.BINS_CENTER, V3_7TSE.rfsize_mean, V3_7TSE.rfsize_sem] = compute_bins(V3_7TSE.ecc, V3_7TSE.rfsize);    
         
-    %%% REMOVE SELECTED INDICES %%%   
-    V1_rfsize(rm_index) = [];
-    V1_ecc (rm_index) = [];
-    V1_ang (rm_index) = [];
-    V1_R2 (rm_index) = [];
-    
-    % ========= REMOVE BAD DATA FOR V2 ========= %
-    
-    %%% FIND BAD DATA IN ANG %%%
-    indexInf = find(isinf(V2_ang));
-    indexNaN = find(isnan(V2_ang));
-    indexZero = find (V2_ang == 0);
-    indexOutlier = find (V2_ang > 360);
-    index_ang = cat (1, indexInf, indexNaN, indexZero, indexOutlier);
-    
-    if ~isempty(indexInf)
-        rm_Inf_ang = indexInf;
-    else 
-        rm_Inf_ang = [];
-    end
-
-    %%% FIND BAD DATA IN ECC %%
-    indexInf = find(isinf(V2_ecc));
-    indexNaN = find(isnan(V2_ecc));
-    indexZero = find (V2_ecc == 0);
-    indexOutlier = find (V2_ecc > 25);
-    index_ecc = cat (1, indexInf, indexNaN, indexZero, indexOutlier);
-    
-    if ~isempty(indexInf)
-        rm_Inf_ecc = indexInf;
-    else 
-        rm_Inf_ecc = [];
-    end
-    
-    %%% FIND BAD DATA IN RFSIZE %%
-    indexInf = find(isinf(V2_rfsize));
-    indexNaN = find(isnan(V2_rfsize));
-    indexZero = find (V2_rfsize == 0);
-    indexOutlier = find (V2_rfsize > 20);
-    index_rfsize = cat (1, indexInf, indexNaN, indexZero, indexOutlier);
-    
-    if ~isempty(indexInf)
-        rm_Inf_rfsize = indexInf;
-    else 
-        rm_Inf_rfsize = [];
-    end
-    
-    %%% SELECT LARGEST MATRIX TO REMOVE %%%
-    indexdims = [length(index_ang), length(index_ecc), length(index_rfsize)];
-    [maxdim, position] = max(indexdims);
-    
-    if position == 1 
-        tmp_rm_index = index_ang;
-    elseif position == 2
-        tmp_rm_index = index_ecc;
-    else 
-        tmp_rm_index = index_rfsize;
-    end
-    
-    %%% MAKE SURE INF VALUES ARE INCLUDED %%%
-    tmp_rm_index_cat = cat (1, tmp_rm_index, rm_Inf_ang, rm_Inf_ecc, rm_Inf_rfsize);
-    
-    %%% REMOVE DUPLICATE VALUES %%%
-    rm_index = unique (tmp_rm_index_cat);
-        
-    %%% REMOVE SELECTED INDICES %%%   
-    V2_rfsize(rm_index) = [];
-    V2_ecc (rm_index) = [];
-    V2_ang (rm_index) = [];
-    V2_R2 (rm_index) = [];
-    
-    % ========= REMOVE BAD DATA FOR V3 ========= %
-    
-    %%% FIND BAD DATA IN ANG %%
-    indexInf = find(isinf(V3_ang));
-    indexNaN = find(isnan(V3_ang));
-    indexZero = find (V3_ang == 0);
-    indexOutlier = find (V3_ang > 360);
-    index_ang = cat (1, indexInf, indexNaN, indexZero, indexOutlier);
-    
-    if ~isempty(indexInf)
-        rm_Inf_ang = indexInf;
-    else 
-        rm_Inf_ang = [];
-    end
-
-    %%% FIND BAD DATA IN ECC %%
-    indexInf = find(isinf(V3_ecc));
-    indexNaN = find(isnan(V3_ecc));
-    indexZero = find (V3_ecc == 0);
-    indexOutlier = find (V3_ecc > 25);
-    index_ecc = cat (1, indexInf, indexNaN, indexZero, indexOutlier);
-    
-    if ~isempty(indexInf)
-        rm_Inf_ecc = indexInf;
-    else 
-        rm_Inf_ecc = [];
-    end
-    
-    %%% FIND BAD DATA IN RFSIZE %%
-    indexInf = find(isinf(V3_rfsize));
-    indexNaN = find(isnan(V3_rfsize));
-    indexZero = find (V3_rfsize == 0);
-    indexOutlier = find (V3_rfsize > 20);
-    index_rfsize = cat (1, indexInf, indexNaN, indexZero, indexOutlier);
-    
-    if ~isempty(indexInf)
-        rm_Inf_rfsize = indexInf;
-    else 
-        rm_Inf_rfsize = [];
-    end
-    
-    %%% SELECT LARGEST MATRIX TO REMOVE %%%
-    indexdims = [length(index_ang), length(index_ecc), length(index_rfsize)];
-    [maxdim, position] = max(indexdims);
-    
-    if position == 1 
-        tmp_rm_index = index_ang;
-    elseif position == 2
-        tmp_rm_index = index_ecc;
-    else 
-        tmp_rm_index = index_rfsize;
-    end
-    
-    %%% MAKE SURE INF VALUES ARE INCLUDED %%%
-    tmp_rm_index_cat = cat (1, tmp_rm_index, rm_Inf_ang, rm_Inf_ecc, rm_Inf_rfsize);
-    
-    %%% REMOVE DUPLICATE VALUES %%%
-    rm_index = unique (tmp_rm_index_cat);
-        
-    %%% REMOVE SELECTED INDICES %%%   
-    V3_rfsize(rm_index) = [];
-    V3_ecc (rm_index) = [];
-    V3_ang (rm_index) = [];        
-    V3_R2 (rm_index) = [];
-     
-       
-    %% GROUP RESULTS - 7TSE
-    
-    % ========= RESULTS BY VISUAL AREA ========= %
-    V1_7TSE = {};
-    V1_7TSE.ang = V1_ang;
-    V1_7TSE.ecc = V1_ecc;
-    V1_7TSE.rfsize = V1_rfsize;
-    V1_7TSE.R2 = V1_R2;
-    
-    V2_7TSE = {};
-    V2_7TSE.ang = V2_ang;
-    V2_7TSE.ecc = V2_ecc;
-    V2_7TSE.rfsize = V2_rfsize;
-    V2_7TSE.R2 = V2_R2;
-    
-    V3_7TSE = {};
-    V3_7TSE.ang = V3_ang;
-    V3_7TSE.ecc = V3_ecc;
-    V3_7TSE.rfsize = V3_rfsize;
-    V3_7TSE.R2 = V3_R2;
-    
-    
     %% VISUALIZE RESULTS - ses-UMCU7TSE
     
 %     % Linear regression
@@ -1129,7 +283,7 @@ if Analyze7TSE == true
     xlabel ('Eccentricity (^{o})')
     ylabel ('Receptive field size (^{o})')
     title ('V1 (ses-UMCU7TSE)')
-    axis([0 16 0 12])
+    axis([0 12 0 6])
         subplot(1,3,2)
     plot (V2_7TSE.ecc, V2_7TSE.rfsize, '*b')
     hold on
@@ -1138,7 +292,7 @@ if Analyze7TSE == true
     xlabel ('Eccentricity (^{o})')
     ylabel ('Receptive field size (^{o})')
     title ('V2 (ses-UMCU7TSE)')
-    axis([0 16 0 12])
+    axis([0 12 0 6])
         subplot(1,3,3)
     plot (V3_7TSE.ecc, V3_7TSE.rfsize, '*m')
     hold on
@@ -1147,7 +301,7 @@ if Analyze7TSE == true
     xlabel ('Eccentricity (^{o})')
     ylabel ('Receptive field size (^{o})')
     title ('V3 (ses-UMCU7TSE)')  
-    axis([0 16 0 12])
+    axis([0 12 0 6])
     set (gcf, 'Position', [800, 800, 1900, 400])
         
     % ========= SUMMARY PLOT - 7T SPIN ECHO ========= %
@@ -1160,7 +314,7 @@ if Analyze7TSE == true
     xlabel ('Eccentricity (^{o})')
     ylabel ('Receptive field size (^{o})')
     title ([subjectcode, ' (ses-UMCU7TSE)'])  
-    axis([0 16 0 8])
+    axis([0 12 0 6])
     legend ('V1', 'V2', 'V3', 'Location', 'Northwest')
     set (gcf, 'Position', [800, 800, 600, 800])
      
@@ -1183,7 +337,7 @@ hold off
 xlabel ('Eccentricity (^{o})')
 ylabel ('Receptive field size (^{o})')
 title ([subjectcode, ' (V1)'])  
-axis([0 16 0 8])
+axis([0 12 0 6])
 legend ('ses-UMCU3TMB', 'ses-UMCU7TGE', 'ses-UMCU7TSE', 'Location', 'Northwest') 
 set (gcf, 'Position', [800, 800, 600, 800])
 
@@ -1197,7 +351,7 @@ hold off
 xlabel ('Eccentricity (^{o})')
 ylabel ('Receptive field size (^{o})')
 title ([subjectcode, ' (V2)'])  
-axis([0 16 0 8])
+axis([0 12 0 6])
 legend ('ses-UMCU3TMB', 'ses-UMCU7TGE', 'ses-UMCU7TSE', 'Location', 'Northwest') 
 set (gcf, 'Position', [800, 800, 600, 800])
 
@@ -1211,7 +365,7 @@ hold off
 xlabel ('Eccentricity (^{o})')
 ylabel ('Receptive field size (^{o})')
 title ([subjectcode, ' (V3)'])  
-axis([0 16 0 8])
+axis([0 12 0 6])
 legend ('ses-UMCU3TMB', 'ses-UMCU7TGE', 'ses-UMCU7TSE', 'Location', 'Northwest') 
 set (gcf, 'Position', [800, 800, 600, 800])
 
@@ -1244,7 +398,6 @@ bar (MEAN_rfsize)
 set (gca, 'XTickLabel', {'3TMB', '7TGE', '7TSE'})
 ylabel ('Receptive field size (^{o})')
 title ('Mean receptive field size per visual area')  
-legend ('V1', 'V2', 'V3')
 
 %% Compute standard deviation rfsize per sequence per area
 
@@ -1274,7 +427,6 @@ bar (STD_rfsize)
 set (gca, 'XTickLabel', {'3TMB', '7TGE', '7TSE'})
 ylabel ('Receptive field size (^{o})')
 title ('Standard deviation receptive field size per visual area')  
-legend ('V1', 'V2', 'V3')
 
 %% Plot histograms
 
@@ -1452,7 +604,6 @@ xlabel ('Eccentricity (^{o})')
 ylabel ('Frequency')
 title ('V1 eccentricity distribution')
 legend ([a(1), b(1), c(1)], '3TMB', '7TGE', '7TSE')
-set (gcf, 'Position', [800, 800, 600, 1200])
 subplot(1,3,2)
 a = histfit (V2_3TMB.ecc, 50, 'normal');
 hold on
@@ -1467,7 +618,6 @@ xlabel ('Eccentricity (^{o})')
 ylabel ('Frequency')
 title ('V2 eccentricity distribution')
 legend ([a(1), b(1), c(1)], '3TMB', '7TGE', '7TSE')
-set (gcf, 'Position', [800, 800, 600, 1200])
 subplot (1,3,3)
 a = histfit (V3_3TMB.ecc, 50, 'normal');
 hold on
@@ -1482,10 +632,37 @@ xlabel ('Eccentricity (^{o})')
 ylabel ('Frequency')
 title ('V3 eccentricity distribution')
 legend ([a(1), b(1), c(1)], '3TMB', '7TGE', '7TSE')
-
+set (gcf, 'Position', [800, 800, 1800, 800])
 
 
 %% Save plots
+
+%% Save plots (figure 4 & 5)
+
+% Define path
+figpath = '/Fridge/users/margriet/projects/figures/byarea/';
+
+% Define filename
+filename1 = [subjectcode, '_3TMB_byarea'];
+filename2 = [subjectcode, '_3TMB_byarea_summary'];
+filename3 = [subjectcode, '_7TGE_byarea'];
+filename4 = [subjectcode, '_7TGE_byarea_summary'];
+filename5 = [subjectcode, '_7TSE_byarea'];
+filename6 = [subjectcode, '_7TSE_byarea_summary'];
+filename10 = [subjectcode, '_mean_byarea'];
+filename11 = [subjectcode, '_std_byarea'];
+filename19 = [subjectcode, '_eccdistribution'];
+
+% Save plots
+saveas (figure(1), fullfile(figpath, filename1), 'png');
+saveas (figure(2), fullfile(figpath, filename2), 'png');
+saveas (figure(3), fullfile(figpath, filename3), 'png');
+saveas (figure(4), fullfile(figpath, filename4), 'png');
+saveas (figure(5), fullfile(figpath, filename5), 'png');
+saveas (figure(6), fullfile(figpath, filename6), 'png');
+saveas (figure(10), fullfile(figpath, filename10), 'png');
+saveas (figure(11), fullfile(figpath, filename11), 'png');
+saveas (figure(19), fullfile(figpath, filename19), 'png');
 
 
 %% Clear variables in workspace
@@ -1517,26 +694,3 @@ clear rm*
 
 %% END
 
-function [BINS_CENTER, rfsize_mean] = compute_bins(ecc, rfsize)
-bin_start = 0.5;
-bin_size = 1;
-n_bins = 20;
-
-BINS_EDGE = colon(bin_start, bin_size, n_bins * bin_size + bin_start);
-binned = discretize(ecc, BINS_EDGE);
-
-rfsize_mean = nan(1, length(BINS_EDGE));
-rfsize_sem = nan(1, length(BINS_EDGE));
-for i = 1:length(BINS_EDGE)
-    val = rfsize(binned == i);
-    rfsize_mean(i) = mean(val);
-    rfsize_sem(i) = std(val) / sqrt(length(val));
-end
-
-BINS_CENTER = BINS_EDGE + bin_size / 2;
-figure; errorbar(BINS_CENTER, rfsize_mean, rfsize_sem)
-
-BINS_CENTER = BINS_CENTER(~isnan(rfsize_mean));
-rfsize_mean = rfsize_mean(~isnan(rfsize_mean));
-
-end
