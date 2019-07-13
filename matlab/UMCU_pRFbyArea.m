@@ -21,7 +21,7 @@ Benson_ROI_Names = {'V1', 'V2', 'V3', 'hV4', 'VO1', 'VO2', 'LO1', 'LO2', 'TO1', 
 
 %% Specify parameters
 
-subjectcode = 'sub-visual12'; 
+subjectcode = 'sub-visual09'; 
 method = 'final';
 
 disp ('Running')
@@ -44,12 +44,24 @@ if Analyze3TMB == true
     R2_1d = reshape (R2, [nrnodes,1]);
 
     % ========= READ IN BENSON ATLAS ========= %
-    varea = niftiread (['/Fridge/users/margriet/projects/coregistration/anat2anat/', subjectcode, '/BENSON_varea_3TMB_func.nii.gz']);
+    varea = niftiread (['/Fridge/users/margriet/projects/coregistration/Benson/', subjectcode, '/BENSON-wide_3TMB_func.nii.gz']);
     varea_3TMB = reshape (varea, [nrnodes,1]);
-
     % ========= COMPUTE RESULTS BY VISUAL AREA ========= %
     [V1_3TMB, V2_3TMB, V3_3TMB] = compute_pRFresults_byArea (varea_3TMB, ang_1d, ecc_1d, rfsize_1d, R2_1d, nrnodes); 
-
+    
+    
+    % ========= READ IN BENSON ATLAS: 3TMB data restricted to 7TGE FOV ========= %
+    varea = niftiread (['/Fridge/users/margriet/projects/coregistration/Benson/', subjectcode, '/BENSON-wide_3TMB_func_GE-FOV.nii.gz']);
+    varea_3TMB_GE = reshape (varea, [nrnodes,1]);
+    % ========= COMPUTE RESULTS BY VISUAL AREA ========= %
+    [V1_3TMB_GE, V2_3TMB_GE, V3_3TMB_GE] = compute_pRFresults_byArea (varea_3TMB_GE, ang_1d, ecc_1d, rfsize_1d, R2_1d, nrnodes); 
+    
+    % ========= READ IN BENSON ATLAS: 3TMB data restricted to 7TSE FOV ========= %
+    varea = niftiread (['/Fridge/users/margriet/projects/coregistration/Benson/', subjectcode, '/BENSON-wide_3TMB_func_SE-FOV.nii.gz']);
+    varea_3TMB_SE = reshape (varea, [nrnodes,1]);
+    % ========= COMPUTE RESULTS BY VISUAL AREA ========= %
+    [V1_3TMB_SE, V2_3TMB_SE, V3_3TMB_SE] = compute_pRFresults_byArea (varea_3TMB_SE, ang_1d, ecc_1d, rfsize_1d, R2_1d, nrnodes); 
+    
     
     %% BIN RESULTS - ses-UMCU3TMB
    
@@ -127,7 +139,9 @@ if Analyze3TMB == true
     axis([0 12 0 6])
     legend ('V1', 'V2', 'V3', 'Location', 'Northwest') 
     set (gcf, 'Position', [800, 800, 600, 800])      
-            
+                
+    
+    
 end
 
 %% 7TGE DATA
@@ -148,7 +162,7 @@ if Analyze7TGE == true
     R2_1d = reshape (R2, [nrnodes,1]);
 
     % ========= READ IN BENSON ATLAS ========= %
-    varea = niftiread (['/Fridge/users/margriet/projects/coregistration/anat2anat/', subjectcode, '/BENSON_varea_7TGE_func.nii.gz']);
+    varea = niftiread (['/Fridge/users/margriet/projects/coregistration/Benson/', subjectcode, '/BENSON-wide_7TGE_func.nii.gz']);
     varea_7TGE = reshape (varea, [nrnodes,1]);
 
     % ========= COMPUTE RESULTS BY VISUAL AREA ========= %
@@ -243,7 +257,7 @@ if Analyze7TSE == true
     R2_1d = reshape (R2, [nrnodes,1]);
 
     % ========= READ IN BENSON ATLAS ========= %
-    varea = niftiread (['/Fridge/users/margriet/projects/coregistration/anat2anat/', subjectcode, '/BENSON_varea_7TSE_func.nii.gz']);
+    varea = niftiread (['/Fridge/users/margriet/projects/coregistration/Benson/', subjectcode, '/BENSON-wide_7TSE_func.nii.gz']);
     varea_7TSE = reshape (varea, [nrnodes,1]);
 
     % ========= COMPUTE RESULTS BY VISUAL AREA ========= %
@@ -634,8 +648,130 @@ title ('V3 eccentricity distribution')
 legend ([a(1), b(1), c(1)], '3TMB', '7TGE', '7TSE')
 set (gcf, 'Position', [800, 800, 1800, 800])
 
+%% Plot 3T data for restricted FOV's
 
-%% Save plots
+% ========= GE-EPI FOV ========= %
+
+% Linear regression - Weighted R2
+A = polyfitweighted(V1_3TMB_GE.ecc, V1_3TMB_GE.rfsize, 1, V1_3TMB_GE.R2);
+yfit_A = polyval (A, V1_3TMB_GE.ecc);
+B = polyfitweighted(V2_3TMB_GE.ecc, V2_3TMB_GE.rfsize, 1, V2_3TMB_GE.R2);
+yfit_B = polyval (B, V2_3TMB_GE.ecc);
+C = polyfitweighted(V3_3TMB_GE.ecc, V3_3TMB_GE.rfsize, 1, V3_3TMB_GE.R2);
+yfit_C = polyval (C, V3_3TMB_GE.ecc);
+
+figure (20) 
+    subplot (1,3,1)
+plot (V1_3TMB_GE.ecc, V1_3TMB_GE.rfsize, '*r')
+hold on
+plot (V1_3TMB_GE.ecc, yfit_A, '-k')
+hold off
+xlabel ('Eccentricity (^{o})')
+ylabel ('Receptive field size (^{o})')
+title ('V1 (ses-UMCU3TMB in GE-FOV)')
+axis([0 12 0 6])
+    subplot(1,3,2)
+plot (V2_3TMB_GE.ecc, V2_3TMB_GE.rfsize, '*b')
+hold on
+plot (V2_3TMB_GE.ecc, yfit_B, '-k')
+hold off
+xlabel ('Eccentricity (^{o})')
+ylabel ('Receptive field size (^{o})')
+title ('V2 (ses-UMCU3TMB in GE-FOV)')
+axis([0 12 0 6])
+    subplot(1,3,3)
+plot (V3_3TMB_GE.ecc, V3_3TMB_GE.rfsize, '*m')
+hold on
+plot (V3_3TMB_GE.ecc, yfit_C, '-k')
+hold off
+xlabel ('Eccentricity (^{o})')
+ylabel ('Receptive field size (^{o})')
+title ('V3 (ses-UMCU3TMB in GE-FOV)')  
+axis([0 12 0 6])
+set (gcf, 'Position', [800, 800, 1900, 400])
+
+% ========= MEAN RFSIZE - 3TMB ========= %
+mean_3TMB_GE_V1 = mean (V1_3TMB_GE.rfsize);
+mean_3TMB_GE_V2 = mean (V2_3TMB_GE.rfsize);
+mean_3TMB_GE_V3 = mean (V3_3TMB_GE.rfsize);
+MEAN_3TMB_GE_rfsize = [mean_3TMB_GE_V1, mean_3TMB_GE_V2, mean_3TMB_GE_V3];
+
+% ========= MEAN RFSIZE - 7TGE ========= %
+mean_7TGE_V1 = mean (V1_7TGE.rfsize);
+mean_7TGE_V2 = mean (V2_7TGE.rfsize);
+mean_7TGE_V3 = mean (V3_7TGE.rfsize);
+MEAN_7TGE_rfsize = [mean_7TGE_V1, mean_7TGE_V2, mean_7TGE_V3];
+
+MEAN_rfsize_GE = [MEAN_3TMB_GE_rfsize; MEAN_7TGE_rfsize];
+
+%%% Plot barcharts %%%
+figure (21)
+bar (MEAN_rfsize_GE)
+set (gca, 'XTickLabel', {'3TMB', '7TGE'})
+ylabel ('Receptive field size (^{o})')
+title ('Mean receptive field size per visual area - GE-EPI FOV')  
+
+% ========= SE-EPI FOV ========= %
+
+% Linear regression - Weighted R2
+D = polyfitweighted(V1_3TMB_SE.ecc, V1_3TMB_SE.rfsize, 1, V1_3TMB_SE.R2);
+yfit_D = polyval (D, V1_3TMB_SE.ecc);
+E = polyfitweighted(V2_3TMB_SE.ecc, V2_3TMB_SE.rfsize, 1, V2_3TMB_SE.R2);
+yfit_E = polyval (E, V2_3TMB_SE.ecc);
+F = polyfitweighted(V3_3TMB_SE.ecc, V3_3TMB_SE.rfsize, 1, V3_3TMB_SE.R2);
+yfit_F = polyval (F, V3_3TMB_SE.ecc);
+
+figure (22) 
+    subplot (1,3,1)
+plot (V1_3TMB_SE.ecc, V1_3TMB_SE.rfsize, '*r')
+hold on
+plot (V1_3TMB_SE.ecc, yfit_D, '-k')
+hold off
+xlabel ('Eccentricity (^{o})')
+ylabel ('Receptive field size (^{o})')
+title ('V1 (ses-UMCU3TMB in SE-FOV)')
+axis([0 12 0 6])
+    subplot(1,3,2)
+plot (V2_3TMB_SE.ecc, V2_3TMB_SE.rfsize, '*b')
+hold on
+plot (V2_3TMB_SE.ecc, yfit_E, '-k')
+hold off
+xlabel ('Eccentricity (^{o})')
+ylabel ('Receptive field size (^{o})')
+title ('V2 (ses-UMCU3TMB in SE-FOV)')
+axis([0 12 0 6])
+    subplot(1,3,3)
+plot (V3_3TMB_SE.ecc, V3_3TMB_SE.rfsize, '*m')
+hold on
+plot (V3_3TMB_SE.ecc, yfit_F, '-k')
+hold off
+xlabel ('Eccentricity (^{o})')
+ylabel ('Receptive field size (^{o})')
+title ('V3 (ses-UMCU3TMB in SE-FOV)')  
+axis([0 12 0 6])
+set (gcf, 'Position', [800, 800, 1900, 400])
+
+% ========= MEAN RFSIZE - 3TMB ========= %
+mean_3TMB_SE_V1 = mean (V1_3TMB_SE.rfsize);
+mean_3TMB_SE_V2 = mean (V2_3TMB_SE.rfsize);
+mean_3TMB_SE_V3 = mean (V3_3TMB_SE.rfsize);
+MEAN_3TMB_SE_rfsize = [mean_3TMB_SE_V1, mean_3TMB_SE_V2, mean_3TMB_SE_V3];
+
+% ========= MEAN RFSIZE - 7TSE ========= %
+mean_7TSE_V1 = mean (V1_7TSE.rfsize);
+mean_7TSE_V2 = mean (V2_7TSE.rfsize);
+mean_7TSE_V3 = mean (V3_7TSE.rfsize);
+MEAN_7TSE_rfsize = [mean_7TSE_V1, mean_7TSE_V2, mean_7TSE_V3];
+
+MEAN_rfsize_SE = [MEAN_3TMB_SE_rfsize; MEAN_7TSE_rfsize];
+
+%%% Plot barcharts %%%
+figure (23)
+bar (MEAN_rfsize_SE)
+set (gca, 'XTickLabel', {'3TMB', '7TSE'})
+ylabel ('Receptive field size (^{o})')
+title ('Mean receptive field size per visual area - SE-EPI FOV')  
+
 
 %% Save plots (figure 4 & 5)
 
