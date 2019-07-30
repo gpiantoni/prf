@@ -1,5 +1,7 @@
 % % =========  SCRIPT pRF R2 values per session  ========= % 
 %
+% Script to evaluate R2 values.
+%
 %%
 clear;
 

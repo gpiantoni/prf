@@ -1,5 +1,8 @@
 % % =========  SCRIPT response buttonbox ========= % 
 %
+% Script to evaluate subjects' behavioural responses by percentage correct
+% button presses per experiment. 
+%
 %%
 clear; 
 

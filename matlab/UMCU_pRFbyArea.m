@@ -21,10 +21,22 @@ Benson_ROI_Names = {'V1', 'V2', 'V3', 'hV4', 'VO1', 'VO2', 'LO1', 'LO2', 'TO1', 
 
 %% Specify parameters
 
-subjectcode = 'sub-visual09'; 
+subjectcode = 'sub-visual01'; 
 method = 'final';
 
 disp ('Running')
+
+%% Color definition
+
+color_area = [
+    0.929   0.694   0.125;  % V1
+    0.850   0.325   0.098;  % V2
+    0.635   0.078   0.184]; % V3
+
+color_seq = [
+    0.3467    0.5360    0.6907      % 3TMB
+    0.9153    0.2816    0.2878      % 7TGE
+    0.4416    0.7490    0.4322];    % 7TSE
 
 %% 3TMB DATA
 
@@ -75,14 +87,6 @@ if Analyze3TMB == true
     
     %% VISUALIZE RESULTS - ses-UMCU3TMB
     
-%      % Linear regression
-%     P = polyfit(V1_3TMB.ecc, V1_3TMB.rfsize, 1);
-%     yfit_P = polyval (P, V1_3TMB.ecc);
-%     Q = polyfit(V2_3TMB.ecc, V2_3TMB.rfsize, 1);
-%     yfit_Q = polyval (Q, V2_3TMB.ecc);
-%     R = polyfit(V3_3TMB.ecc, V3_3TMB.rfsize, 1);
-%     yfit_R = polyval (R, V3_3TMB.ecc);
-    
     % Linear regression - Weighted R2
     P = polyfitweighted(V1_3TMB.ecc, V1_3TMB.rfsize, 1, V1_3TMB.R2);
     yfit_P = polyval (P, V1_3TMB.ecc);
@@ -95,30 +99,27 @@ if Analyze3TMB == true
    
     figure (1) 
         subplot (1,3,1)
-    plot (V1_3TMB.ecc, V1_3TMB.rfsize, '*r')
+    plot (V1_3TMB.ecc, V1_3TMB.rfsize, '*', 'Color', color_area(1,:))
     hold on
     plot (V1_3TMB.ecc, yfit_P, '-k')
-%    errorbar(V1_3TMB.BINS_CENTER, V1_3TMB.rfsize_mean, V1_3TMB.rfsize_sem, 'LineStyle', 'none', 'Marker', 'o', 'LineWidth', 1.3, 'Color', 'k')
     hold off
     xlabel ('Eccentricity (^{o})')
     ylabel ('Receptive field size (^{o})')
     title ('V1 (ses-UMCU3TMB)')
     axis([0 12 0 6])
         subplot(1,3,2)
-    plot (V2_3TMB.ecc, V2_3TMB.rfsize, '*b')
+    plot (V2_3TMB.ecc, V2_3TMB.rfsize, '*', 'Color', color_area(2,:))
     hold on
     plot (V2_3TMB.ecc, yfit_Q, '-k')
-%    errorbar(V2_3TMB.BINS_CENTER, V2_3TMB.rfsize_mean, V2_3TMB.rfsize_sem, 'LineStyle', 'none', 'Marker', 'o', 'LineWidth', 1.3, 'Color', 'k')
     hold off
     xlabel ('Eccentricity (^{o})')
     ylabel ('Receptive field size (^{o})')
     title ('V2 (ses-UMCU3TMB)')
     axis([0 12 0 6])
         subplot(1,3,3)
-    plot (V3_3TMB.ecc, V3_3TMB.rfsize, '*m')
+    plot (V3_3TMB.ecc, V3_3TMB.rfsize, '*', 'Color', color_area(3,:))
     hold on
     plot (V3_3TMB.ecc, yfit_R, '-k')
-%    errorbar(V3_3TMB.BINS_CENTER, V3_3TMB.rfsize_mean, V3_3TMB.rfsize_sem, 'LineStyle', 'none', 'Marker', 'o', 'LineWidth', 1.3, 'Color', 'k')
     hold off
     xlabel ('Eccentricity (^{o})')
     ylabel ('Receptive field size (^{o})')
@@ -128,10 +129,10 @@ if Analyze3TMB == true
         
     % ========= SUMMARY PLOT - 3T MULTIBAND ========= %
     figure (2)
-    plot (V1_3TMB.ecc, yfit_P, '-r')
+    plot (V1_3TMB.ecc, yfit_P, 'Color', color_area(1,:))
     hold on
-    plot (V2_3TMB.ecc, yfit_Q, '-b')
-    plot (V3_3TMB.ecc, yfit_R, '-m')
+    plot (V2_3TMB.ecc, yfit_Q, 'Color', color_area(2,:))
+    plot (V3_3TMB.ecc, yfit_R, 'Color', color_area(3,:))
     hold off
     xlabel ('Eccentricity (^{o})')
     ylabel ('Receptive field size (^{o})')
@@ -176,14 +177,6 @@ if Analyze7TGE == true
         
     %% VISUALIZE RESULTS - ses-UMCU7TGE
 
-%      % Linear regression
-%     S = polyfit(V1_7TGE.ecc, V1_7TGE.rfsize, 1);
-%     yfit_S = polyval (S, V1_7TGE.ecc);
-%     T = polyfit(V2_7TGE.ecc, V2_7TGE.rfsize, 1);
-%     yfit_T = polyval (T, V2_7TGE.ecc);
-%     U = polyfit(V3_7TGE.ecc, V3_7TGE.rfsize, 1);
-%     yfit_U = polyval (U, V3_7TGE.ecc);
-    
     % Linear regression - Weighted R2
     S = polyfitweighted(V1_7TGE.ecc, V1_7TGE.rfsize, 1, V1_7TGE.R2);
     yfit_S = polyval (S, V1_7TGE.ecc);
@@ -195,7 +188,7 @@ if Analyze7TGE == true
     % ========= SCATTERPLOT 7T GRADIENT ECHO ========= %
     figure (3) 
         subplot (1,3,1)
-    plot (V1_7TGE.ecc, V1_7TGE.rfsize, '*r')
+    plot (V1_7TGE.ecc, V1_7TGE.rfsize, '*', 'Color', color_area(1,:))
     hold on
     plot (V1_7TGE.ecc, yfit_S, '-k')
     hold off
@@ -204,7 +197,7 @@ if Analyze7TGE == true
     title ('V1 (ses-UMCU7TGE)')
     axis([0 12 0 6])
         subplot(1,3,2)
-    plot (V2_7TGE.ecc, V2_7TGE.rfsize, '*b')
+    plot (V2_7TGE.ecc, V2_7TGE.rfsize, '*', 'Color', color_area(2,:))
     hold on
     plot (V2_7TGE.ecc, yfit_T, '-k')
     hold off
@@ -213,7 +206,7 @@ if Analyze7TGE == true
     title ('V2 (ses-UMCU7TGE)')
     axis([0 12 0 6])
         subplot(1,3,3)
-    plot (V3_7TGE.ecc, V3_7TGE.rfsize, '*m')
+    plot (V3_7TGE.ecc, V3_7TGE.rfsize, '*', 'Color', color_area(3,:))
     hold on
     plot (V3_7TGE.ecc, yfit_U, '-k')
     hold off
@@ -225,10 +218,10 @@ if Analyze7TGE == true
         
     % ========= SUMMARY PLOT - 7T GRADIENT ECHO ========= %
     figure (4)
-    plot (V1_7TGE.ecc, yfit_S, '-r')
+    plot (V1_7TGE.ecc, yfit_S, 'Color', color_area(1,:))
     hold on
-    plot (V2_7TGE.ecc, yfit_T, '-b')
-    plot (V3_7TGE.ecc, yfit_U, '-m')
+    plot (V2_7TGE.ecc, yfit_T, 'Color', color_area(2,:))
+    plot (V3_7TGE.ecc, yfit_U, 'Color', color_area(3,:))
     hold off
     xlabel ('Eccentricity (^{o})')
     ylabel ('Receptive field size (^{o})')
@@ -271,14 +264,6 @@ if Analyze7TSE == true
         
     %% VISUALIZE RESULTS - ses-UMCU7TSE
     
-%     % Linear regression
-%     V = polyfit(V1_7TSE.ecc, V1_7TSE.rfsize, 1);
-%     yfit_V = polyval (V, V1_7TSE.ecc);
-%     W = polyfit(V2_7TSE.ecc, V2_7TSE.rfsize, 1);
-%     yfit_W = polyval (W, V2_7TSE.ecc);
-%     X = polyfit(V3_7TSE.ecc, V3_7TSE.rfsize, 1);
-%     yfit_X = polyval (X, V3_7TSE.ecc);
-    
     % Linear regression - Weighted R2
     V = polyfitweighted(V1_7TSE.ecc, V1_7TSE.rfsize, 1, V1_7TSE.R2);
     yfit_V = polyval (V, V1_7TSE.ecc);
@@ -290,7 +275,7 @@ if Analyze7TSE == true
     % ========= SCATTERPLOT - 7T SPIN ECHO ========= %
     figure (5) 
         subplot (1,3,1)
-    plot (V1_7TSE.ecc, V1_7TSE.rfsize, '*r')
+    plot (V1_7TSE.ecc, V1_7TSE.rfsize, '*', 'Color', color_area(1,:))
     hold on
     plot (V1_7TSE.ecc, yfit_V, '-k')
     hold off
@@ -299,7 +284,7 @@ if Analyze7TSE == true
     title ('V1 (ses-UMCU7TSE)')
     axis([0 12 0 6])
         subplot(1,3,2)
-    plot (V2_7TSE.ecc, V2_7TSE.rfsize, '*b')
+    plot (V2_7TSE.ecc, V2_7TSE.rfsize, '*', 'Color', color_area(2,:))
     hold on
     plot (V2_7TSE.ecc, yfit_W, '-k')
     hold off
@@ -308,7 +293,7 @@ if Analyze7TSE == true
     title ('V2 (ses-UMCU7TSE)')
     axis([0 12 0 6])
         subplot(1,3,3)
-    plot (V3_7TSE.ecc, V3_7TSE.rfsize, '*m')
+    plot (V3_7TSE.ecc, V3_7TSE.rfsize, '*', 'Color', color_area(3,:))
     hold on
     plot (V3_7TSE.ecc, yfit_X, '-k')
     hold off
@@ -320,10 +305,10 @@ if Analyze7TSE == true
         
     % ========= SUMMARY PLOT - 7T SPIN ECHO ========= %
     figure (6)
-    plot (V1_7TSE.ecc, yfit_V, '-r')
+    plot (V1_7TSE.ecc, yfit_V, 'Color', color_area(1,:))
     hold on
-    plot (V2_7TSE.ecc, yfit_W, '-b')
-    plot (V3_7TSE.ecc, yfit_X, '-m')
+    plot (V2_7TSE.ecc, yfit_W, 'Color', color_area(2,:))
+    plot (V3_7TSE.ecc, yfit_X, 'Color', color_area(3,:))
     hold off
     xlabel ('Eccentricity (^{o})')
     ylabel ('Receptive field size (^{o})')
@@ -336,17 +321,12 @@ end
 
 %% Plot results for all sessions
 
-color = [
-    0.3467    0.5360    0.6907      % 3TMB
-    0.9153    0.2816    0.2878      % 7TGE
-    0.4416    0.7490    0.4322];    % 7TSE
-
 % ========= SUMMARY PLOT - V1 ========= %
 figure (7)
-plot (V1_3TMB.ecc, yfit_P,  'Color', color(1,:))
+plot (V1_3TMB.ecc, yfit_P,  'Color', color_seq(1,:))
 hold on
-plot (V1_7TGE.ecc, yfit_S,  'Color', color(2,:))
-plot (V1_7TSE.ecc, yfit_V,  'Color', color(3,:))
+plot (V1_7TGE.ecc, yfit_S,  'Color', color_seq(2,:))
+plot (V1_7TSE.ecc, yfit_V,  'Color', color_seq(3,:))
 hold off
 xlabel ('Eccentricity (^{o})')
 ylabel ('Receptive field size (^{o})')
@@ -357,10 +337,10 @@ set (gcf, 'Position', [800, 800, 600, 800])
 
 % ========= SUMMARY PLOT - V2 ========= %
 figure (8)
-plot (V2_3TMB.ecc, yfit_Q, 'Color', color(1,:))
+plot (V2_3TMB.ecc, yfit_Q, 'Color', color_seq(1,:))
 hold on
-plot (V2_7TGE.ecc, yfit_T, 'Color', color(2,:))
-plot (V2_7TSE.ecc, yfit_W, 'Color', color(3,:))
+plot (V2_7TGE.ecc, yfit_T, 'Color', color_seq(2,:))
+plot (V2_7TSE.ecc, yfit_W, 'Color', color_seq(3,:))
 hold off
 xlabel ('Eccentricity (^{o})')
 ylabel ('Receptive field size (^{o})')
@@ -371,10 +351,10 @@ set (gcf, 'Position', [800, 800, 600, 800])
 
 % ========= SUMMARY PLOT - V3 ========= %
 figure (9)
-plot (V3_3TMB.ecc, yfit_R, 'Color', color(1,:))
+plot (V3_3TMB.ecc, yfit_R, 'Color', color_seq(1,:))
 hold on
-plot (V3_7TGE.ecc, yfit_U, 'Color', color(2,:))
-plot (V3_7TSE.ecc, yfit_X, 'Color', color(3,:))
+plot (V3_7TGE.ecc, yfit_U, 'Color', color_seq(2,:))
+plot (V3_7TSE.ecc, yfit_X, 'Color', color_seq(3,:))
 hold off
 xlabel ('Eccentricity (^{o})')
 ylabel ('Receptive field size (^{o})')
@@ -553,11 +533,11 @@ b = histfit (V1_7TGE.ecc,50);
 c = histfit (V1_7TSE.ecc,50);
 hold off
 axis ([0 15 0 100])
-set(a(1), 'facecolor', color(1,:), 'FaceAlpha', 0.8)
+set(a(1), 'facecolor', color_seq(1,:), 'FaceAlpha', 0.8)
 set(a(2), 'color', 'k')
-set(b(1), 'facecolor', color(2,:), 'FaceAlpha', 0.8)
+set(b(1), 'facecolor', color_seq(2,:), 'FaceAlpha', 0.8)
 set(b(2), 'color', 'k')
-set(c(1), 'facecolor', color(3,:), 'FaceAlpha', 0.8)
+set(c(1), 'facecolor', color_seq(3,:), 'FaceAlpha', 0.8)
 set(c(2), 'color', 'k')
 xlabel ('Eccentricity (^{o})')
 ylabel ('Frequency')
@@ -573,11 +553,11 @@ b = histfit (V2_7TGE.ecc, 50, 'normal');
 c = histfit (V2_7TSE.ecc, 50, 'normal');
 hold off
 axis ([0 15 0 100])
-set(a(1), 'facecolor', color(1,:), 'FaceAlpha', 0.8)
+set(a(1), 'facecolor', color_seq(1,:), 'FaceAlpha', 0.8)
 set(a(2), 'color', 'k')
-set(b(1), 'facecolor', color(2,:), 'FaceAlpha', 0.8)
+set(b(1), 'facecolor', color_seq(2,:), 'FaceAlpha', 0.8)
 set(b(2), 'color', 'k')
-set(c(1), 'facecolor', color(3,:), 'FaceAlpha', 0.8)
+set(c(1), 'facecolor', color_seq(3,:), 'FaceAlpha', 0.8)
 set(c(2), 'color', 'k')
 xlabel ('Eccentricity (^{o})')
 ylabel ('Frequency')
@@ -593,9 +573,9 @@ b = histfit (V3_7TGE.ecc, 50, 'normal');
 c = histfit (V3_7TSE.ecc, 50, 'normal');
 hold off
 axis ([0 15 0 100])
-set(a(1), 'facecolor', color(1,:), 'FaceAlpha', 0.8); set(a(2), 'color', 'k')
-set(b(1), 'facecolor', color(2,:), 'FaceAlpha', 0.8); set(b(2), 'color', 'k')
-set(c(1), 'facecolor', color(3,:), 'FaceAlpha', 0.8); set(c(2), 'color', 'k')
+set(a(1), 'facecolor', color_seq(1,:), 'FaceAlpha', 0.8); set(a(2), 'color', 'k')
+set(b(1), 'facecolor', color_seq(2,:), 'FaceAlpha', 0.8); set(b(2), 'color', 'k')
+set(c(1), 'facecolor', color_seq(3,:), 'FaceAlpha', 0.8); set(c(2), 'color', 'k')
 xlabel ('Eccentricity (^{o})')
 ylabel ('Frequency')
 title ('V3 eccentricity distribution')
@@ -611,9 +591,9 @@ b = histfit (V1_7TGE.ecc,50);
 c = histfit (V1_7TSE.ecc,50);
 hold off
 axis ([0 15 0 100])
-set(a(1), 'facecolor', color(1,:), 'FaceAlpha', 0.8); set(a(2), 'color', 'k')
-set(b(1), 'facecolor', color(2,:), 'FaceAlpha', 0.8); set(b(2), 'color', 'k')
-set(c(1), 'facecolor', color(3,:), 'FaceAlpha', 0.8); set(c(2), 'color', 'k')
+set(a(1), 'facecolor', color_seq(1,:), 'FaceAlpha', 0.8); set(a(2), 'color', 'k')
+set(b(1), 'facecolor', color_seq(2,:), 'FaceAlpha', 0.8); set(b(2), 'color', 'k')
+set(c(1), 'facecolor', color_seq(3,:), 'FaceAlpha', 0.8); set(c(2), 'color', 'k')
 xlabel ('Eccentricity (^{o})')
 ylabel ('Frequency')
 title ('V1 eccentricity distribution')
@@ -625,9 +605,9 @@ b = histfit (V2_7TGE.ecc, 50, 'normal');
 c = histfit (V2_7TSE.ecc, 50, 'normal');
 hold off
 axis ([0 15 0 100])
-set(a(1), 'facecolor', color(1,:), 'FaceAlpha', 0.8); set(a(2), 'color', 'k')
-set(b(1), 'facecolor', color(2,:), 'FaceAlpha', 0.8); set(b(2), 'color', 'k')
-set(c(1), 'facecolor', color(3,:), 'FaceAlpha', 0.8); set(c(2), 'color', 'k')
+set(a(1), 'facecolor', color_seq(1,:), 'FaceAlpha', 0.8); set(a(2), 'color', 'k')
+set(b(1), 'facecolor', color_seq(2,:), 'FaceAlpha', 0.8); set(b(2), 'color', 'k')
+set(c(1), 'facecolor', color_seq(3,:), 'FaceAlpha', 0.8); set(c(2), 'color', 'k')
 xlabel ('Eccentricity (^{o})')
 ylabel ('Frequency')
 title ('V2 eccentricity distribution')
@@ -639,9 +619,9 @@ b = histfit (V3_7TGE.ecc, 50, 'normal');
 c = histfit (V3_7TSE.ecc, 50, 'normal');
 hold off
 axis ([0 15 0 100])
-set(a(1), 'facecolor', color(1,:), 'FaceAlpha', 0.8); set(a(2), 'color', 'k')
-set(b(1), 'facecolor', color(2,:), 'FaceAlpha', 0.8); set(b(2), 'color', 'k')
-set(c(1), 'facecolor', color(3,:), 'FaceAlpha', 0.8); set(c(2), 'color', 'k')
+set(a(1), 'facecolor', color_seq(1,:), 'FaceAlpha', 0.8); set(a(2), 'color', 'k')
+set(b(1), 'facecolor', color_seq(2,:), 'FaceAlpha', 0.8); set(b(2), 'color', 'k')
+set(c(1), 'facecolor', color_seq(3,:), 'FaceAlpha', 0.8); set(c(2), 'color', 'k')
 xlabel ('Eccentricity (^{o})')
 ylabel ('Frequency')
 title ('V3 eccentricity distribution')
@@ -662,7 +642,7 @@ yfit_C = polyval (C, V3_3TMB_GE.ecc);
 
 figure (20) 
     subplot (1,3,1)
-plot (V1_3TMB_GE.ecc, V1_3TMB_GE.rfsize, '*r')
+plot (V1_3TMB_GE.ecc, V1_3TMB_GE.rfsize, '*', 'Color', color_area(1,:))
 hold on
 plot (V1_3TMB_GE.ecc, yfit_A, '-k')
 hold off
@@ -671,7 +651,7 @@ ylabel ('Receptive field size (^{o})')
 title ('V1 (ses-UMCU3TMB in GE-FOV)')
 axis([0 12 0 6])
     subplot(1,3,2)
-plot (V2_3TMB_GE.ecc, V2_3TMB_GE.rfsize, '*b')
+plot (V2_3TMB_GE.ecc, V2_3TMB_GE.rfsize, '*', 'Color', color_area(2,:))
 hold on
 plot (V2_3TMB_GE.ecc, yfit_B, '-k')
 hold off
@@ -680,7 +660,7 @@ ylabel ('Receptive field size (^{o})')
 title ('V2 (ses-UMCU3TMB in GE-FOV)')
 axis([0 12 0 6])
     subplot(1,3,3)
-plot (V3_3TMB_GE.ecc, V3_3TMB_GE.rfsize, '*m')
+plot (V3_3TMB_GE.ecc, V3_3TMB_GE.rfsize, '*', 'Color', color_area(3,:))
 hold on
 plot (V3_3TMB_GE.ecc, yfit_C, '-k')
 hold off
@@ -723,7 +703,7 @@ yfit_F = polyval (F, V3_3TMB_SE.ecc);
 
 figure (22) 
     subplot (1,3,1)
-plot (V1_3TMB_SE.ecc, V1_3TMB_SE.rfsize, '*r')
+plot (V1_3TMB_SE.ecc, V1_3TMB_SE.rfsize, '*', 'Color', color_area(1,:))
 hold on
 plot (V1_3TMB_SE.ecc, yfit_D, '-k')
 hold off
@@ -732,7 +712,7 @@ ylabel ('Receptive field size (^{o})')
 title ('V1 (ses-UMCU3TMB in SE-FOV)')
 axis([0 12 0 6])
     subplot(1,3,2)
-plot (V2_3TMB_SE.ecc, V2_3TMB_SE.rfsize, '*b')
+plot (V2_3TMB_SE.ecc, V2_3TMB_SE.rfsize, '*', 'Color', color_area(2,:))
 hold on
 plot (V2_3TMB_SE.ecc, yfit_E, '-k')
 hold off
@@ -741,7 +721,7 @@ ylabel ('Receptive field size (^{o})')
 title ('V2 (ses-UMCU3TMB in SE-FOV)')
 axis([0 12 0 6])
     subplot(1,3,3)
-plot (V3_3TMB_SE.ecc, V3_3TMB_SE.rfsize, '*m')
+plot (V3_3TMB_SE.ecc, V3_3TMB_SE.rfsize, '*', 'Color', color_area(3,:))
 hold on
 plot (V3_3TMB_SE.ecc, yfit_F, '-k')
 hold off
@@ -775,31 +755,75 @@ title ('Mean receptive field size per visual area - SE-EPI FOV')
 
 %% Save plots (figure 4 & 5)
 
-% Define path
-figpath = '/Fridge/users/margriet/projects/figures/byarea/';
+% % Define path
+% figpath = '/Fridge/users/margriet/projects/figures/byarea/';
+% 
+% % Define filename
+% filename1 = [subjectcode, '_3TMB_byarea'];
+% filename2 = [subjectcode, '_3TMB_byarea_summary'];
+% filename3 = [subjectcode, '_7TGE_byarea'];
+% filename4 = [subjectcode, '_7TGE_byarea_summary'];
+% filename5 = [subjectcode, '_7TSE_byarea'];
+% filename6 = [subjectcode, '_7TSE_byarea_summary'];
+% filename10 = [subjectcode, '_mean_byarea'];
+% filename11 = [subjectcode, '_std_byarea'];
+% filename19 = [subjectcode, '_eccdistribution'];
+% 
+% % Save plots
+% saveas (figure(1), fullfile(figpath, filename1), 'png');
+% saveas (figure(2), fullfile(figpath, filename2), 'png');
+% saveas (figure(3), fullfile(figpath, filename3), 'png');
+% saveas (figure(4), fullfile(figpath, filename4), 'png');
+% saveas (figure(5), fullfile(figpath, filename5), 'png');
+% saveas (figure(6), fullfile(figpath, filename6), 'png');
+% saveas (figure(10), fullfile(figpath, filename10), 'png');
+% saveas (figure(11), fullfile(figpath, filename11), 'png');
+% saveas (figure(19), fullfile(figpath, filename19), 'png');
 
-% Define filename
-filename1 = [subjectcode, '_3TMB_byarea'];
-filename2 = [subjectcode, '_3TMB_byarea_summary'];
-filename3 = [subjectcode, '_7TGE_byarea'];
-filename4 = [subjectcode, '_7TGE_byarea_summary'];
-filename5 = [subjectcode, '_7TSE_byarea'];
-filename6 = [subjectcode, '_7TSE_byarea_summary'];
-filename10 = [subjectcode, '_mean_byarea'];
-filename11 = [subjectcode, '_std_byarea'];
-filename19 = [subjectcode, '_eccdistribution'];
-
-% Save plots
-saveas (figure(1), fullfile(figpath, filename1), 'png');
-saveas (figure(2), fullfile(figpath, filename2), 'png');
-saveas (figure(3), fullfile(figpath, filename3), 'png');
-saveas (figure(4), fullfile(figpath, filename4), 'png');
-saveas (figure(5), fullfile(figpath, filename5), 'png');
-saveas (figure(6), fullfile(figpath, filename6), 'png');
-saveas (figure(10), fullfile(figpath, filename10), 'png');
-saveas (figure(11), fullfile(figpath, filename11), 'png');
-saveas (figure(19), fullfile(figpath, filename19), 'png');
-
+% %% PREP RESULTS FOR R 
+% 
+% % ========= 3TMB data for R ========= %
+%     % ========= RESULTS BY VISUAL AREA ========= %
+%     Rdata_3TMB_V1 = [V1_3TMB.ecc, V1_3TMB.rfsize, V1_3TMB.ang, V1_3TMB.R2];
+%     Rdata_3TMB_V2 = [V2_3TMB.ecc, V2_3TMB.rfsize, V2_3TMB.ang, V2_3TMB.R2];
+%     Rdata_3TMB_V3 = [V3_3TMB.ecc, V3_3TMB.rfsize, V3_3TMB.ang, V3_3TMB.R2];
+%     
+%     % SAVE RESULTS IN CSV
+%     filename = ['/home/margriet/R/data/pRF_fullFOV/', subjectcode, '/V1_3TMB'];
+%     csvwrite (filename, Rdata_3TMB_V1)
+%     filename = ['/home/margriet/R/data/pRF_fullFOV/', subjectcode, '/V2_3TMB'];
+%     csvwrite (filename, Rdata_3TMB_V2)
+%     filename = ['/home/margriet/R/data/pRF_fullFOV/', subjectcode, '/V3_3TMB'];
+%     csvwrite (filename, Rdata_3TMB_V3)
+%     
+% % ========= 7TGE data for R ========= %
+%     % ========= RESULTS BY VISUAL AREA ========= %
+%     Rdata_7TGE_V1 = [V1_7TGE.ecc, V1_7TGE.rfsize, V1_7TGE.ang, V1_7TGE.R2];
+%     Rdata_7TGE_V2 = [V2_7TGE.ecc, V2_7TGE.rfsize, V2_7TGE.ang, V2_7TGE.R2];
+%     Rdata_7TGE_V3 = [V3_7TGE.ecc, V3_7TGE.rfsize, V3_7TGE.ang, V3_7TGE.R2];
+%     
+%     % SAVE RESULTS IN CSV
+%     filename = ['/home/margriet/R/data/pRF_fullFOV/', subjectcode, '/V1_7TGE'];
+%     csvwrite (filename, Rdata_7TGE_V1)
+%     filename = ['/home/margriet/R/data/pRF_fullFOV/', subjectcode, '/V2_7TGE'];
+%     csvwrite (filename, Rdata_7TGE_V2)
+%     filename = ['/home/margriet/R/data/pRF_fullFOV/', subjectcode, '/V3_7TGE'];
+%     csvwrite (filename, Rdata_7TGE_V3)
+%     
+%     
+% % ========= 7TSE data for R ========= %
+%     % ========= RESULTS BY VISUAL AREA ========= %
+%     Rdata_7TSE_V1 = [V1_7TSE.ecc, V1_7TSE.rfsize, V1_7TSE.ang, V1_7TSE.R2];
+%     Rdata_7TSE_V2 = [V2_7TSE.ecc, V2_7TSE.rfsize, V2_7TSE.ang, V2_7TSE.R2];
+%     Rdata_7TSE_V3 = [V3_7TSE.ecc, V3_7TSE.rfsize, V3_7TSE.ang, V3_7TSE.R2];
+%     
+%     % SAVE RESULTS IN CSV
+%     filename = ['/home/margriet/R/data/pRF_fullFOV/', subjectcode, '/V1_7TSE'];
+%     csvwrite (filename, Rdata_7TSE_V1)
+%     filename = ['/home/margriet/R/data/pRF_fullFOV/', subjectcode, '/V2_7TSE'];
+%     csvwrite (filename, Rdata_7TSE_V2)
+%     filename = ['/home/margriet/R/data/pRF_fullFOV/', subjectcode, '/V3_7TSE'];
+%     csvwrite (filename, Rdata_7TSE_V3)
 
 %% Clear variables in workspace
 

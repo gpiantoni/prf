@@ -1,10 +1,13 @@
+% % =========  SCRIPT R2  ========= % 
+%
+% Script to compare R2 values before and after signal filtering.
+
 clear;
 
 %%
 
 subjectcode = 'sub-visual01'; 
 subjectname = subjectcode (5:end);
-
 
 %% 3TMB
 

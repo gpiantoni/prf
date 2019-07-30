@@ -1,4 +1,7 @@
-
+% % =========  SCRIPT results for R ========= % 
+%
+% Script to convert pRF results to csv files for analysis in R.
+%
 %%
 clear;
 close all

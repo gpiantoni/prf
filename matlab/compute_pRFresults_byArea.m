@@ -1,4 +1,15 @@
 function [V1, V2, V3] = compute_pRFresults_byArea (varea, ang, ecc, rfsize, R2, nrnodes)
+%
+% function [V1, V2, V3] = COMPUTE_PRFRESULTS_BYAREA (varea, ang, ecc, rfsize, R2, nrnodes)
+%
+% This function groups the pRF results (<ang>, <ecc>, <rfsize>, <R2>) based 
+% on  visual area (<varea>) as defined by the Benson atlas (Benson et al.,
+% 2014). The function returns three structure arrays containing the pRF
+% properties of the voxels in V1, V2 and V3, respectively.
+%
+% Input: <varea>, <ang>, <ecc>, <rfsize>, <R2>, <nrnodes>
+% Output: <[V1, V2, V3]>
+%%
 
     V1_ang = zeros (nrnodes, 1);           %%% POLAR ANGLE %%%
     for i = 1:nrnodes

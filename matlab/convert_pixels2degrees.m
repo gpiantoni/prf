@@ -2,7 +2,7 @@ function convert_pixels2degrees (session, output_dir)
 %
 % function CONVERT_PIXELS2DEGREES (subject, session, output_dir)
 %
-% This function converts pixels to visual angle in degrees 
+% This function converts pixels to visual angle in degrees. 
 %
 % Input: <subject>, <session>, <output_dir>
 % Output: <ecc_deg> and <rfsize_deg> found in <output_dir>
@@ -11,6 +11,9 @@ function convert_pixels2degrees (session, output_dir)
 disp('Converting pixels to degrees visual angle')
 
 %% Calculate visual angle
+subjectcode = 'sub-visual12';
+session = 'ses-UMCU7TGE';
+output_dir = ['/Fridge/users/margriet/projects/prf/analyzeprf/results/umcu/', subjectcode, '/', session, '/final'];
 
 % ========= 3T scanner ========= % 
 scanner3T = load ('/Fridge/users/margriet/stimuli/BAIR_pRF/scanner_params/Scanner_3T.mat');        % 3T scanner parameters
@@ -21,15 +24,14 @@ scanner3T.params.display.pixelSize = scanner3T.params.display.dimensions / scann
 screen_size_3T = scanner3T.params.display.dimensions;
 distance_3T = scanner3T.params.display.distance;
 
-visual_angle_3T = (atan((screen_size_3T(1)/2) / distance_3T)) * 180/pi;      % in degrees (6.5175 deg)  5.59
+visual_angle_3T = (atan((screen_size_3T(1)/2) / distance_3T)) * 180/pi;      % in degrees (6.5175 deg) 
 
 % ========= 7T scanner ========= % 
-scanner7T = load ('/Fridge/users/margriet/stimuli/BAIR_pRF/scanner_params/Scanner_7T.mat');        % 7T scanner parameters
-screen_size_7T = scanner7T.params.display.dimensions;     % [14.22, 8] cm
-screen_size_7T = [screen_size_7T(2), screen_size_7T(1)];  % [8, 14.22] cm
-distance_7T = scanner7T.params.display.distance;          % 35.5 cm
+% scanner7T = load ('/Fridge/users/margriet/stimuli/BAIR_pRF/scanner_params/Scanner_7T.mat');        % 7T scanner parameters
+stim_size_7T = 13;              % [13, 13] cm
+distance_7T = 22+15.5;          % 37.5 cm
 
-visual_angle_7T = (atan((screen_size_7T(1)/2) / distance_7T)) * 180/pi;      % in degrees (6.428 deg)
+visual_angle_7T = (atan((stim_size_7T/2) / distance_7T)) * 180/pi;      % in degrees (9.8366 deg)
    
 %% Read in results (eccentricity and rf size)
 

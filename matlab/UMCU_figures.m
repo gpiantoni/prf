@@ -1,11 +1,12 @@
 %%%%%%%%%%%% SCRIPT analyzePRF UMCU data %%%%%%%%%%%%
 
-addpath /Fridge/users/margriet/projects/prf/analyzeprf/scripts/utilities
-addpath /home/margriet/tools/prf/matlab
+addpath(genpath('/Fridge/users/margriet/projects/prf/analyzeprf/scripts/utilities'))
+addpath(genpath('/Fridge/users/margriet/projects/prf/analyzeprf/scripts'))
+addpath(genpath('/home/margriet/tools/prf/matlab'))
 
 %% Specify subject code
 
-subjectcode = 'sub-visual05';               % Enter subject code
+subjectcode = 'sub-visual09';               % Enter subject code
 session = 'ses-UMCU7TGE';
 
 %% fMRI timeseries
@@ -34,7 +35,7 @@ nrscans_run1 = size(nifti_run1, 4);       % dynamics = 224
 nrscans_run2 = size(nifti_run2, 4);
 
 nifti_run1 = reshape(nifti_run1, [nrnodes, nrscans_run1]);  % DIM = [114688 X 224]
-nifti_run2 = reshape(nifti_run2, [nrnodes, nrscans_run1]);
+nifti_run2 = reshape(nifti_run2, [nrnodes, nrscans_run2]);
 
 data_UMCU = {nifti_run1, nifti_run2};
 
@@ -103,9 +104,9 @@ else
 end
 
 % Load in results
-ang = niftiread (['/Fridge/users/margriet/projects/prf/analyzeprf/results/umcu/', subjectcode, '/', session, '/separate_bairprf/ang.nii']);
-ecc = niftiread (['/Fridge/users/margriet/projects/prf/analyzeprf/results/umcu/', subjectcode, '/', session, '/separate_bairprf/ecc.nii']);
-rfsize = niftiread (['/Fridge/users/margriet/projects/prf/analyzeprf/results/umcu/', subjectcode, '/', session, '/separate_bairprf/rfsize.nii']);
+ang = niftiread (['/Fridge/users/margriet/projects/prf/analyzeprf/results/umcu/', subjectcode, '/', session, '/final/ang.nii']);
+ecc = niftiread (['/Fridge/users/margriet/projects/prf/analyzeprf/results/umcu/', subjectcode, '/', session, '/final/ecc.nii']);
+rfsize = niftiread (['/Fridge/users/margriet/projects/prf/analyzeprf/results/umcu/', subjectcode, '/', session, '/final/rfsize.nii']);
 
 % Reshape results
 ang = reshape(ang, [nrnodes, 1]);
@@ -173,7 +174,7 @@ for p=1:length(degs)
 end
 
 % Saved results
-results = load (['/Fridge/users/margriet/projects/prf/analyzeprf/results/umcu/', subjectcode, '/', session, '/separate_bairprf/results.mat']);
+results = load (['/Fridge/users/margriet/projects/prf/analyzeprf/results/umcu/', subjectcode, '/', session, '/final/results.mat']);
 results_UMCU.params = results.params;
 
 R2 = results.R2;
@@ -203,11 +204,10 @@ end
 % FIGURE: Modelfit
 figure (4); 
 hold on;
-set(gcf,'Units','points','Position',[100 100 1000 100]);
-plot(cat(1,datats{:}),'r-');
-plot(cat(1,modelts{:}),'b-');
-straightline(nrscans_run1*(1:2)+.5,'v','g-');
-xlabel('Time (s)');
+set(gcf,'Units','points','Position',[100 100 1200 200]);
+plot(cat(1,datats{:}),'r-', 'LineWidth', 1.0);
+plot(cat(1,modelts{:}),'b-', 'LineWidth', 1.5);
+xlabel('Time (scans)');
 ylabel('BOLD signal');
 ax = axis;
 axis([.5 500+.5 ax(3:4)]);

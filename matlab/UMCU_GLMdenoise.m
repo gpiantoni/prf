@@ -1,6 +1,8 @@
 % % =========  SCRIPT GLMdenoise UMCU data  ========= % 
 %
-%
+%  Script to visualize improvements in signal quality as a results of
+%  GLMdenoise. 
+
 %%
 clear;
 
@@ -136,7 +138,7 @@ if Analyze7TGE == true
     cd (output_dir)
     save('data_preGLMdenoise.mat', 'data')    
     save('data_postGLMdenoise.mat', 'data_GLMdenoise')                             % Save results struct in output_dir
-    save('results_GLMdenoise.mat', '-struct', 'results_GLMdenoise')            % Save results struct in output_dir
+    save('results_GLMdenoise.mat', '-struct', 'results_GLMdenoise')                % Save results struct in output_dir
     cd ('/home/margriet/tools/prf/matlab')
          
 end
@@ -195,7 +197,7 @@ if Analyze7TSE == true
     cd (output_dir)
     save('data_preGLMdenoise.mat', 'data')    
     save('data_postGLMdenoise.mat', 'data_GLMdenoise')                             % Save results struct in output_dir
-    save('results_GLMdenoise.mat', '-struct', 'results_GLMdenoise')            % Save results struct in output_dir
+    save('results_GLMdenoise.mat', '-struct', 'results_GLMdenoise')                % Save results struct in output_dir
     cd ('/home/margriet/tools/prf/matlab')
     
 end
@@ -220,7 +222,3 @@ legend ('Original signal', 'GLMdenoised signal')
 set (gcf, 'Position', [800, 800, 1800, 300])
 
 %% End
-
-
-
-

@@ -3,7 +3,7 @@
 % Script (1) averages two pRF runs and (2) splits up merged pRF runs
 %
 % Input: <subjectcode>, <session>
-% Output: <bairprf_AVERAGED_bold.nii>
+% Output: <bairprf_AVERAGED_bold.nii> & <bairprf_MERGED_runxx_bold.nii>
 %%
 clear;
 

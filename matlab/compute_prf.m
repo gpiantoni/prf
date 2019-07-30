@@ -27,6 +27,7 @@ function compute_prf(subjectcode, session, nifti, n_volumes, output_dir, thresho
 %   Values are in percentages and generally range between 0% and 100%.  The R^2 values
 %   are computed after projecting out polynomials from both the data and the model fit.
 %   (Because of this projection, R^2 values can sometimes drop below 0%.)
+
 %% 
 
 disp('-- Loading stimuli --')
@@ -65,7 +66,7 @@ end
     % ========= SEPARATE RUNS ========= % 
 if AnalyzeSeparateRuns == true
     disp('-- Starting analyzePRF for separate runs --')
-    % MAX_N_VOLUMES = 252;        % previously 248
+    % MAX_N_VOLUMES = 250;        % previously 248
     images = {};
 
     % 1st run

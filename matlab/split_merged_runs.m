@@ -35,19 +35,7 @@ hdr2.ImageSize(4) = dyn_run2;
 filename_run2 = [subjectcode, '_', session, '_task-bairprf_MERGED_run02_preproc.nii'];
 niftiwrite (merged_part2, fullfile(output_dir, filename_run2), hdr2)
 
-
-
 %%
-
-% figure(1)
-% plot (squeeze(merged_part1(71,69,1, :)), 'LineWidth', 2, 'Color', 'r')
-% hold on 
-% plot (squeeze(merged_part2(71,69,1, :)), 'LineWidth', 2, 'Color', 'm')
-% plot (squeeze(merged(71,69,1, :)), 'LineWidth', 2, 'Color', 'c')
-% legend ('Run1', 'Run2', 'Merged')
-% % axis ([0 500 -20 20])
-% hold off
-
 
 disp (['Done splitting merged pRF runs for ', subjectcode, ': ', session])
 

@@ -14,16 +14,6 @@ function output_stim = read_bair_stimuli(subjectcode, session, run, n_volumes, T
 % <output_stim> containing pRF stimulus information with added baseline.
 %%
 
-% % % % apertures = load(PATH_TO_APERTURES);
-% % % % images = uint8(apertures.bar_apertures);
-
-% % % % ========= Ensure that all images are binary ========= % 
-% % % 
-% % % images_bin = zeros(size(images));
-% % % images_bin(images > .5) = 1;
-% % % images = images_bin;
-
-
 % ========= Read in stimuli for specific run ========= % 
 
 if run == 1
